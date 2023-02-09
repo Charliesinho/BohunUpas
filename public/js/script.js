@@ -2,7 +2,3 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log("BohunUpas JS imported successfully!");
 });
-let session = false;
-
-console.log("im here now")
-let loginCheck = false;
