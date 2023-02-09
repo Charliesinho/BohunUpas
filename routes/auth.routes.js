@@ -15,9 +15,9 @@ router.get("/accountcheck", async (req, res, next) => {
     console.log("usercheck", userCheck)
     console.log("user", user)
     if (userCheck.length === 0) {
-        res.render("auth/signup", {errorMessage: "", email: ""});
+        res.render("auth/signup", {errorMessage: "", email: "", username: req.body.username});
     } else {
-        res.render("auth/login", {errorMessage: "", email: ""});
+        res.render("auth/login", {errorMessage: "", email: "", username: req.body.username});
     }
   })
 
