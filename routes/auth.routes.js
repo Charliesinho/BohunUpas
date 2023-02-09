@@ -36,7 +36,7 @@ router.post("/signup", async (req, res) => {
     //} 
 
     if (body.password !== body.Rpassword) {
-        res.render("auth/signup", {email: body.email, errorMessage: "The passwords don't match"});  
+        res.render("auth/signup", {username: req.body.username, email: body.email, errorMessage: "The passwords don't match"});  
         console.log("im here")
         return;
     }
@@ -65,7 +65,7 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res, next) => {
   const user = req.body
   if (!user.username || !user.password) {
-    res.render("auth/login", {user: user, errorMessage: "Please provide a Username and a Password."});
+    res.render("auth/login", {username: user.username, errorMessage: "Please provide a Username and a Password."});
     return;
   }
 
@@ -73,7 +73,7 @@ router.post("/login", async (req, res, next) => {
     const username = user.username;
     const loginUser = await User.findOne({username});
     if (!loginUser) {
-      res.render("auth/login", {user: user, errorMessage: "This username does not exist."});
+      res.render("auth/login", {username: user.username, errorMessage: "This username does not exist."});
       return;
     } else if (bcrypt.compareSync(user.password, loginUser.passwordHash)) {
       delete user.password;
@@ -86,13 +86,15 @@ router.post("/login", async (req, res, next) => {
       console.log(req.session.user);
       res.redirect("/auth/signup");
     } else {
-      res.render("auth/login", {user: user, errorMessage: "The password is incorrect."});
+      res.render("auth/login", {username: user.username, errorMessage: "The password is incorrect."});
     }
   } catch (error) {
     console.log("Error logging in: ", error);
     next(error);
   }
 });
+
+
 
 router.get("/logout", (req, res, next) => {
   session.destroy(error => {
