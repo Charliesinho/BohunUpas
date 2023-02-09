@@ -18,7 +18,7 @@ router.post("/signup", async (req, res) => {
     //     res.render("auth/signup", {email: body.email, errorMessage: "The password needs to have at least 6 chars and contain at least one number, one lowercase and one uppercase letter."});
     //     return;
     //} 
-    
+
     if (body.password !== body.Rpassword) {
         res.render("auth/signup", {email: body.email, errorMessage: "The passwords don't match"});  
         console.log("im here")
@@ -39,7 +39,7 @@ router.post("/signup", async (req, res) => {
     catch (error) {
      console.log(error);
     }
-    res.redirect("/auth/signup")
+    res.redirect("/user/profile")
 })
 
 router.get("/login", (req, res, next) => {
