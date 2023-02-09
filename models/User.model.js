@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, Types } = require("mongoose");
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
 const userSchema = new Schema(
@@ -19,6 +19,10 @@ const userSchema = new Schema(
     passwordHash: {
       type: String,
       required: true
+    },
+    character: {
+      type: Schema.Types.ObjectId, ref: "Character",
+      unique: true
     }
   },
   {
