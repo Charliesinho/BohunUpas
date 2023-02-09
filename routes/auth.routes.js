@@ -15,6 +15,7 @@ function checkLogin(session) {
 }
 
 
+
 /* GET home page */
 router.get("/accountcheck", isLoggedOut, async (req, res, next) => {
     checkLogin(req.session.user);
