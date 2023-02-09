@@ -4,6 +4,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const { isLoggedOut, isLoggedIn } = require('../middleware/route-guard');
+const mongoose = require("mongoose");
 let loginCheck = false;
 
 function checkLogin(session) {
@@ -24,8 +25,8 @@ router.get("/accountcheck", isLoggedOut, async (req, res, next) => {
     checkLogin(req.session.user);
     const user = req.body.username;
     const userCheck = await User.find({username: user})
-    console.log("usercheck", userCheck)
-    console.log("user", user)
+    console.log("usercheck", userCheck);
+    console.log("user", user);
     if (userCheck.length === 0) {
         res.render("auth/signup", {errorMessage: "", email: "", username: req.body.username, session: loginCheck});
     } else {
@@ -33,25 +34,19 @@ router.get("/accountcheck", isLoggedOut, async (req, res, next) => {
     }
   })
 
-router.post("/signup", isLoggedOut, async (req, res) => {
+  
+  router.post("/signup", isLoggedOut, async (req, res) => {
     checkLogin(req.session.user);
     const body = {...req.body};
 
-// Secure email check
-    // const regex = /(?=.\d)(?=.[a-z])(?=.*[A-Z]).{6,}/;
-    // if (!regex.test(body.password)) {
-    //     res.render("auth/signup", {email: body.email, errorMessage: "The password needs to have at least 6 chars and contain at least one number, one lowercase and one uppercase letter."});
-    //     return;
-    //} 
-
     if (body.password !== body.Rpassword) {
-        res.render("auth/signup", {username: req.body.username, email: body.email, errorMessage: "The passwords don't match", session: loginCheck});  
+        res.render("auth/signup", {username: req.body.username, email: body.email, errorMessage: "The passwords don't match", session: loginCheck});
         console.log("im here")
         return;
     }
 
     const salt = bcrypt.genSaltSync(10);
-    const passwordHash = bcrypt.hashSync(body.password, salt);   
+    const passwordHash = bcrypt.hashSync(body.password, salt);
 
     delete body.password;
 
@@ -59,12 +54,12 @@ router.post("/signup", isLoggedOut, async (req, res) => {
 
     try  {
       await User.create(body);
-      
+
       req.session.user = {
         username: body.username,
         email: body.email,
       };
-      
+
       res.redirect("/user/profile");
     }
     catch (error) {
@@ -94,7 +89,7 @@ router.post("/login", isLoggedOut, async (req, res, next) => {
         email: loginUser.email,
       };
       
-      res.redirect("/user/profile");
+      res.redirect("/user/game");
     } else {
       res.render("auth/login", {username: user.username, errorMessage: "The password is incorrect.", session: loginCheck});
     }
@@ -103,8 +98,6 @@ router.post("/login", isLoggedOut, async (req, res, next) => {
     next(error);
   }
 });
-
-
 
 router.get("/logout", isLoggedIn, (req, res, next) => {
   checkLogin(req.session.user);

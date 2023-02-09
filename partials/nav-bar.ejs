@@ -17,9 +17,11 @@
     </div>
 
     <div id="navRight">
-        <p><a id="btn-playnow" style="text-decoration: none" href="/auth/accountcheck"> Play Now </a></p>
     <% if (session) { %>
-      <p><a id="btn-logout" style="text-decoration: none" href="/auth/logout"> Logout </a></p>
+        <p><a id="btn-playnow" style="text-decoration: none" href="/user/game"> Play Now </a></p>
+        <p><a id="btn-logout" style="text-decoration: none" href="/auth/logout"> Logout </a></p>
+    <% } else { %>
+        <p><a id="btn-playnow" style="text-decoration: none" href="/auth/accountcheck"> Play Now </a></p>
     <% } %>
     </div>
   </div>

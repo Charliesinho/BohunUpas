@@ -1,5 +1,11 @@
 <%- include("../../partials/nav-bar.ejs") %>
 <h1>Profile</h1>
-<div id="game-board" style="display: flex; align-items: center; justify-content: center;">
-    <canvas id="canvas" width="1488" height="768"></canvas>
-</div>  
+
+<h2>Details</h2>
+<div>
+    <div>Username: <%-user.username%> </div>
+    <div>Email: <%-user.email%> </div>
+    <form action="/user/profile-update" method="GET">
+        <button type="submit">Change Details</button>
+    </form>
+</div>
