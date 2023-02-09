@@ -3,13 +3,14 @@ const User = require('../models/User.model');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
+const { isLoggedOut, isLoggedIn } = require('../middleware/route-guard');
 
 /* GET home page */
-router.get("/accountcheck", async (req, res, next) => {
+router.get("/accountcheck", isLoggedOut, async (req, res, next) => {
     res.render("auth/signup-login", {errorMessage: ""});
   });
 
-  router.post("/accountcheck", async (req, res) => {
+  router.post("/accountcheck", isLoggedOut, async (req, res) => {
     const user = req.body.username;
     const userCheck = await User.find({username: user})
     console.log("usercheck", userCheck)
@@ -25,7 +26,7 @@ router.get("/accountcheck", async (req, res, next) => {
 //   res.render("auth/signup", {errorMessage: "", email: ""});
 // });
 
-router.post("/signup", async (req, res) => {
+router.post("/signup", isLoggedOut, async (req, res) => {
     const body = {...req.body};
 
 // Secure email check
@@ -62,7 +63,7 @@ router.post("/signup", async (req, res) => {
 //   res.render("auth/login", {errorMessage: ""});
 // });
 
-router.post("/login", async (req, res, next) => {
+router.post("/login", isLoggedOut, async (req, res, next) => {
   const user = req.body
   if (!user.username || !user.password) {
     res.render("auth/login", {username: user.username, errorMessage: "Please provide a Username and a Password."});
@@ -82,9 +83,8 @@ router.post("/login", async (req, res, next) => {
         username: loginUser.username,
         email: loginUser.email,
       };
-
-      console.log(req.session.user);
-      res.redirect("/auth/signup");
+      
+      res.redirect("/user/profile");
     } else {
       res.render("auth/login", {username: user.username, errorMessage: "The password is incorrect."});
     }
@@ -96,8 +96,8 @@ router.post("/login", async (req, res, next) => {
 
 
 
-router.get("/logout", (req, res, next) => {
-  session.destroy(error => {
+router.get("/logout", isLoggedIn, (req, res, next) => {
+  req.session.destroy(error => {
     if (error) next (error);
     res.redirect("/");
   })

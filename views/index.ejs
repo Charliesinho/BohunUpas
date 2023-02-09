@@ -1,2 +1,8 @@
 <h1><%= appTitle %> 🚀</h1>
 <p>Welcome Ironhacker!</p>
+
+<% if (session) { %>
+    <div>YOU ARE LOGGED IN</div>
+<% } else { %>
+    <div>YOU ARE LOGGED OUT</div>
+<% } %>
