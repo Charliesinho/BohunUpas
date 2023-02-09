@@ -21,8 +21,9 @@ const userSchema = new Schema(
       required: true
     },
     character: {
-      type: Schema.Types.ObjectId, ref: "Character",
-      unique: true
+      type: [Schema.Types.ObjectId], 
+      ref: "Character",
+      unique: true,      
     }
   },
   {

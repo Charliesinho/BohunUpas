@@ -37,13 +37,6 @@ router.post("/signup", isLoggedOut, async (req, res) => {
     checkLogin(req.session.user);
     const body = {...req.body};
 
-// Secure email check
-    // const regex = /(?=.\d)(?=.[a-z])(?=.*[A-Z]).{6,}/;
-    // if (!regex.test(body.password)) {
-    //     res.render("auth/signup", {email: body.email, errorMessage: "The password needs to have at least 6 chars and contain at least one number, one lowercase and one uppercase letter."});
-    //     return;
-    //} 
-
     if (body.password !== body.Rpassword) {
         res.render("auth/signup", {username: req.body.username, email: body.email, errorMessage: "The passwords don't match", session: loginCheck});  
         console.log("im here")

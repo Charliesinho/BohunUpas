@@ -4,21 +4,30 @@ const { Schema, model } = require("mongoose");
 const characterSchema = new Schema(
   {
     race: {
-      type: String,
-      trim: true,
-      required: false,
-      unique: true
+      type: String,      
+      required: true, 
+      enum: ["Dino", "Undead", "Human"],
+      default: "none"     
     },
-    email: {
+    weapon: {
       type: String,
       required: true,
-      unique: true,
-      lowercase: true,
-      trim: true
+      default: "none"            
     },
-    passwordHash: {
+    armor: {
       type: String,
-      required: true
+      required: true,
+      default: "none"
+    },
+    artifact: {
+      type: String,
+      required: true,
+      default: "none"
+    },
+    souls: {
+      type: Number,
+      required: true,
+      default: 0
     }
   },
   {
