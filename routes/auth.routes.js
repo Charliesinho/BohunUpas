@@ -2,6 +2,7 @@ const express = require('express');
 const User = require('../models/User.model');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const session = require('express-session');
 
 /* GET home page */
 router.get("/signup", (req, res, next) => {
@@ -45,7 +46,6 @@ router.post("/login", async (req, res, next) => {
       res.render("auth/login", {user: user, errorMessage: "This username does not exist."});
       return;
     } else if (bcrypt.compareSync(user.password, loginUser.passwordHash)) {
-      console.log("SESSION ========> ", req.session);
       delete user.password;
       
       req.session.user = {
@@ -62,6 +62,13 @@ router.post("/login", async (req, res, next) => {
     console.log("Error logging in: ", error);
     next(error);
   }
+});
+
+router.get("/logout", (req, res, next) => {
+  session.destroy(error => {
+    if (error) next (error);
+    res.redirect("/");
+  })
 });
 
 module.exports = router;
