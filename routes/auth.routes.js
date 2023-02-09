@@ -4,9 +4,25 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 
 /* GET home page */
-router.get("/signup", (req, res, next) => {
-  res.render("auth/signup", {errorMessage: "", email: ""});
-});
+router.get("/accountcheck", async (req, res, next) => {
+    res.render("auth/signup-login", {errorMessage: ""});
+  });
+
+  router.post("/accountcheck", async (req, res) => {
+    const user = req.body.username;
+    const userCheck = await User.find({username: user})
+    console.log("usercheck", userCheck)
+    console.log("user", user)
+    if (userCheck.length === 0) {
+        res.render("auth/signup", {errorMessage: "", email: ""});
+    } else {
+        res.render("auth/login", {errorMessage: "", email: ""});
+    }
+  })
+
+// router.get("/signup", (req, res, next) => {
+//   res.render("auth/signup", {errorMessage: "", email: ""});
+// });
 
 router.post("/signup", async (req, res) => {
     const body = {...req.body};
@@ -40,9 +56,9 @@ router.post("/signup", async (req, res) => {
     res.redirect("/auth/signup")
 })
 
-router.get("/login", (req, res, next) => {
-  res.render("auth/login", {errorMessage: ""});
-});
+// router.get("/login", (req, res, next) => {
+//   res.render("auth/login", {errorMessage: ""});
+// });
 
 router.post("/login", async (req, res, next) => {
   const user = req.body
