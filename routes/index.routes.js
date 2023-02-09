@@ -3,7 +3,6 @@ const { sessionCheck } = require('../middleware/route-guard');
 const router = express.Router();
 let loginCheck = false;
 
-
 function checkLogin(session) {
   if (session !== undefined) {
     loginCheck = true;
@@ -13,7 +12,7 @@ function checkLogin(session) {
 }
 /* GET home page */
 router.get("/", (req, res, next) => {
-  checkLogin(req.session.user)
+  checkLogin(req.session.user);
   res.render("index", {session: loginCheck});
  
 });
