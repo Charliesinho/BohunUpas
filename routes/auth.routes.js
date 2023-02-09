@@ -34,12 +34,12 @@ router.post("/signup", async (req, res) => {
     body.passwordHash = passwordHash;
 
     try  {
-     await User.create(body);
+      await User.create(body);
+      res.redirect("/user/profile")
     }
     catch (error) {
      console.log(error);
     }
-    res.redirect("/user/profile")
 })
 
 router.get("/login", (req, res, next) => {
