@@ -22,13 +22,6 @@ const projectName = 'BohunUpas'
 app.locals.appTitle = `${capitalize(projectName)} created with IronLauncher`
 app.locals.session = undefined
 
-/* app.get("/", (req, res, next) => {
-    app.locals.session = req.session.user;
-    console.log(app.locals.session)
-})
-
-console.log(app.locals.session); */
-
 // 👇 Start handling routes here
 const indexRoutes = require('./routes/index.routes')
 app.use('/', indexRoutes)
