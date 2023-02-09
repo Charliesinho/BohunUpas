@@ -1,0 +1,26 @@
+<section>
+  <form method="POST" action="/auth/signup">
+    <h1>Sign Up</h1>
+
+    <label for="">
+      Username:
+      <input type="text" name="username" required />
+    </label>
+
+    <label for="">
+      Email:
+      <input type="email" name="email" required />
+    </label>
+
+    <label for="">
+      Password:
+      <input type="password" name="password" required />
+    </label>
+    <button type="submit">Sign Up</button>
+  </form>
+
+  <% if (errorMessage !== "") { %>
+    <div class="display-error-message centralize"><%=errorMessage%></div>
+<% } %>
+
+</section>
