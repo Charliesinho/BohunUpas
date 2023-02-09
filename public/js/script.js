@@ -3,4 +3,14 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log(window, document);
   console.log("BohunUpas JS imported successfully!");
 });
+let session = false;
 
+console.log("im here now")
+let loginCheck = false;
+
+//document.querySelector("#btn-logout").style.display = "none";
+
+window.onload = () => {
+  console.log(session);
+
+}

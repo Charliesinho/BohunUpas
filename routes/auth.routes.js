@@ -5,6 +5,8 @@ const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const { isLoggedOut, isLoggedIn } = require('../middleware/route-guard');
 
+
+
 /* GET home page */
 router.get("/accountcheck", isLoggedOut, async (req, res, next) => {
     res.render("auth/signup-login", {errorMessage: ""});
