@@ -7,6 +7,7 @@ const { isLoggedOut, isLoggedIn } = require('../middleware/route-guard');
 
 
 
+
 /* GET home page */
 router.get("/accountcheck", isLoggedOut, async (req, res, next) => {
     res.render("auth/signup-login", {errorMessage: ""});
@@ -18,9 +19,9 @@ router.get("/accountcheck", isLoggedOut, async (req, res, next) => {
     console.log("usercheck", userCheck)
     console.log("user", user)
     if (userCheck.length === 0) {
-        res.render("auth/signup", {errorMessage: "", email: "", username: req.body.username});
+        res.render("auth/signup", {errorMessage: "", email: "", username: req.body.username, sessionCheck: false});
     } else {
-        res.render("auth/login", {errorMessage: "", email: "", username: req.body.username});
+        res.render("auth/login", {errorMessage: "", email: "", username: req.body.username, sessionCheck: false});
     }
   })
 
@@ -39,7 +40,7 @@ router.post("/signup", isLoggedOut, async (req, res) => {
     //} 
 
     if (body.password !== body.Rpassword) {
-        res.render("auth/signup", {username: req.body.username, email: body.email, errorMessage: "The passwords don't match"});  
+        res.render("auth/signup", {username: req.body.username, email: body.email, errorMessage: "The passwords don't match", sessionCheck: false});  
         console.log("im here")
         return;
     }
