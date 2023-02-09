@@ -1,0 +1,16 @@
+<section>
+    <form method="POST" action="/auth/accountcheck">      
+  
+      <label for="">
+        Enter Username:
+        <input type="text" name="username" required />
+      </label>
+  
+      <button type="submit">Continue</button>
+    </form>
+  
+    <% if (errorMessage !== "") { %>
+      <div class="display-error-message centralize"><%=errorMessage%></div>
+  <% } %>
+  
+  </section>
