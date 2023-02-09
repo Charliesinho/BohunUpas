@@ -6,15 +6,28 @@ const session = require('express-session');
 
 /* GET home page */
 router.get("/signup", (req, res, next) => {
-  res.render("auth/signup", {errorMessage: ""});
+  res.render("auth/signup", {errorMessage: "", email: ""});
 });
 
 router.post("/signup", async (req, res) => {
     const body = {...req.body};
 
-    const salt = bcrypt.genSaltSync(10);
-    const passwordHash = bcrypt.hashSync(body.password, salt);
+// Secure email check
+    // const regex = /(?=.\d)(?=.[a-z])(?=.*[A-Z]).{6,}/;
+    // if (!regex.test(body.password)) {
+    //     res.render("auth/signup", {email: body.email, errorMessage: "The password needs to have at least 6 chars and contain at least one number, one lowercase and one uppercase letter."});
+    //     return;
+    //} 
+    if (body.password !== body.Rpassword) {
+        res.render("auth/signup", {email: body.email, errorMessage: "The passwords don't match"});  
+        console.log("im here")
+        return;
+    }
 
+    const salt = bcrypt.genSaltSync(10);
+    const passwordHash = bcrypt.hashSync(body.password, salt);   
+
+    
     delete body.password;
 
     body.passwordHash = passwordHash;
