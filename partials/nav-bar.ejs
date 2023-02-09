@@ -7,10 +7,12 @@
     <div>
       <ul id="navList">
         <li><p><a id="btn-logout" style="text-decoration: none" href="/"> Main Page </a></p></li>
-        <li><p><a id="btn-logout" style="text-decoration: none" href="/user/profile"> Profile </a></p></li>
-        <li>Collections</li>
-        <li>Marketplace</li>
-        <li>Trading</li>
+        <% if (session) { %>
+          <li><p><a id="btn-logout" style="text-decoration: none" href="/user/profile"> Profile </a></p></li>
+          <li>Collections</li>
+          <li>Marketplace</li>
+          <li>Trading</li>
+        <% } %>
       </ul>
     </div>
 

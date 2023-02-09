@@ -33,10 +33,6 @@ router.get("/accountcheck", isLoggedOut, async (req, res, next) => {
     }
   })
 
-// router.get("/signup", (req, res, next) => {
-//   res.render("auth/signup", {errorMessage: "", email: ""});
-// });
-
 router.post("/signup", isLoggedOut, async (req, res) => {
     checkLogin(req.session.user);
     const body = {...req.body};
@@ -57,23 +53,24 @@ router.post("/signup", isLoggedOut, async (req, res) => {
     const salt = bcrypt.genSaltSync(10);
     const passwordHash = bcrypt.hashSync(body.password, salt);   
 
-    
     delete body.password;
 
     body.passwordHash = passwordHash;
 
     try  {
       await User.create(body);
-      res.redirect("/user/profile")
+      
+      req.session.user = {
+        username: body.username,
+        email: body.email,
+      };
+      
+      res.redirect("/user/profile");
     }
     catch (error) {
      console.log(error);
     }
 })
-
-// router.get("/login", (req, res, next) => {
-//   res.render("auth/login", {errorMessage: ""});
-// });
 
 router.post("/login", isLoggedOut, async (req, res, next) => {
   checkLogin(req.session.user);

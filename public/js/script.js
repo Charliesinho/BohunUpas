@@ -23,13 +23,16 @@ window.onload = () => {
   myCanvas.style.align = "center";
 
   function startGame() {
+    // Reset for new drawing
     ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
     
+    // Player
     ctx.beginPath();
     ctx.fillStyle = "black";
     ctx.fillRect(xPos, yPos, 32, 32);
     ctx.closePath();
 
+    // Movement and Boundaries
     if (moveRight && xPos < myCanvas.width - 32) {
       xPos += xSpeed;
     }
@@ -42,10 +45,11 @@ window.onload = () => {
     if (moveDown && yPos < myCanvas.height - 32) {
       yPos += ySpeed;
     }
-
+    // Gameplay loop
     animateId = requestAnimationFrame(startGame);
   }
-
+  
+  // Controls
   document.addEventListener("keydown", (e) => {
     switch (e.key) {
       case "d": // Right
