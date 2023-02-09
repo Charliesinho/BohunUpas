@@ -1,0 +1,15 @@
+<h2>Login</h2>
+
+<section>
+    <form action="/auth/login" method="POST">
+        <label>Username: <input type="text" name="username"></label>
+        <label>Password: <input type="password" name="password"></label>
+        <button type="submit">Log In</button>
+        <div>
+            <a href="#">Forgot your password?</a>
+        </div>
+    </form>
+    <% if (errorMessage !== "") { %>
+        <div class="display-error-message centralize"><%=errorMessage%></div>
+    <% } %>
+</section>
