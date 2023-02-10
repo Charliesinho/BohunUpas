@@ -13,7 +13,6 @@ let undeadCheck = false;
 let humanSelect = document.querySelector("#humanSelect")
 let humanCheck = false;
 
-
 if (dinoSelect.style.display === "block") {
   dinoCheck = true;
   console.log("dino")
@@ -67,23 +66,40 @@ class Player {
     this.xFacing = xFacing;
     this.yFacing = yFacing;
 
-    // Movement / Attack
+    // Movement
     this.moveLeft = false;
     this.moveRight = false;
     this.moveUp = false;
     this.moveDown = false;
-    this.shoot = false;
-    this.canShoot = true;
-    
+
     // Shoot
     this.shootRight = false;
     this.shootLeft = false;
     this.shootUp = false;
     this.shootDown = false;
+    this.shoot = false;
+    this.canShoot = true;
+    
+    // Collision
+    this.left = this.x;
+    this.right = this.x + this.width;
+    this.top = this.y;
+    this.bottom = this.y + this.height;
   }
 
-  
-  
+  checkCollision(arr, ot, or, ob, ol) {
+    for (let i = 0; i < arr.length; i++) {
+      if (this.left - ol < arr[i].right &&
+        this.right + or > arr[i].left &&
+        this.top - ot < arr[i].bottom &&
+        this.bottom + ob >= arr[i].top) { 
+          if (this.bottom > arr[i].top) {
+              this.y--;
+          }
+          return true;
+        }
+    }
+  }
 }
 
 const enemyArr = [];
@@ -117,14 +133,21 @@ class Projectile {
     // Draw
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.rad, 0, Math.PI * 2, false);
-    ctx.fillStyle = "red"
+    ctx.fillStyle = "red";
     ctx.fill();
     ctx.closePath();
   }
 }
 
-
-
+const collisionObjectArr = [];
+class CollisionObject {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  }
+}
 
 window.onload = () => {
   myCanvas.style.backgroundColor = "white";
@@ -133,6 +156,9 @@ window.onload = () => {
   const player = new Player(100, 100, 32, 32, 5, 5, 1, 0);
 
   function startGame() {
+    const collisionObject = new CollisionObject(500, 500, 200, 200);
+    collisionObjectArr.push(collisionObject);
+    console.log(collisionObjectArr);
     gameplayLoop();
   }
 
@@ -147,27 +173,30 @@ window.onload = () => {
     updatePlayer();
     // Projectiles
     updateProjectiles();
-
     
     // Gameplay loop
     animateId = requestAnimationFrame(gameplayLoop);
   }
 
   function updatePlayer() {
-    // Movement and Boundaries
-    if (player.moveRight && player.x < myCanvas.width - player.width) {
-      player.x += player.xSpeed;
+    // Check Collision
+    if (!player.checkCollision(collisionObjectArr, 0, 0, 0, 0)) {
+      // Movement and Boundaries
+      if (player.moveRight && player.x < myCanvas.width - player.width) {
+        player.x += player.xSpeed;
+      }
+      if (player.moveLeft && player.x > 0) {
+        player.x -= player.xSpeed;
+      }
+      if (player.moveUp && player.y > 0) {
+        player.y -= player.ySpeed;
+      }
+      if (player.moveDown && player.y < myCanvas.height - player.height) {
+        player.y += player.ySpeed;
+      }
     }
-    if (player.moveLeft && player.x > 0) {
-      player.x -= player.xSpeed;
-    }
-    if (player.moveUp && player.y > 0) {
-      player.y -= player.ySpeed;
-    }
-    if (player.moveDown && player.y < myCanvas.height - player.height) {
-      player.y += player.ySpeed;
-    }    
     
+    // Shooting
     if (player.canShoot) {
       if (player.shootLeft && player.shootUp) { // TOP LEFT
         spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", -1, -1, 8, 10);
@@ -189,7 +218,7 @@ window.onload = () => {
       player.canShoot = false;
       setTimeout(() => {
         player.canShoot = true;
-      }, 500)
+      }, 500);
     }
   
     // Temp player
@@ -277,7 +306,7 @@ window.onload = () => {
     }
   });
   
-  startGame()
+  startGame();
 }
 
 
