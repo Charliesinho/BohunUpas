@@ -27,6 +27,12 @@ class Player {
     this.shoot = false;
     this.canShoot = true;
     
+    // Shoot
+    this.shootRight = false;
+    this.shootLeft = false;
+    this.shootUp = false;
+    this.shootDown = false;
+    
     // Projectile
     this.projX = x + width / 4;
     this.projY = y + height / 4;
@@ -126,26 +132,34 @@ window.onload = () => {
     switch (e.key) {
       case "d": // Right
       case "D":
-      case "ArrowRight":
           player.moveRight = true;
       break;
       case "a": // Left
       case "A":
-      case "ArrowLeft":
           player.moveLeft = true;
       break;
       case "w": // Up
       case "W":
-      case "ArrowUp":
           player.moveUp = true;
       break;
       case "s": // Down
       case "S":
-      case "ArrowDown":
           player.moveDown = true;
       break;
       case " ": // Shoot
           if (player.canShoot) player.shoot = true;
+      break;
+      case "ArrowRight": // Shoot
+        player.shootRight = true;
+      break;
+      case "ArrowLeft": // Shoot
+        player.shootLeft = true;
+      break;
+      case "ArrowUp": // Shoot
+        player.shootUp = true;
+      break;
+      case "ArrowDown": // Shoot
+        player.shootDown = true;
       break;
     }
   });
@@ -154,48 +168,37 @@ window.onload = () => {
     switch (e.key) {
       case "d": // Right
       case "D":
-      case "ArrowRight":
-          player.moveRight = false;
+        player.moveRight = false;
       break;
       case "a": // Left
       case "A":
       case "ArrowLeft":
-          player.moveLeft = false;
+        player.moveLeft = false;
       break;
       case "w": // Up
       case "W":
       case "ArrowUp":
-          player.moveUp = false;
+        player.moveUp = false;
       break;
       case "s": // Down
       case "S":
-      case "ArrowDown":
-          player.moveDown = false;
+        player.moveDown = false;
       break;
-      case " ": // Shoot
-          player.shoot = false;
-          player.canShoot = true;
+      case "ArrowRight": // Shoot
+        player.shootRight = false;
+      break;
+      case "ArrowLeft": // Shoot
+        player.shootLeft = false;
+      break;
+      case "ArrowUp": // Shoot
+        player.shootUp = false;
+      break;
+      case "ArrowDown": // Shoot
+        player.shootDown = false;
       break;
     }
   });
-  document.addEventListener("click", (e) => {
-    const angle = Math.atan2(
-      e.clientY - player.y,
-      e.clientX - player.x
-    );
-
-    console.log(window.screenX, window.screenY)
-
-    const velocity = {
-      x: Math.cos(angle),
-      y: Math.sin(angle)
-    };
-
-    const projectile = new Projectile(player.x + player.width / 2, player.y + player.height / 2, 5, "red", velocity, 10);
-    projectileArr.push(projectile);
-  });
   
-
   startGame()
 }
 
