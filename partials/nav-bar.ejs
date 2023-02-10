@@ -8,7 +8,7 @@
       <ul id="navList">
         <li><p><a style="text-decoration: none" href="/"> Main Page </a></p></li>
         <% if (session) { %>          
-          <% console.log("session Race:", sessionRace.length) %>
+          <% console.log("session Race:", sessionRace) %>
           <% if (sessionRace.length === 1) { %>
             <li><p><a style="text-decoration: none" href="/user/createcharacter"> Character </a></p></li>            
             <li><p><a style="text-decoration: none" href="/user/profile"> Profile </a></p></li>
@@ -26,11 +26,16 @@
 
     <div id="navRight">
     <% if (session) { %>
+      <% if (sessionRace.length === 0) { %> 
+        <p><a id="btn-playnow" style="text-decoration: none" href="/user/createCharacter"> Play Now </a></p>
+        <% } else { %>
         <p><a id="btn-playnow" style="text-decoration: none" href="/user/game"> Play Now </a></p>
+        <% } %>
         <p><a id="btn-logout" style="text-decoration: none" href="/auth/logout"> Logout </a></p>
     <% } else { %>
         <p><a id="btn-playnow" style="text-decoration: none" href="/auth/accountcheck"> Play Now </a></p>
     <% } %>
     </div>
   </div>
+
 </nav>

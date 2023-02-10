@@ -3,6 +3,54 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("BohunUpas JS imported successfully!");
 });
 
+
+let dinoSelect = document.querySelector("#dinoSelect")
+let dinoCheck = false;
+
+let undeadSelect = document.querySelector("#undeadSelect")
+let undeadCheck = false;
+
+let humanSelect = document.querySelector("#humanSelect")
+let humanCheck = false;
+
+
+if (dinoSelect.style.display === "block") {
+  dinoCheck = true;
+  console.log("dino")
+}
+
+if (undeadSelect.style.display === "block") {
+  undeadCheck = true;
+  console.log("undead")
+}
+
+if (humanSelect.style.display === "block") {
+  humanCheck = true;
+  console.log("human")
+}
+
+let noArmor = document.querySelector("#noArmor")
+let noArmorCheck = false;
+
+if (noArmor.style.display === "block") {
+  noArmorCheck = true;
+  console.log("no armor")
+}
+
+let noWeapon = document.querySelector("#noWeapon")
+let noWeaponCheck = false;
+
+if (noWeapon.style.display === "block") {
+  noWeaponCheck = true;
+  console.log("no weapon")
+}
+
+let souls = parseInt(document.querySelector("#souls").innerHTML)
+console.log(souls)
+
+let backgroundTest = new Image();
+backgroundTest.src = "../images/CanvasTest.png"
+
 let animateId;
 const myCanvas = document.querySelector("canvas");
 const ctx = myCanvas.getContext("2d");
@@ -32,39 +80,50 @@ class Player {
     this.shootLeft = false;
     this.shootUp = false;
     this.shootDown = false;
-    
-    // Projectile
-    this.projX = x + width / 4;
-    this.projY = y + height / 4;
-    this.projSpeed = 10;
+  }
+
+  
+  
+}
+
+const enemyArr = [];
+class Enemy {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
   }
 }
 
 const projectileArr = [];
-
 class Projectile {
-  constructor(x, y, radius, color, velocity, dmg) {
+  constructor(x, y, rad, color, xDir, yDir, speed, damage) {
     this.x = x;
     this.y = y;
-    this.radius = radius,
+    this.rad = rad,
     this.color = color;
-    this.velocity = velocity;
-    this.dmg = dmg;
+    this.xDir = xDir;
+    this.yDir = yDir;
+    this.speed = speed;
+    this.damage = damage;
   }
 
   updateProjectile() {
     // Move projectiles
-    this.x += this.velocity.x;
-    this.y += this.velocity.y;
+    this.x += this.speed * this.xDir;
+    this.y += this.speed * this.yDir;
 
     // Draw
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-    ctx.fillStyle = this.color;
+    ctx.arc(this.x, this.y, this.rad, 0, Math.PI * 2, false);
+    ctx.fillStyle = "red"
     ctx.fill();
     ctx.closePath();
   }
 }
+
+
 
 
 window.onload = () => {
@@ -81,10 +140,15 @@ window.onload = () => {
     // Reset for new drawing
     ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
 
+    //Background Test
+    ctx.drawImage(backgroundTest, 0, 0 , 1400, 800);
+
     // Player
     updatePlayer();
     // Projectiles
     updateProjectiles();
+
+    
     // Gameplay loop
     animateId = requestAnimationFrame(gameplayLoop);
   }
@@ -102,12 +166,32 @@ window.onload = () => {
     }
     if (player.moveDown && player.y < myCanvas.height - player.height) {
       player.y += player.ySpeed;
-    }
-    if (player.shoot) {
+    }    
+    
+    if (player.canShoot) {
+      if (player.shootLeft && player.shootUp) { // TOP LEFT
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", -1, -1, 8, 10);
+      } else if (player.shootUp && player.shootRight) { // TOP RIGHT
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 1, -1, 8, 10);
+      } else if (player.shootRight && player.shootDown) { // BOTTOM RIGHT
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 1, 1, 8, 10);
+      } else if (player.shootDown && player.shootLeft) { // BOTTOM LEFT
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", -1, 1, 8, 10);
+      } else if (player.shootRight) { // RIGHT
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 1, 0, 8, 10);
+      } else if (player.shootLeft) { // LEFT
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", -1, 0, 8, 10);
+      } else if (player.shootDown) { // DOWN
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 0, 1, 8, 10);
+      } else if (player.shootUp) { // UP
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 0, -1, 8, 10);
+      }
       player.canShoot = false;
-      spawnProjectile();
+      setTimeout(() => {
+        player.canShoot = true;
+      }, 500)
     }
-        
+  
     // Temp player
     ctx.beginPath();
     ctx.fillStyle = "black";
@@ -115,10 +199,9 @@ window.onload = () => {
     ctx.closePath();
   }
 
-  function spawnProjectile() {
-    const projectile = new Projectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 10);
+  function spawnProjectile(x, y, rad, color, xDir, yDir, speed, damage) {
+    const projectile = new Projectile(x, y, rad, color, xDir, yDir, speed, damage);
     projectileArr.push(projectile);
-    player.canShoot = true;
   }
 
   function updateProjectiles() {
@@ -146,9 +229,6 @@ window.onload = () => {
       case "S":
           player.moveDown = true;
       break;
-      case " ": // Shoot
-          if (player.canShoot) player.shoot = true;
-      break;
       case "ArrowRight": // Shoot
         player.shootRight = true;
       break;
@@ -172,12 +252,10 @@ window.onload = () => {
       break;
       case "a": // Left
       case "A":
-      case "ArrowLeft":
         player.moveLeft = false;
       break;
       case "w": // Up
       case "W":
-      case "ArrowUp":
         player.moveUp = false;
       break;
       case "s": // Down

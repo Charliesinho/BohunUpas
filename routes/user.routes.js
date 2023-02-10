@@ -111,9 +111,10 @@ router.get("/game", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
 
   const sessionName= req.session.user.username;
+  const sessionRace2 = await User.find({username: sessionName}).populate('character')
   const sessionRace = await User.find({username: sessionName})
 
-  res.render("user/game", {sessionRace: sessionRace[0].character, session: loginCheck});
+  res.render("user/game", {sessionRace2: sessionRace2[0], sessionRace: sessionRace, session: loginCheck});
 });
 
 router.get("/createcharacter", isLoggedIn, async (req, res, next) => {
