@@ -3,8 +3,8 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const { isLoggedIn } = require('../middleware/route-guard');
-const { update } = require('../models/User.model');
 const User = require('../models/User.model');
+const Character = require('../models/Character.model');
 let loginCheck = false;
 
 function checkLogin(session) {
@@ -51,7 +51,6 @@ router.post("/profile-update", isLoggedIn, async (req, res, next) => {
     delete req.body.password;
     updatedUser.passwordHash = passwordHash;
 
-    
     delete updatedUser.Cpassword;
     delete updatedUser.password;
     delete updatedUser.Rpassword;
@@ -78,6 +77,26 @@ router.post("/profile-update", isLoggedIn, async (req, res, next) => {
 router.get("/game", isLoggedIn, (req, res, next) => {
   checkLogin(req.session.user);
   res.render("user/game", {session: loginCheck});
+});
+
+router.get("/createcharacter", isLoggedIn, (req, res, next) => {
+  checkLogin(req.session.user);
+  res.render("user/createcharacter", {errorMessage: "", session: loginCheck});
+});
+
+router.post("/createcharacter", isLoggedIn, async (req, res) => {  
+ const character = await Character.create(req.body)
+//  const user = await User.findOne({username: req.session.user.username})
+ const user = await User.findOneAndUpdate({username: req.session.user.username}, {character: character._id}).populate('character')
+ console.log(user)
+ res.redirect("/user/characterProfile")
+});
+
+router.get("/characterProfile", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
+  const profile = await User.findOne({username: req.session.user.username}).populate('character');
+  console.log(profile)
+  res.render("user/characterProfile", {errorMessage: "", profile: profile, session: loginCheck});
 });
 
 module.exports = router;

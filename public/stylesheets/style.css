@@ -3,6 +3,10 @@ body {
   margin: 0;
 }
 
+#forgotPassword {
+  color: blue
+}
+
 a {
   color: #ffffff;
   font-weight: bold;

@@ -1,0 +1,17 @@
+<%- include("../../partials/nav-bar.ejs") %>
+<section>
+    <form method="POST" action="/user/createcharacter">      
+  
+      <label for="">
+        Choose race:
+        <input type="text" name="race" required autofocus />
+      </label>
+  
+      <button type="submit">Create</button>
+    </form>
+  
+    <% if (errorMessage !== "") { %>
+      <div class="display-error-message centralize"><%=errorMessage%></div>
+  <% } %>
+  
+  </section>
