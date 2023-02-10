@@ -104,11 +104,15 @@ router.get("/createcharacter", isLoggedIn, (req, res, next) => {
 });
 
 router.post("/createcharacter", isLoggedIn, async (req, res) => {  
- const character = await Character.create(req.body)
-//  const user = await User.findOne({username: req.session.user.username})
- const user = await User.findOneAndUpdate({username: req.session.user.username}, {character: character._id}).populate('character')
- console.log(user)
- res.redirect("/user/characterProfile")
+  try {
+    const character = await Character.create(req.body)
+    const user = await User.findOneAndUpdate({username: req.session.user.username}, {character: character._id}).populate('character')
+    console.log(user)
+    res.redirect("/user/characterProfile")
+  } catch (error) {
+    console.log("Error creating the Character, please try again: ", error);
+    res.render("user/createcharacter", {errorMessage: "Error creating the Character, please try again", session: loginCheck})
+  }
 });
 
 router.get("/characterProfile", isLoggedIn, async (req, res, next) => {
