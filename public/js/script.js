@@ -4,15 +4,42 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 let animateId;
+
+class Player {
+  constructor(x, y, width, height, xSpeed, ySpeed, xFacing, yFacing) {
+    // Pass in vars
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.xSpeed = xSpeed;
+    this.ySpeed = ySpeed;
+    this.xFacing = xFacing;
+    this.yFacing = yFacing;
+
+    // Movement / Attack
+    this.moveLeft = false;
+    this.moveRight = false;
+    this.moveUp = false;
+    this.moveDown = false;
+    this.shoot = false;
+    this.canShoot = false;
+  }
+
+  
+}
+
 let xPos = 100;
 let yPos = 100;
 const xSpeed = 5;
 const ySpeed = 5;
+let pWidth = 32;
+let pHeight = 32;
 
-let moveLeft = false;
-let moveRight = false;
-let moveUp = false;
-let moveDown = false;
+let xProjPos = xPos + pWidth / 2;
+let yProjPos = yPos + pHeight / 2;
+
+
 
 window.onload = () => {
   //Canvas
@@ -45,8 +72,19 @@ window.onload = () => {
     if (moveDown && yPos < myCanvas.height - 32) {
       yPos += ySpeed;
     }
+    if (isShooting) {
+      spawnProjectile();
+    }
     // Gameplay loop
     animateId = requestAnimationFrame(startGame);
+  }
+
+  function spawnProjectile() {
+    ctx.beginPath();
+    ctx.fillStyle = "red";
+    ctx.fillRect(xProjPos, yProjPos, 16, 16);
+    ctx.closePath();
+    xProjPos += 2;
   }
   
   // Controls
@@ -72,6 +110,10 @@ window.onload = () => {
       case "ArrowDown":
           moveDown = true;
       break;
+      case " ": // Shoot
+          isShooting = true;
+          console.log("Shoot")
+      break;
     }
   });
 
@@ -96,6 +138,9 @@ window.onload = () => {
       case "S":
       case "ArrowDown":
           moveDown = false;
+      break;
+      case " ": // Shoot
+          isShooting = false;
       break;
     }
   });
