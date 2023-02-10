@@ -4,6 +4,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const { isLoggedOut, isLoggedIn } = require('../middleware/route-guard');
+const mongoose = require("mongoose");
 let loginCheck = false;
 
 function checkLogin(session) {
@@ -31,7 +32,8 @@ router.get("/accountcheck", isLoggedOut, async (req, res, next) => {
     }
   })
 
-router.post("/signup", isLoggedOut, async (req, res) => {
+  
+  router.post("/signup", isLoggedOut, async (req, res) => {
     checkLogin(req.session.user);
     const body = {...req.body};
 
@@ -41,7 +43,7 @@ router.post("/signup", isLoggedOut, async (req, res) => {
     }
 
     const salt = bcrypt.genSaltSync(10);
-    const passwordHash = bcrypt.hashSync(body.password, salt);   
+    const passwordHash = bcrypt.hashSync(body.password, salt);
 
     delete body.password;
 
@@ -49,7 +51,7 @@ router.post("/signup", isLoggedOut, async (req, res) => {
 
     try  {
       await User.create(body);
-      
+
       req.session.user = {
         username: body.username,
         email: body.email,
@@ -84,7 +86,7 @@ router.post("/login", isLoggedOut, async (req, res, next) => {
         email: loginUser.email,
       };
       
-      res.redirect("/user/profile");
+      res.redirect("/user/game");
     } else {
       res.render("auth/login", {username: user.username, errorMessage: "The password is incorrect.", sessionRace: "", session: loginCheck});
     }
@@ -93,8 +95,6 @@ router.post("/login", isLoggedOut, async (req, res, next) => {
     next(error);
   }
 });
-
-
 
 router.get("/logout", isLoggedIn, (req, res, next) => {
   checkLogin(req.session.user);

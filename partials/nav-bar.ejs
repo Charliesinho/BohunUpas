@@ -10,13 +10,11 @@
         <% if (session) { %>          
           <% console.log("session Race:", sessionRace.length) %>
           <% if (sessionRace.length === 1) { %>
-            <li><p><a style="text-decoration: none" href="/user/createcharacter"> Character </a></p></li>
-            there is race
+            <li><p><a style="text-decoration: none" href="/user/createcharacter"> Character </a></p></li>            
             <li><p><a style="text-decoration: none" href="/user/profile"> Profile </a></p></li>
             <% } %>
             
-            <% if (sessionRace.length === 0) { %>
-              tehre is no race
+            <% if (sessionRace.length === 0) { %>              
            <li><p><a style="text-decoration: none" href="/user/characterProfile"> Character </a></p></li>            
           <% } %>
           <li>Collections</li>
@@ -27,9 +25,11 @@
     </div>
 
     <div id="navRight">
-        <p><a id="btn-playnow" style="text-decoration: none" href="/auth/accountcheck"> Play Now </a></p>
     <% if (session) { %>
-      <p><a id="btn-logout" style="text-decoration: none" href="/auth/logout"> Logout </a></p>
+        <p><a id="btn-playnow" style="text-decoration: none" href="/user/game"> Play Now </a></p>
+        <p><a id="btn-logout" style="text-decoration: none" href="/auth/logout"> Logout </a></p>
+    <% } else { %>
+        <p><a id="btn-playnow" style="text-decoration: none" href="/auth/accountcheck"> Play Now </a></p>
     <% } %>
     </div>
   </div>

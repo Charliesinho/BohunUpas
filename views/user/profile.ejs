@@ -1,5 +1,14 @@
 <%- include("../../partials/nav-bar.ejs") %>
 <h1>Profile</h1>
+<h2>Details</h2>
+<div>
+    <div>Username: <%-profile.username%> </div>
+    <div>Email: <%-profile.email%> </div>
+    <form action="/user/profile-update" method="GET">
+        <button type="submit">Change Details</button>
+    </form>
+</div>
+
 <% if (sessionRace.length) { %>
     <%=profile.username%>
     <%=profile.character[0].race%>
@@ -8,9 +17,4 @@
     <%=profile.character[0].artifact%>
     <%=profile.character[0].souls%>
     <% } %>
-
-
-<div id="game-board" style="display: flex; align-items: center; justify-content: center;">
-    <canvas id="canvas" width="1488" height="768"></canvas>
-</div>  
 
