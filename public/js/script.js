@@ -342,15 +342,15 @@ window.onload = () => {
     collisionObjectArr.push(new CollisionObject(0, 75, 125, 25, "environment", false));
     collisionObjectArr.push(new CollisionObject(0, 100, 90, 40, "environment", false));
     collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 64, myCanvas.height / 2 - 48, 110, 75, "environment", false));
-    collisionObjectArr.push(new CollisionObject(canvas.width/2 - 70, 0, 55, 55, "environment", false));
+    collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 70, 0, 55, 55, "environment", false));
 
     // TOP RIGHT TREE GROUP
-    collisionObjectArr.push(new CollisionObject(myCanvas.width - 300, 0, 300, 50, "environment", true));
-    collisionObjectArr.push(new CollisionObject(myCanvas.width - 250, 50, 300, 50, "environment", true));
+    collisionObjectArr.push(new CollisionObject(myCanvas.width - 300, 0, 300, 80, "environment", true));
+    collisionObjectArr.push(new CollisionObject(myCanvas.width - 270, 150, 300, 25, "environment", true));
 
     // ROOM TRANSITIONING TOP
-    collisionObjectArr.push(new CollisionObject(canvas.width/4 - 70, 0, 305, 30, "roomtransit", false));
-    collisionObjectArr.push(new CollisionObject(canvas.width/2 - 15, 0, 320, 30, "roomtransit", false));
+    collisionObjectArr.push(new CollisionObject(myCanvas.width/4 - 70, 0, 305, 30, "roomtransit", false));
+    collisionObjectArr.push(new CollisionObject(myCanvas.width/2 - 15, 0, 320, 30, "roomtransit", false));
 
     const slime = new Enemy("slime", 900, 400, 75, 70);
     slime.initialize();
