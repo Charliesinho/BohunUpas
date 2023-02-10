@@ -3,6 +3,54 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("BohunUpas JS imported successfully!");
 });
 
+
+let dinoSelect = document.querySelector("#dinoSelect")
+let dinoCheck = false;
+
+let undeadSelect = document.querySelector("#undeadSelect")
+let undeadCheck = false;
+
+let humanSelect = document.querySelector("#humanSelect")
+let humanCheck = false;
+
+
+if (dinoSelect.style.display === "block") {
+  dinoCheck = true;
+  console.log("dino")
+}
+
+if (undeadSelect.style.display === "block") {
+  undeadCheck = true;
+  console.log("undead")
+}
+
+if (humanSelect.style.display === "block") {
+  humanCheck = true;
+  console.log("human")
+}
+
+let noArmor = document.querySelector("#noArmor")
+let noArmorCheck = false;
+
+if (noArmor.style.display === "block") {
+  noArmorCheck = true;
+  console.log("no armor")
+}
+
+let noWeapon = document.querySelector("#noWeapon")
+let noWeaponCheck = false;
+
+if (noWeapon.style.display === "block") {
+  noWeaponCheck = true;
+  console.log("no weapon")
+}
+
+let souls = parseInt(document.querySelector("#souls").innerHTML)
+console.log(souls)
+
+let backgroundTest = new Image();
+backgroundTest.src = "../images/CanvasTest.png"
+
 let animateId;
 
 class Player {
@@ -52,6 +100,9 @@ window.onload = () => {
   function startGame() {
     // Reset for new drawing
     ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+
+    //Background Test
+    ctx.drawImage(backgroundTest, 0, 0 , 1400, 800);
     
     // Player
     ctx.beginPath();

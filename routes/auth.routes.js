@@ -86,7 +86,7 @@ router.post("/login", isLoggedOut, async (req, res, next) => {
         email: loginUser.email,
       };
       
-      res.redirect("/user/game");
+      res.redirect("/user/profile");
     } else {
       res.render("auth/login", {username: user.username, errorMessage: "The password is incorrect.", sessionRace: "", session: loginCheck});
     }

@@ -1,5 +1,46 @@
 <%- include("../../partials/nav-bar.ejs") %>
 <h1>Game</h1>
 <div id="game-board" style="display: flex; align-items: center; justify-content: center;">
-    <canvas id="canvas" width="1488" height="768"></canvas>
+    <canvas id="canvas" width="1400" height="800"></canvas>
 </div>  
+
+
+<!-- Character -->
+  <% if (session && sessionRace2.character[0].race === "Dino") { %>
+   <div id="dinoSelect" style="display: block;"></div>
+  <% } else { %>
+    <div id="dinoSelect" style="display: none;"></div>
+    <% } %>
+  
+  <% if (session && sessionRace2.character[0].race === "Undead") { %>
+    <div id="undeadSelect" style="display: block;"></div>
+    <% } else { %>
+        <div id="undeadSelect" style="display: none;"></div>
+        <% } %>
+
+   <% if (session && sessionRace2.character[0].race === "Human") { %>
+    <div id="humanSelect" style="display: block;"></div>
+    <% } else { %>
+        <div id="humanSelect" style="display: none;"></div>
+        <% } %>
+    
+
+<!-- Weapons -->
+    <% if (session && sessionRace2.character[0].weapon === "none") { %>
+    <div id="noWeapon" style="display: block;"></div>
+    <% } else { %>
+        <div id="noWeapon" style="display: none;"></div>
+        <% } %>
+
+<!-- Armor -->
+    <% if (session && sessionRace2.character[0].armor === "none") { %>
+    <div id="noArmor" style="display: block;"></div>
+    <% } else { %>
+        <div id="noArmor" style="display: none;"></div>
+        <% } %>
+
+<!-- Souls -->    
+    <% if (session) { %>
+    <div id="souls" style="display: block;"><%=sessionRace2.character[0].souls%></div>    
+    <% } else %></p>
+        
