@@ -163,6 +163,7 @@ class Enemy {
     // Gameplay values
     this.hp;
     this.damage;
+    this.takenDamage = false;
   }
 
   initialize() {
@@ -189,9 +190,14 @@ class Enemy {
   }
 
   hit(damage) {
+    this.takenDamage = true;
     this.hp -= damage;
     if (this.hp <= 0) {
       this.destroy();
+    } else {
+      setTimeout(() => {
+        this.takenDamage = false;
+      }, 100)
     }
   }
 
@@ -254,7 +260,8 @@ class Projectile {
           // Enemy Collision
           if (arr[i].getType() === "enemy") {
             const projectile = projectileArr.indexOf(this);
-            arr[i].hit(projectileArr[projectile].damage);
+            console.log(arr[i].takenDamage)
+            if (!arr[i].takenDamage) arr[i].hit(projectileArr[projectile].damage);
             projectileArr[projectile].destroy();
             break;
           } 
