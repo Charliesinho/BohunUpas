@@ -1,6 +1,8 @@
 body {  
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;  
   margin: 0;
+  background-color: black;
+  color: white;
 }
 
 #forgotPassword {
@@ -40,4 +42,8 @@ h1 {
 #navRight {
   display: flex;
   gap: 30px;
+}
+
+#gameSection {
+  background-color: black;
 }

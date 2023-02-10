@@ -13,6 +13,8 @@ let undeadCheck = false;
 let humanSelect = document.querySelector("#humanSelect")
 let humanCheck = false;
 
+let race;
+
 if (dinoSelect.style.display === "block") {
   dinoCheck = true;
   console.log("dino")
@@ -26,6 +28,16 @@ if (undeadSelect.style.display === "block") {
 if (humanSelect.style.display === "block") {
   humanCheck = true;
   console.log("human")
+}
+
+if (dinoCheck) {
+  race = "Dino"
+}
+if (undeadCheck) {
+  race = "Undead"
+}
+if (humanCheck) {
+  race = "Human"
 }
 
 let noArmor = document.querySelector("#noArmor")
@@ -63,8 +75,9 @@ const myCanvas = document.querySelector("canvas");
 const ctx = myCanvas.getContext("2d");
 
 class Player {
-  constructor(x, y, width, height, xSpeed, ySpeed, xFacing, yFacing) {
+  constructor(race, x, y, width, height, xSpeed, ySpeed, xFacing, yFacing) {
     this.type = "player";
+    this.race = race;
     
     // Pass in vars
     this.x = x;
@@ -161,7 +174,7 @@ class Enemy {
   constructor(name, x, y, width, height) {
     this.type = "enemy"
 
-    this.name = name;
+    this.name = name;    
     this.x = x;
     this.y = y;
     this.width = width;
@@ -333,7 +346,7 @@ window.onload = () => {
   myCanvas.style.backgroundColor = "white";
   myCanvas.style.border = "1px solid black";
   myCanvas.style.align = "center";
-  const player = new Player(100, 300, 32, 32, 5, 5, 1, 0);
+  const player = new Player(race ,100, 300, 32, 32, 5, 5, 1, 0);
 
   function startGame() {
     // TOP LEFT TREE GROUP
@@ -429,7 +442,15 @@ window.onload = () => {
 
       // Temp player
       ctx.beginPath();
-      ctx.fillStyle = "black";
+      if (player.race === "Dino") {
+        ctx.fillStyle = "green";            
+      }
+      else if (player.race === "Undead") {        
+        ctx.fillStyle = "black";         
+      }
+      else if (player.race === "Human") {        
+        ctx.fillStyle = "yellow";
+      }
       ctx.fillRect(player.x, player.y, player.width, player.height);
       ctx.closePath();
     }
