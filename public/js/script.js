@@ -45,6 +45,9 @@ if (noWeapon.style.display === "block") {
   console.log("no weapon")
 }
 
+let gifTest = new Image();
+gifTest.src = "../images/slime.gif"
+
 let souls = parseInt(document.querySelector("#souls").innerHTML)
 console.log(souls)
 
@@ -75,38 +78,72 @@ class Player {
     this.shoot = false;
     this.canShoot = true;
     
-    // Projectile
-    this.projX = x + width / 4;
-    this.projY = y + height / 4;
-    this.projSpeed = 10;
+    // Shoot
+    this.shootRight = false;
+    this.shootLeft = false;
+    this.shootUp = false;
+    this.shootDown = false;
+  }
+
+  
+  
+}
+
+const enemyArr = [];
+class Enemy {
+  constructor(name, x, y, width, height) {
+    this.name = name;
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.imgContainer = [];
+    this.img = new Image();
+  }
+
+  initialize() {
+    if (this.name === "slime") {
+      for (let i = 0; i <= 3; i++) {
+        this.imgContainer.push("../images/Meadow/Slime/slime"+i+".png")
+        console.log(this.imgContainer)
+      }
+    }
+  } 
+
+  updateEnemies() {
+    this.img.src = this.imgContainer[0];
+    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
 }
 
 const projectileArr = [];
-
 class Projectile {
-  constructor(x, y, radius, color, velocity, dmg) {
+  constructor(x, y, rad, color, xDir, yDir, speed, damage) {
     this.x = x;
     this.y = y;
-    this.radius = radius,
+    this.rad = rad,
     this.color = color;
-    this.velocity = velocity;
-    this.dmg = dmg;
+    this.xDir = xDir;
+    this.yDir = yDir;
+    this.speed = speed;
+    this.damage = damage;
   }
 
   updateProjectile() {
     // Move projectiles
-    this.x += this.velocity.x * 7;
-    this.y += this.velocity.y * 7;
+    this.x += this.speed * this.xDir;
+    this.y += this.speed * this.yDir;
 
     // Draw
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-    ctx.fillStyle = this.color;
+    ctx.arc(this.x, this.y, this.rad, 0, Math.PI * 2, false);
+    ctx.fillStyle = "red"
     ctx.fill();
     ctx.closePath();
   }
 }
+
+
 
 
 window.onload = () => {
@@ -116,6 +153,12 @@ window.onload = () => {
   const player = new Player(100, 100, 32, 32, 5, 5, 1, 0);
 
   function startGame() {
+    const slime = new Enemy("slime", 900, 400, 75, 70);
+    slime.initialize();
+    enemyArr.push(slime);
+    const slime2 = new Enemy("slime", 200, 200, 75, 70);
+    slime2.initialize();
+    enemyArr.push(slime2);
     gameplayLoop();
   }
 
@@ -124,12 +167,17 @@ window.onload = () => {
     ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
 
     //Background Test
-    ctx.drawImage(backgroundTest, 0, 0 , 1400, 800);
+    ctx.drawImage(backgroundTest, 0, 0 , 1200, 700);    
 
     // Player
     updatePlayer();
     // Projectiles
     updateProjectiles();
+    //Enemies
+    updateEnemies()
+    
+
+    
     // Gameplay loop
     animateId = requestAnimationFrame(gameplayLoop);
   }
@@ -148,7 +196,31 @@ window.onload = () => {
     if (player.moveDown && player.y < myCanvas.height - player.height) {
       player.y += player.ySpeed;
     }    
-        
+    
+    if (player.canShoot) {
+      if (player.shootLeft && player.shootUp) { // TOP LEFT
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", -1, -1, 8, 10);
+      } else if (player.shootUp && player.shootRight) { // TOP RIGHT
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 1, -1, 8, 10);
+      } else if (player.shootRight && player.shootDown) { // BOTTOM RIGHT
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 1, 1, 8, 10);
+      } else if (player.shootDown && player.shootLeft) { // BOTTOM LEFT
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", -1, 1, 8, 10);
+      } else if (player.shootRight) { // RIGHT
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 1, 0, 8, 10);
+      } else if (player.shootLeft) { // LEFT
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", -1, 0, 8, 10);
+      } else if (player.shootDown) { // DOWN
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 0, 1, 8, 10);
+      } else if (player.shootUp) { // UP
+        spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 0, -1, 8, 10);
+      }
+      player.canShoot = false;
+      setTimeout(() => {
+        player.canShoot = true;
+      }, 500)
+    }
+  
     // Temp player
     ctx.beginPath();
     ctx.fillStyle = "black";
@@ -156,12 +228,18 @@ window.onload = () => {
     ctx.closePath();
   }
 
-  function spawnProjectile() {
-    const projectile = new Projectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 10);
-    projectileArr.push(projectile);
-    player.canShoot = true;
+  //Update Enemies
+  function updateEnemies() {
+    for (let i = 0; i < enemyArr.length; i++) {
+      enemyArr[i].updateEnemies();
+    }
   }
-console.log(player.canShoot)
+
+  function spawnProjectile(x, y, rad, color, xDir, yDir, speed, damage) {
+    const projectile = new Projectile(x, y, rad, color, xDir, yDir, speed, damage);
+    projectileArr.push(projectile);
+  }
+
   function updateProjectiles() {
     for (let i = 0; i < projectileArr.length; i++) {
       projectileArr[i].updateProjectile();
@@ -173,24 +251,32 @@ console.log(player.canShoot)
     switch (e.key) {
       case "d": // Right
       case "D":
-      case "ArrowRight":
           player.moveRight = true;
       break;
       case "a": // Left
       case "A":
-      case "ArrowLeft":
           player.moveLeft = true;
       break;
       case "w": // Up
       case "W":
-      case "ArrowUp":
           player.moveUp = true;
       break;
       case "s": // Down
       case "S":
-      case "ArrowDown":
           player.moveDown = true;
-      break;      
+      break;
+      case "ArrowRight": // Shoot
+        player.shootRight = true;
+      break;
+      case "ArrowLeft": // Shoot
+        player.shootLeft = true;
+      break;
+      case "ArrowUp": // Shoot
+        player.shootUp = true;
+      break;
+      case "ArrowDown": // Shoot
+        player.shootDown = true;
+      break;
     }
   });
 
@@ -198,49 +284,34 @@ console.log(player.canShoot)
     switch (e.key) {
       case "d": // Right
       case "D":
-      case "ArrowRight":
-          player.moveRight = false;
+        player.moveRight = false;
       break;
       case "a": // Left
       case "A":
-      case "ArrowLeft":
-          player.moveLeft = false;
+        player.moveLeft = false;
       break;
       case "w": // Up
       case "W":
-      case "ArrowUp":
-          player.moveUp = false;
+        player.moveUp = false;
       break;
       case "s": // Down
       case "S":
-      case "ArrowDown":
-          player.moveDown = false;
-      break;      
+        player.moveDown = false;
+      break;
+      case "ArrowRight": // Shoot
+        player.shootRight = false;
+      break;
+      case "ArrowLeft": // Shoot
+        player.shootLeft = false;
+      break;
+      case "ArrowUp": // Shoot
+        player.shootUp = false;
+      break;
+      case "ArrowDown": // Shoot
+        player.shootDown = false;
+      break;
     }
-  });
-  document.addEventListener("click", (e) => {
-    if (player.canShoot) {
-      player.canShoot = false;
-      setTimeout(() => {
-        player.canShoot = true;
-      }, 1000)
-      const angle = Math.atan2(
-        e.clientY - player.y,
-        e.clientX - player.x
-      );
-  
-      console.log(window.screenX, window.screenY)
-  
-      const velocity = {
-        x: Math.cos(angle),
-        y: Math.sin(angle)
-      };
-  
-      const projectile = new Projectile(player.x + player.width / 2, player.y + player.height / 2, 5, "red", velocity, 10);
-      projectileArr.push(projectile);      
-    }
-  });
-
+  });  
   startGame()
 }
 
