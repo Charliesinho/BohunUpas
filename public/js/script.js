@@ -65,6 +65,7 @@ const ctx = myCanvas.getContext("2d");
 class Player {
   constructor(x, y, width, height, xSpeed, ySpeed, xFacing, yFacing) {
     this.type = "player";
+    
     // Pass in vars
     this.x = x;
     this.y = y;
@@ -126,6 +127,11 @@ class Player {
 
   getType() {
     return this.type;
+  }
+
+  getUnstuck() {
+    this.x = 100;
+    this.y = 300
   }
 
   hit(damage) {
@@ -269,7 +275,6 @@ class Projectile {
           // Enemy Collision
           if (arr[i].getType() === "enemy") {
             const projectile = projectileArr.indexOf(this);
-            console.log(arr[i].takenDamage)
             if (!arr[i].takenDamage) arr[i].hit(projectileArr[projectile].damage);
             projectileArr[projectile].destroy();
             break;
@@ -295,13 +300,12 @@ class Projectile {
 
 const collisionObjectArr = [];
 class CollisionObject {
-  constructor(x, y, width, height, debug) {
-    this.type = "environment";
-
+  constructor(x, y, width, height, type, debug) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
+    this.type = type;
     this.debug = debug;
 
     // Collision
@@ -332,12 +336,21 @@ window.onload = () => {
   const player = new Player(100, 300, 32, 32, 5, 5, 1, 0);
 
   function startGame() {
-    collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 64, myCanvas.height / 2 - 48, 110, 75, false));
-    collisionObjectArr.push(new CollisionObject(0, 0, 225, 50, false));
-    collisionObjectArr.push(new CollisionObject(0, 50, 175, 25, false));
-    collisionObjectArr.push(new CollisionObject(0, 75, 125, 25, false));
-    collisionObjectArr.push(new CollisionObject(0, 100, 90, 40, false));
-    collisionObjectArr.push(new CollisionObject(canvas.width/2 - 70, 0, 55, 55, false));
+    // TOP LEFT TREE GROUP
+    collisionObjectArr.push(new CollisionObject(0, 0, 225, 50, "environment", false));
+    collisionObjectArr.push(new CollisionObject(0, 50, 175, 25, "environment", false));
+    collisionObjectArr.push(new CollisionObject(0, 75, 125, 25, "environment", false));
+    collisionObjectArr.push(new CollisionObject(0, 100, 90, 40, "environment", false));
+    collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 64, myCanvas.height / 2 - 48, 110, 75, "environment", false));
+    collisionObjectArr.push(new CollisionObject(canvas.width/2 - 70, 0, 55, 55, "environment", false));
+
+    // TOP RIGHT TREE GROUP
+    collisionObjectArr.push(new CollisionObject(myCanvas.width - 300, 0, 300, 50, "environment", true));
+    collisionObjectArr.push(new CollisionObject(myCanvas.width - 250, 50, 300, 50, "environment", true));
+
+    // ROOM TRANSITIONING TOP
+    collisionObjectArr.push(new CollisionObject(canvas.width/4 - 70, 0, 305, 30, "roomtransit", false));
+    collisionObjectArr.push(new CollisionObject(canvas.width/2 - 15, 0, 320, 30, "roomtransit", false));
 
     const slime = new Enemy("slime", 900, 400, 75, 70);
     slime.initialize();
@@ -464,8 +477,6 @@ window.onload = () => {
       obj.currentFrame++;
     }
     obj.img.src = obj.imgContainer[obj.currentFrame];
-
-    console.log(obj.img)
     // Draw sprite
     ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
   }
@@ -475,19 +486,19 @@ window.onload = () => {
     switch (e.key) {
       case "d": // Right
       case "D":
-          player.moveRight = true;
+        player.moveRight = true;
       break;
       case "a": // Left
       case "A":
-          player.moveLeft = true;
+        player.moveLeft = true;
       break;
       case "w": // Up
       case "W":
-          player.moveUp = true;
+        player.moveUp = true;
       break;
       case "s": // Down
       case "S":
-          player.moveDown = true;
+        player.moveDown = true;
       break;
       case "ArrowRight": // Shoot
         player.shootRight = true;
@@ -500,6 +511,10 @@ window.onload = () => {
       break;
       case "ArrowDown": // Shoot
         player.shootDown = true;
+      break;
+      case "p": // Shoot
+      case "P": // Shoot
+        player.getUnstuck();
       break;
     }
   });
