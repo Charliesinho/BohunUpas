@@ -1,4 +1,6 @@
 <%- include("../../partials/nav-bar.ejs") %>
+
+<section id="gameSection">
 <h1>Game</h1>
 <div id="game-board" style="display: flex; align-items: center; justify-content: center;">
     <canvas id="canvas" width="1200" height="700"></canvas>
@@ -43,4 +45,4 @@
     <% if (session) { %>
     <div id="souls" style="display: block;"><%=sessionRace2.character[0].souls%></div>    
     <% } else %></p>
-        
+</section>

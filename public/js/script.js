@@ -13,6 +13,18 @@ let undeadCheck = false;
 let humanSelect = document.querySelector("#humanSelect")
 let humanCheck = false;
 
+let race;
+
+if (dinoCheck) {
+race = "Dino"
+}
+if (dinoCheck) {
+  race = "Dino"
+}
+if (dinoCheck) {
+  race = "Dino"
+}
+
 
 if (dinoSelect.style.display === "block") {
   dinoCheck = true;
