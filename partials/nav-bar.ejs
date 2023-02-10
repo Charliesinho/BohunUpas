@@ -6,11 +6,17 @@
 
     <div>
       <ul id="navList">
-        <li><p><a id="btn-logout" style="text-decoration: none" href="/"> Main Page </a></p></li>
-        <% if (session) { %>
-          <li><p><a id="btn-logout" style="text-decoration: none" href="/user/profile"> Profile </a></p></li>
-          <li><p><a id="btn-logout" style="text-decoration: none" href="/user/characterProfile"> Character </a></p></li>
-          <li><p><a id="btn-logout" style="text-decoration: none" href="/user/createcharacter"> Create </a></p></li>
+        <li><p><a style="text-decoration: none" href="/"> Main Page </a></p></li>
+        <% if (session) { %>          
+          <% console.log("session Race:", sessionRace.length) %>
+          <% if (sessionRace.length === 1) { %>
+            <li><p><a style="text-decoration: none" href="/user/createcharacter"> Character </a></p></li>            
+            <li><p><a style="text-decoration: none" href="/user/profile"> Profile </a></p></li>
+            <% } %>
+            
+            <% if (sessionRace.length === 0) { %>              
+           <li><p><a style="text-decoration: none" href="/user/characterProfile"> Character </a></p></li>            
+          <% } %>
           <li>Collections</li>
           <li>Marketplace</li>
           <li>Trading</li>

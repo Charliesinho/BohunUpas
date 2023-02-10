@@ -1,6 +1,8 @@
 const express = require('express');
 const { sessionCheck } = require('../middleware/route-guard');
 const router = express.Router();
+const User = require('../models/User.model');
+
 let loginCheck = false;
 
 function checkLogin(session) {
@@ -11,9 +13,15 @@ function checkLogin(session) {
   }
 }
 /* GET home page */
-router.get("/", (req, res, next) => {
+router.get("/", async (req, res, next) => {
   checkLogin(req.session.user);
-  res.render("index", {session: loginCheck});
+  if (loginCheck) {
+  const sessionName= req.session.user.username;
+  const sessionRace = await User.find({username: sessionName})
+  res.render("index", {session: loginCheck, sessionRace: sessionRace[0].character});
+} else {
+  res.render("index", {session: loginCheck, sessionRace: ""});
+}
  
 });
 

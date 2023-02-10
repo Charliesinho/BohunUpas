@@ -22,8 +22,7 @@ const userSchema = new Schema(
     },
     character: {
       type: [Schema.Types.ObjectId], 
-      ref: "Character",
-      unique: true,      
+      ref: "Character",       
     }
   },
   {

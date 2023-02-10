@@ -16,39 +16,51 @@ function checkLogin(session) {
 }
 
 /* GET home page */
-router.get("/profile", isLoggedIn, (req, res, next) => {
+router.get("/profile", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
-  const user = req.session.user;
-  res.render("user/profile", {user: user, session: loginCheck});
+  const profile = await User.findOne({username: req.session.user.username}).populate('character');
+
+  const sessionName= req.session.user.username;
+  const sessionRace = await User.find({username: sessionName})
+
+  res.render("user/profile", {session: loginCheck, profile: profile, sessionRace: sessionRace[0].character, session: loginCheck});
 });
 
-router.get("/profile-update", isLoggedIn, (req, res, next) => {
+router.get("/profile-update", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
+
+  const sessionName= req.session.user.username;
+  const sessionRace = await User.find({username: sessionName})
+
   const user = req.session.user;
-  res.render("user/profile-update", {user: user, errorMessage: "", session: loginCheck});
+  res.render("user/profile-update", {user: user, errorMessage: "", sessionRace: sessionRace[0].character, session: loginCheck});
 });
 
 router.post("/profile-update", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
+
+  const sessionName= req.session.user.username;
+  const sessionRace = await User.find({username: sessionName})
+
   const user = req.session.user;
   const updatedUser = {...req.body};
 
   // Check that PW matches repeat PW
   if (updatedUser.password !== updatedUser.Rpassword) {
-    res.render("user/profile-update", {user: user, errorMessage: "The passwords need to match.", session: loginCheck});
+    res.render("user/profile-update", {user: user, errorMessage: "The passwords need to match.", sessionRace: sessionRace[0].character, session: loginCheck});
     return;
   }
 
   const usernameInDb = await User.find({username: updatedUser.username});
   // If username was updated, check that it's not yet taken
   if (updatedUser.username !== user.username && usernameInDb.length) {
-      res.render("user/profile-update", {user: user, errorMessage: "This username is already taken, please choose another one.", session: loginCheck});
+      res.render("user/profile-update", {user: user, errorMessage: "This username is already taken, please choose another one.", sessionRace: sessionRace[0].character, session: loginCheck});
       return;
   }
   // If email was updated, check that it's not yet taken
   const userEmailInDb = await User.find({email: updatedUser.username});
   if (updatedUser.email !== user.email && userEmailInDb.length) {
-      res.render("user/profile-update", {user: user, errorMessage: "This email is already registered.", session: loginCheck});
+      res.render("user/profile-update", {user: user, errorMessage: "This email is already registered.", sessionRace: sessionRace[0].character, session: loginCheck});
       return;
   }
 
@@ -80,30 +92,49 @@ router.post("/profile-update", isLoggedIn, async (req, res, next) => {
       req.session.user = {
         username: updatedUser.username,
         email: updatedUser.email,
-      };
-
-      res.render("user/profile", {user: updatedUser, errorMessage: "", session: loginCheck});
+      };     
+      console.log("im working")
+      res.redirect("/user/profile");
     } catch (error) {
-      res.render("user/profile-update", {user: user, errorMessage: "An error occurred, please try again later.", session: loginCheck});
+      console.log("error1")
+      res.render("user/profile-update", {user: user, errorMessage: "An error occurred, please try again later.", sessionRace: sessionRace[0], session: loginCheck});
       return;
     }
   } else {
-    res.render("user/profile-update", {user: user, errorMessage: "Your current password is incorrect, please try again.", session: loginCheck});
+    console.log("error2")
+    res.render("user/profile-update", {user: user, errorMessage: "Your current password is incorrect, please try again.", sessionRace: sessionRace[0], session: loginCheck});
     return;
   }
 });
 
-router.get("/game", isLoggedIn, (req, res, next) => {
+router.get("/game", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
-  res.render("user/game", {session: loginCheck});
+
+  const sessionName= req.session.user.username;
+  const sessionRace = await User.find({username: sessionName})
+
+  res.render("user/game", {sessionRace: sessionRace[0].character, session: loginCheck});
 });
 
-router.get("/createcharacter", isLoggedIn, (req, res, next) => {
+router.get("/createcharacter", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
-  res.render("user/createcharacter", {errorMessage: "", session: loginCheck});
+  const profile = await User.findOne({username: req.session.user.username})
+
+  const sessionName= req.session.user.username;
+  const sessionRace = await User.find({username: sessionName})
+
+  if (profile.character.length) {
+    res.redirect("/user/characterProfile")
+  } else {
+    res.render("user/createcharacter", {errorMessage: "", sessionRace: sessionRace[0].character, session: loginCheck});
+  }
 });
 
 router.post("/createcharacter", isLoggedIn, async (req, res) => {  
+
+  const sessionName= req.session.user.username;
+  const sessionRace = await User.find({username: sessionName})
+
   try {
     const character = await Character.create(req.body)
     const user = await User.findOneAndUpdate({username: req.session.user.username}, {character: character._id}).populate('character')
@@ -111,15 +142,22 @@ router.post("/createcharacter", isLoggedIn, async (req, res) => {
     res.redirect("/user/characterProfile")
   } catch (error) {
     console.log("Error creating the Character, please try again: ", error);
-    res.render("user/createcharacter", {errorMessage: "Error creating the Character, please try again", session: loginCheck})
+    res.render("user/createcharacter", {errorMessage: "Error creating the Character, please try again", sessionRace: sessionRace[0].character, session: loginCheck})
   }
 });
 
 router.get("/characterProfile", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
   const profile = await User.findOne({username: req.session.user.username}).populate('character');
-  console.log(profile)
-  res.render("user/characterProfile", {errorMessage: "", profile: profile, session: loginCheck});
+
+  const sessionName= req.session.user.username;
+  const sessionRace = await User.find({username: sessionName})
+
+  if (!profile.character.length) {
+    res.redirect("/user/createcharacter")
+  } else {
+    res.render("user/characterProfile", {errorMessage: "", profile: profile, sessionRace: sessionRace[0].character, session: loginCheck});
+  }
 });
 
 module.exports = router;
