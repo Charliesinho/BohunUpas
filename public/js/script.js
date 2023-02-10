@@ -198,11 +198,6 @@ class Enemy {
     this.bottom = this.y + this.height;
   }
 
-  updateEnemies() {
-    this.img.src = this.imgContainer[0];
-    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-  }
-
   hit(damage) {
     this.takenDamage = true;
     this.hp -= damage;
@@ -430,6 +425,8 @@ window.onload = () => {
   //Update Enemies
   function updateEnemies() {
     for (let i = 0; i < enemyArr.length; i++) {
+      enemyArr[i].x += .1;
+      enemyArr[i].updateCollision();
       animate(enemyArr[i], enemyArr[i].spriteSpeed);
     }
   }
