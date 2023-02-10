@@ -240,7 +240,6 @@ console.log(player.canShoot)
       projectileArr.push(projectile);      
     }
   });
-  
 
   startGame()
 }
