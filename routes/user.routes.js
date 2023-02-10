@@ -33,43 +33,62 @@ router.post("/profile-update", isLoggedIn, async (req, res, next) => {
   const user = req.session.user;
   const updatedUser = {...req.body};
 
+  // Check that PW matches repeat PW
   if (updatedUser.password !== updatedUser.Rpassword) {
-    res.render("user/profile-update", {errorMessage: "The passwords need to match.", session: loginCheck});
+    res.render("user/profile-update", {user: user, errorMessage: "The passwords need to match.", session: loginCheck});
     return;
   }
 
-  const getUser = await User.findOne({username: user.username})
-  const getUserHash = getUser.passwordHash;
+  const usernameInDb = await User.find({username: updatedUser.username});
+  // If username was updated, check that it's not yet taken
+  if (updatedUser.username !== user.username && usernameInDb.length) {
+      res.render("user/profile-update", {user: user, errorMessage: "This username is already taken, please choose another one.", session: loginCheck});
+      return;
+  }
+  // If email was updated, check that it's not yet taken
+  const userEmailInDb = await User.find({email: updatedUser.username});
+  if (updatedUser.email !== user.email && userEmailInDb.length) {
+      res.render("user/profile-update", {user: user, errorMessage: "This email is already registered.", session: loginCheck});
+      return;
+  }
 
-  if (bcrypt.compare(updatedUser.Cpassword, getUserHash)) {
+  // Check that current PW matches DB
+  // Find User and Userhash to Update
+  const getUser = await User.findOne({username: user.username});
+  const getUserHash = getUser.passwordHash;
+  if (await bcrypt.compare(updatedUser.Cpassword, getUserHash)) {
     // Update Password
     const salt = bcrypt.genSaltSync(13);
     const passwordHash = bcrypt.hashSync(updatedUser.password, salt);
-    console.log("CPASSWORD: ", updatedUser.Cpassword, "HASH: ", passwordHash);
+    
+    updatedUser.passwordHash = passwordHash;
     
     delete user.password;
     delete req.body.password;
-    updatedUser.passwordHash = passwordHash;
-
     delete updatedUser.Cpassword;
     delete updatedUser.password;
     delete updatedUser.Rpassword;
-    
-    console.log("getUser: ", getUser, "updatedUser: ", updatedUser)
+
     try {
-      //await User.updateOne({getUser}, {...updatedUser});
+      // Update
       await User.findOneAndUpdate({username: req.session.user.username}, {
         username: updatedUser.username,
         email: updatedUser.email,
         passwordHash: updatedUser.passwordHash,
       });
+
+      req.session.user = {
+        username: updatedUser.username,
+        email: updatedUser.email,
+      };
+
       res.render("user/profile", {user: updatedUser, errorMessage: "", session: loginCheck});
     } catch (error) {
-      res.render("user/profile-update", {errorMessage: "Your current password is incorrect, please try again.", session: loginCheck});
+      res.render("user/profile-update", {user: user, errorMessage: "An error occurred, please try again later.", session: loginCheck});
       return;
     }
   } else {
-    res.render("user/profile-update", {errorMessage: "Your current password is incorrect, please try again.", session: loginCheck});
+    res.render("user/profile-update", {user: user, errorMessage: "Your current password is incorrect, please try again.", session: loginCheck});
     return;
   }
 });
