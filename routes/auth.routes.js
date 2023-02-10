@@ -17,19 +17,17 @@ function checkLogin(session) {
 /* GET home page */
 router.get("/accountcheck", isLoggedOut, async (req, res, next) => {
     checkLogin(req.session.user);
-    res.render("auth/signup-login", {errorMessage: "", session: loginCheck});
+    res.render("auth/signup-login", {errorMessage: "", sessionRace: "", session: loginCheck});
   });
 
   router.post("/accountcheck", isLoggedOut, async (req, res) => {
     checkLogin(req.session.user);
     const user = req.body.username;
     const userCheck = await User.find({username: user})
-    console.log("usercheck", userCheck)
-    console.log("user", user)
     if (userCheck.length === 0) {
-        res.render("auth/signup", {errorMessage: "", email: "", username: req.body.username, session: loginCheck});
+        res.render("auth/signup", {errorMessage: "", email: "", username: req.body.username, sessionRace: "", session: loginCheck});
     } else {
-        res.render("auth/login", {errorMessage: "", email: "", username: req.body.username, session: loginCheck});
+        res.render("auth/login", {errorMessage: "", email: "", username: req.body.username, sessionRace: "",  session: loginCheck});
     }
   })
 
@@ -38,8 +36,7 @@ router.post("/signup", isLoggedOut, async (req, res) => {
     const body = {...req.body};
 
     if (body.password !== body.Rpassword) {
-        res.render("auth/signup", {username: req.body.username, email: body.email, errorMessage: "The passwords don't match", session: loginCheck});  
-        console.log("im here")
+        res.render("auth/signup", {username: req.body.username, email: body.email, errorMessage: "The passwords don't match", sessionRace: "", session: loginCheck});  
         return;
     }
 
@@ -58,7 +55,7 @@ router.post("/signup", isLoggedOut, async (req, res) => {
         email: body.email,
       };
       
-      res.redirect("/user/profile");
+      res.redirect("/user/createCharacter");
     }
     catch (error) {
      console.log(error);
@@ -69,7 +66,7 @@ router.post("/login", isLoggedOut, async (req, res, next) => {
   checkLogin(req.session.user);
   const user = req.body
   if (!user.username || !user.password) {
-    res.render("auth/login", {username: user.username, errorMessage: "Please provide a Username and a Password.", session: loginCheck});
+    res.render("auth/login", {username: user.username, errorMessage: "Please provide a Username and a Password.", sessionRace: "", session: loginCheck});
     return;
   }
 
@@ -77,7 +74,7 @@ router.post("/login", isLoggedOut, async (req, res, next) => {
     const username = user.username;
     const loginUser = await User.findOne({username});
     if (!loginUser) {
-      res.render("auth/login", {username: user.username, errorMessage: "This username does not exist.", session: loginCheck});
+      res.render("auth/login", {username: user.username, errorMessage: "This username does not exist.", sessionRace: "", session: loginCheck});
       return;
     } else if (bcrypt.compareSync(user.password, loginUser.passwordHash)) {
       delete user.password;
@@ -89,7 +86,7 @@ router.post("/login", isLoggedOut, async (req, res, next) => {
       
       res.redirect("/user/profile");
     } else {
-      res.render("auth/login", {username: user.username, errorMessage: "The password is incorrect.", session: loginCheck});
+      res.render("auth/login", {username: user.username, errorMessage: "The password is incorrect.", sessionRace: "", session: loginCheck});
     }
   } catch (error) {
     console.log("Error logging in: ", error);
@@ -108,3 +105,5 @@ router.get("/logout", isLoggedIn, (req, res, next) => {
 });
 
 module.exports = router;
+
+//Hello

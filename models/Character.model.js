@@ -6,7 +6,7 @@ const characterSchema = new Schema(
     race: {
       type: String,      
       required: true, 
-      enum: ["Dino", "Undead", "Human"],
+      enum: ["none", "Dino", "Undead", "Human"],
       default: "none"     
     },
     weapon: {

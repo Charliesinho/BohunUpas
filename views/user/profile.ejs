@@ -1,5 +1,16 @@
 <%- include("../../partials/nav-bar.ejs") %>
 <h1>Profile</h1>
+<% if (sessionRace.length) { %>
+    <%=profile.username%>
+    <%=profile.character[0].race%>
+    <%=profile.character[0].weapon%>
+    <%=profile.character[0].armor%>
+    <%=profile.character[0].artifact%>
+    <%=profile.character[0].souls%>
+    <% } %>
+
+
 <div id="game-board" style="display: flex; align-items: center; justify-content: center;">
     <canvas id="canvas" width="1488" height="768"></canvas>
 </div>  
+

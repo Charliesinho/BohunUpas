@@ -15,29 +15,49 @@ function checkLogin(session) {
 }
 
 /* GET home page */
-router.get("/profile", isLoggedIn, (req, res, next) => {
+router.get("/profile", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
-  res.render("user/profile", {session: loginCheck});
+  const profile = await User.findOne({username: req.session.user.username}).populate('character');
+
+  const sessionName= req.session.user.username;
+  const sessionRace = await User.find({username: sessionName})
+
+  res.render("user/profile", {session: loginCheck, profile: profile, sessionRace: sessionRace[0].character, session: loginCheck});
 });
 
-router.get("/createcharacter", isLoggedIn, (req, res, next) => {
+router.get("/createcharacter", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
-  res.render("user/createcharacter", {errorMessage: "", session: loginCheck});
+  const profile = await User.findOne({username: req.session.user.username})
+
+  const sessionName= req.session.user.username;
+  const sessionRace = await User.find({username: sessionName})
+
+  if (profile.character.length) {
+    res.redirect("/user/characterProfile")
+  } else {
+    res.render("user/createcharacter", {errorMessage: "", sessionRace: sessionRace[0].character, session: loginCheck});
+  }
 });
 
 router.post("/createcharacter", isLoggedIn, async (req, res) => {  
  const character = await Character.create(req.body)
 //  const user = await User.findOne({username: req.session.user.username})
  const user = await User.findOneAndUpdate({username: req.session.user.username}, {character: character._id}).populate('character')
- console.log(user)
  res.redirect("/user/characterProfile")
 });
 
 router.get("/characterProfile", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
   const profile = await User.findOne({username: req.session.user.username}).populate('character');
-  console.log(profile)
-  res.render("user/characterProfile", {errorMessage: "", profile: profile, session: loginCheck});
+
+  const sessionName= req.session.user.username;
+  const sessionRace = await User.find({username: sessionName})
+
+  if (!profile.character.length) {
+    res.redirect("/user/createcharacter")
+  } else {
+    res.render("user/characterProfile", {errorMessage: "", profile: profile, sessionRace: sessionRace[0].character, session: loginCheck});
+  }
 });
 
 module.exports = router;
