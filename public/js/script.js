@@ -340,7 +340,9 @@ class Projectile {
             projectileArr[projectile].destroy();
             break;
           } 
-          this.destroy();
+          if (arr[i].getType() === "environment") {
+            this.destroy();
+          }
         }
     }
     // Leaving canvas
@@ -493,21 +495,21 @@ window.onload = () => {
       // Shooting
       if (player.canShoot) {
         if (player.shootLeft && player.shootUp) { // TOP LEFT
-          spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", -1, -1, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, -1, 8, 5);
         } else if (player.shootUp && player.shootRight) { // TOP RIGHT
-          spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 1, -1, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, -1, 8, 5);
         } else if (player.shootRight && player.shootDown) { // BOTTOM RIGHT
-          spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 1, 1, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 1, 8, 5);
         } else if (player.shootDown && player.shootLeft) { // BOTTOM LEFT
-          spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", -1, 1, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 1, 8, 5);
         } else if (player.shootRight) { // RIGHT
-          spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 1, 0, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 0, 8, 5);
         } else if (player.shootLeft) { // LEFT
-          spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", -1, 0, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 0, 8, 5);
         } else if (player.shootDown) { // DOWN
-          spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 0, 1, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, 1, 8, 5);
         } else if (player.shootUp) { // UP
-          spawnProjectile(player.x + 16 / 2, player.y + 16 / 2, 16, "red", 0, -1, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, -1, 8, 5);
         }
         player.canShoot = false;
         setTimeout(() => {
