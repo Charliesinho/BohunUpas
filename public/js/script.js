@@ -62,12 +62,9 @@ let souls = parseInt(document.querySelector("#souls").innerHTML)
 
 
 // Backgrounds
-const backgroundArr = [];
 const backgroundArrMeadow = [];
 const backgroundArrCave = [];
 let background = new Image();
-let backgroundX = 0;
-let backgroundY = 0;
 
 let levelMeadowInit = false;
 let levelCaveInit = false;
@@ -77,7 +74,6 @@ let screen1init = false;
 let screen2init = false;
 let screen3init = false;
 let screen4init = false;
-
 
 let levelScreen = 0;
 
@@ -194,7 +190,6 @@ class Player {
           } else if (arr[i].getType() === "roomtransit" && !roomTransit) {
             roomTransit = true;
             levelScreen = arr[i].nextScreen;
-            console.log("LevelScreen from player: ", levelScreen)
             transitDir = arr[i].transitDir;
           }
         }
@@ -235,8 +230,6 @@ class Player {
   destroy() {
     this.alive = false;
   }
-
-
 }
 
 
@@ -528,10 +521,12 @@ window.onload = () => {
       case 3:
         if (!levelMeadowInit) loadMedow();
         if (!screen3init) loadScreen3();
+        background.src = backgroundArrMeadow[3].source;
         break;
       case 4:
         if (!levelMeadowInit) loadMedow();
         if (!screen4init) loadScreen4();
+        background.src = backgroundArrMeadow[4].source;
         break;
       // Cave Screens
     }
@@ -566,84 +561,49 @@ window.onload = () => {
   function roomTransitioning() {
     // Reset for new drawing
     ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+    // Moving DOWN a screen
     if (transitDir === "down" && backgroundArrMeadow[levelScreen].y < 0) {
-      transitMoveElementsDown();
+      transitMoveElements();
+    // Moving UP a screen
     } else if (transitDir === "up" && backgroundArrMeadow[levelScreen].y > 0) {
-      transitMoveElementsUp();
+      transitMoveElements();
+    // Resume Game
     } else {
-      console.log("LevelScreen: ", levelScreen, "Position: ", backgroundArrMeadow[levelScreen].y);
       roomTransit = false;
       checkLevelScreen(levelScreen);
       gameplayLoop(); 
     }
+    // Loop
     requestAnimationFrame(gameplayLoop);
   }
 
-  function transitMoveElementsDown() {
+  function transitMoveElements() {
     // Shift and draw backgrounds
     for (let i = 0; i < backgroundArrMeadow.length; i++) {
-      backgroundArrMeadow[i].y += transitSpeed;
+      if (transitDir === "up") backgroundArrMeadow[i].y -= transitSpeed;
+      if (transitDir === "down") backgroundArrMeadow[i].y += transitSpeed;
       ctx.drawImage(backgroundArrMeadow[i].img, backgroundArrMeadow[i].x, backgroundArrMeadow[i].y, backgroundArrMeadow[i].width, backgroundArrMeadow[i].height);
     }
     // Shift enemies
     for (let i = 0; i < enemyArr.length; i++) {
-      enemyArr[i].y += transitSpeed;
-
+      if (transitDir === "up") enemyArr[i].y -= transitSpeed;
+      if (transitDir === "down") enemyArr[i].y += transitSpeed;
+      enemyArr[i].img.src = enemyArr[i].imgContainer[0];
+      ctx.drawImage(enemyArr[i].img, enemyArr[i].x, enemyArr[i].y, enemyArr[i].width, enemyArr[i].height)
     }
     // Shift collisions
     for (let i = 0; i < collisionObjectArr.length; i++) {
-      collisionObjectArr[i].y += transitSpeed;
-      
+      if (transitDir === "up") collisionObjectArr[i].y -= transitSpeed;
+      if (transitDir === "down") collisionObjectArr[i].y += transitSpeed;
     }
-    // REPLACE WITH PROPER CODE 
-    // Temp player
-    player.y += transitSpeed - 1;
-    ctx.beginPath();
-    if (player.race === "Dino") {
-      ctx.fillStyle = "green";
+    // Destroy Projectiles
+    for (let i = 0; i < projectileArr.length; i++) {
+      projectileArr[i].destroy();
     }
-    else if (player.race === "Undead") {        
-      ctx.fillStyle = "black";
-    }
-    else if (player.race === "Human") {        
-      ctx.fillStyle = "yellow";
-    }
-    ///////////////////////////////
-    ctx.fillRect(player.x, player.y, player.width, player.height);
-    ctx.closePath();
-  }
-  function transitMoveElementsUp() {
-    // Shift and draw backgrounds
-    for (let i = 0; i < backgroundArrMeadow.length; i++) {
-      backgroundArrMeadow[i].y -= transitSpeed;
-      ctx.drawImage(backgroundArrMeadow[i].img, backgroundArrMeadow[i].x, backgroundArrMeadow[i].y, backgroundArrMeadow[i].width, backgroundArrMeadow[i].height);
-    }
-    // Shift enemies
-    for (let i = 0; i < enemyArr.length; i++) {
-      enemyArr[i].y -= transitSpeed;
-
-    }
-    // Shift collisions
-    for (let i = 0; i < collisionObjectArr.length; i++) {
-      collisionObjectArr[i].y -= transitSpeed;
-      
-    }
-    // REPLACE WITH PROPER CODE 
-    // Temp player
-    player.y -= transitSpeed - 1;
-    ctx.beginPath();
-    if (player.race === "Dino") {
-      ctx.fillStyle = "green";
-    }
-    else if (player.race === "Undead") {        
-      ctx.fillStyle = "black";
-    }
-    else if (player.race === "Human") {        
-      ctx.fillStyle = "yellow";
-    }
-    ///////////////////////////////
-    ctx.fillRect(player.x, player.y, player.width, player.height);
-    ctx.closePath();
+    // Player
+    if (transitDir === "up") player.y -= transitSpeed - 1;
+    if (transitDir === "down") player.y += transitSpeed - 1;
+    animate(player, player.imgContainerRight, 6, 8);
   }
 
 
@@ -726,14 +686,10 @@ window.onload = () => {
   //Update Enemies
   function updateEnemies() {
     for (let i = 0; i < enemyArr.length; i++) {
-      if (enemyArr[i].screen === levelScreen) {
-
-        if (animateId % enemyArr[i].randomMoveTimer === 0) {
-          enemyArr[i].moveTo = enemyArr[i].getRandomCoordinates();
-        }
-        enemyArr[i].moveTowardsTarget(enemyArr[i].moveTo);
-        
+      if (animateId % enemyArr[i].randomMoveTimer === 0) {
+        enemyArr[i].moveTo = enemyArr[i].getRandomCoordinates();
       }
+        
       enemyArr[i].moveTowardsTarget(enemyArr[i].moveTo);
       enemyArr[i].updateCollision();
       animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
@@ -944,13 +900,35 @@ window.onload = () => {
   }
   
   function loadScreen2() {
-    // TREES TOP GROUP
-    collisionObjectArr.push(new CollisionObject(0, 0, 40, myCanvas.height, "environment", -1, "", true));
-    collisionObjectArr.push(new CollisionObject(40, 0, 185, 45, "environment", -1, "", true));
-    collisionObjectArr.push(new CollisionObject(40, 45, 150, 30, "environment", -1, "", true));
-    collisionObjectArr.push(new CollisionObject(40, 75, 90, 30, "environment", -1, "", true));
-    collisionObjectArr.push(new CollisionObject(40, 105, 50, 30, "environment", -1, "", true));
-    collisionObjectArr.push(new CollisionObject(40, 190, 25, 30, "environment", -1, "", true));
+    // TREES LEFT GROUP
+    collisionObjectArr.push(new CollisionObject(0, 0, 40, myCanvas.height, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(40, 0, 185, 45, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(40, 45, 150, 30, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(40, 75, 90, 30, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(40, 105, 50, 30, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(40, 190, 25, 240, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(65, 270, 15, 160, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(40, 430, 10, 280, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(50, 495, 30, 210, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(80, 590, 30, 110, "environment", -1, "", false));
+    // TREES BOTTOM GROUP
+    collisionObjectArr.push(new CollisionObject(110, 635, 315, 110, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(425, 665, 245, 110, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(670, 650, 550, 110, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(935, 610, 550, 40, "environment", -1, "", false));
+    // TREES RIGHT GROUP
+    collisionObjectArr.push(new CollisionObject(900, 0, 300, 80, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(940, 80, 270, 20, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(1000, 100, 270, 20, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(myCanvas.width - 40, 120, 40, 500, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(myCanvas.width - 80, 120, 40, 120, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(myCanvas.width - 70, 450, 30, 160, "environment", -1, "", false));
+    // RUINS
+    collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 65, myCanvas.height / 2 - 145, 30, 160, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 35, myCanvas.height / 2 - 145, 90, 120, "environment", -1, "", false));
+    collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 55, myCanvas.height / 2 - 95, 20, 70, "environment", -1, "", false));
+    // ROOM TRANSITIONING
+    collisionObjectArr.push(new CollisionObject(230, 0, 675, 15, "roomtransit", 0, "down", false));
 
     screen2init = true;
 
