@@ -365,10 +365,10 @@ window.onload = () => {
     collisionObjectArr.push(new CollisionObject(canvas.width/4 - 70, 0, 305, 30, "roomtransit", false));
     collisionObjectArr.push(new CollisionObject(canvas.width/2 - 15, 0, 320, 30, "roomtransit", false));
 
-    const slime = new Enemy("slime", 900, 400, 75, 70);
+    const slime = new Enemy("slime", 900, 400, 90, 80);
     slime.initialize();
     enemyArr.push(slime);
-    const slime2 = new Enemy("slime", 200, 200, 75, 70);
+    const slime2 = new Enemy("slime", 200, 200, 90, 80);
     slime2.initialize();
     enemyArr.push(slime2);
 
