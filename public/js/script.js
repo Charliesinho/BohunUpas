@@ -385,11 +385,10 @@ window.onload = () => {
     // ROOM TRANSITIONING LEFT
     collisionObjectArr.push(new CollisionObject(0, 150, 15, 440, "roomtransit", false));
 
-    // ENEMIES
-    const slime = new Enemy("slime", 900, 400, 75, 70);
+    const slime = new Enemy("slime", 900, 400, 90, 80);
     slime.initialize();
     enemyArr.push(slime);
-    const slime2 = new Enemy("slime", 200, 200, 75, 70);
+    const slime2 = new Enemy("slime", 200, 200, 90, 80);
     slime2.initialize();
     enemyArr.push(slime2);
 
