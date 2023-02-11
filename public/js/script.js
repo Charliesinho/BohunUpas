@@ -95,6 +95,9 @@ class Player {
     this.moveUp = false;
     this.moveDown = false;
 
+    // Equipment
+    this.weaponLifeSpan = 30;
+
     // Shoot
     this.shootRight = false;
     this.shootLeft = false;
@@ -210,7 +213,6 @@ class Enemy {
       this.imageFrames = 4;
       this.moveSpeed = 1;
       this.randomMoveTimer = Math.floor(Math.random() * (400 - 200) + 200);
-      console.log(this.randomMoveTimer)
       this.moveTo = this.getRandomCoordinates();
       this.moveTowardsTarget(this.moveTo);
       for (let i = 0; i < this.imageFrames; i++) {
@@ -289,7 +291,7 @@ class Enemy {
 
 const projectileArr = [];
 class Projectile {
-  constructor(x, y, rad, color, xDir, yDir, speed, damage) {
+  constructor(x, y, rad, color, xDir, yDir, speed, damage, lifeSpan) {
     this.type = "projectile";
 
     this.x = x;
@@ -300,6 +302,7 @@ class Projectile {
     this.yDir = yDir;
     this.speed = speed;
     this.damage = damage;
+    this.lifeSpan = lifeSpan;
 
     // Collision
     this.left = this.x;
@@ -325,6 +328,12 @@ class Projectile {
     ctx.fillStyle = "red";
     ctx.fill();
     ctx.closePath();
+
+    // Destory if lifeSpan reached
+    this.lifeSpan--;
+    if (this.lifeSpan <= 0) {
+      this.destroy();
+    }
   }
 
   checkCollision(arr, ot, or, ob, ol) {
@@ -353,7 +362,7 @@ class Projectile {
 
   destroy() {
     const posInArr = projectileArr.indexOf(this);
-    projectileArr.splice(this, 1);
+    projectileArr.splice(posInArr, 1);
   }
 
   getType() {
@@ -495,21 +504,21 @@ window.onload = () => {
       // Shooting
       if (player.canShoot) {
         if (player.shootLeft && player.shootUp) { // TOP LEFT
-          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, -1, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, -1, 8, 5, player.weaponLifeSpan);
         } else if (player.shootUp && player.shootRight) { // TOP RIGHT
-          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, -1, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, -1, 8, 5, player.weaponLifeSpan);
         } else if (player.shootRight && player.shootDown) { // BOTTOM RIGHT
-          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 1, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 1, 8, 5, player.weaponLifeSpan);
         } else if (player.shootDown && player.shootLeft) { // BOTTOM LEFT
-          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 1, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 1, 8, 5, player.weaponLifeSpan);
         } else if (player.shootRight) { // RIGHT
-          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 0, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 0, 8, 5, player.weaponLifeSpan);
         } else if (player.shootLeft) { // LEFT
-          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 0, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 0, 8, 5, player.weaponLifeSpan);
         } else if (player.shootDown) { // DOWN
-          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, 1, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, 1, 8, 5, player.weaponLifeSpan);
         } else if (player.shootUp) { // UP
-          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, -1, 8, 5);
+          spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, -1, 8, 5, player.weaponLifeSpan);
         }
         player.canShoot = false;
         setTimeout(() => {
@@ -547,8 +556,8 @@ window.onload = () => {
     }
   }
 
-  function spawnProjectile(x, y, rad, color, xDir, yDir, speed, damage) {
-    const projectile = new Projectile(x, y, rad, color, xDir, yDir, speed, damage);
+  function spawnProjectile(x, y, rad, color, xDir, yDir, speed, damage, lifeSpan) {
+    const projectile = new Projectile(x, y, rad, color, xDir, yDir, speed, damage, lifeSpan);
     projectileArr.push(projectile);
   }
 
