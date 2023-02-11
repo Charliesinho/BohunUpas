@@ -60,7 +60,8 @@ let gifTest = new Image();
 gifTest.src = "../images/slime.gif"
 
 let souls = parseInt(document.querySelector("#souls").innerHTML)
-console.log(souls)
+
+
 
 
 
@@ -93,6 +94,19 @@ class Player {
     this.moveUp = false;
     this.moveDown = false;
 
+    //Animation
+    this.shadow = new Image();
+    this.shadow.src = "../images/ShadowPlayer.png"
+    this.imgContainerRight = [];
+    this.imgContainerLeft = [];
+    this.imgContainerIdleLeft = [];
+    this.imgContainerIdleRight = [];
+
+    this.img = new Image();
+    this.imageFrames;
+    this.spriteSpeed = 12;
+    this.currentFrame = 0;
+
     // Equipment
     this.weaponShootInterval = 300;
     this.weaponLifeSpan = 30;
@@ -118,6 +132,19 @@ class Player {
     this.alive = true;
     this.hp = 20;
   }
+
+  initialize() {
+    if (this.race === "Dino") {      
+      for (let i = 0; i < 6; i++) {
+        this.imgContainerRight.push("../images/Races/Dino/RunRight/dino"+i+".png");
+        this.imgContainerLeft.push("../images/Races/Dino/RunLeft/dino"+i+".png");
+      }
+      for (let i = 0; i < 4; i++) {
+        this.imgContainerIdleLeft.push("../images/Races/Dino/IdleLeft/dino"+i+".png");
+        this.imgContainerIdleRight.push("../images/Races/Dino/IdleRight/dino"+i+".png");
+      }
+    } console.log(this.imgContainerRight)
+  } 
 
   updateCollision() {
     this.left = this.x;
@@ -186,6 +213,7 @@ const enemyArr = [];
 class Enemy {
   constructor(name, x, y, width, height) {
     this.type = "enemy"
+    this.souls = 0;
 
     this.name = name;    
     this.x = x;
@@ -217,6 +245,7 @@ class Enemy {
 
   initialize() {
     if (this.name === "slime") {
+      this.souls = 1;
       this.hp = 10;
       this.damage = 5;
       this.imageFrames = 4;
@@ -288,8 +317,13 @@ class Enemy {
   }
 
   destroy() {
+    this.dropSouls()
     const posInArr = enemyArr.indexOf(this);
     enemyArr.splice(posInArr, 1);
+  }
+
+  dropSouls() {
+    souls += this.souls;
   }
 
   getType() {
@@ -418,9 +452,10 @@ window.onload = () => {
   myCanvas.style.backgroundColor = "white";
   myCanvas.style.border = "1px solid black";
   myCanvas.style.align = "center";
-  const player = new Player(race ,100, 300, 32, 32, 5, 5, 1, 0);
+  const player = new Player(race ,100, 300, 75, 75, 5, 5, 1, 0);
 
   function startGame() {
+    player.initialize()
     checkLevelScreen(levelScreen);
     gameplayLoop();
   }
@@ -459,6 +494,8 @@ window.onload = () => {
       updateEnemies();
       // Collisions
       updateCollisionObjects();
+
+      document.querySelector("#souls").innerHTML = souls
       
       // Gameplay loop
       animateId = requestAnimationFrame(gameplayLoop);
@@ -479,17 +516,45 @@ window.onload = () => {
       player.checkCollision(enemyArr, 0, 0, 0, 0);
 
       // Movement and Boundaries
-      if (player.moveRight && player.x < myCanvas.width - player.width && !player.checkCollision(collisionObjectArr, 0, 5, 0, 0)) {
-        player.x += player.xSpeed;
+      ctx.globalAlpha = 0.4;
+      ctx.drawImage(player.shadow, player.x - 2, player.y, player.width, player.height)
+      ctx.globalAlpha = 1;
+
+      if (player.moveRight && player.x < myCanvas.width - player.width) {
+        if (!player.checkCollision(collisionObjectArr, 0, 5, 0, 0)) player.x += player.xSpeed;
+        player.xFacing = 1;
+        animate(player, player.imgContainerRight, 6, 8);
       }
-      if (player.moveLeft && player.x > 0 && !player.checkCollision(collisionObjectArr, 0, 0, 0, 5)) {
-        player.x -= player.xSpeed;
+      if (player.moveLeft && player.x > 0) {
+        if (!player.checkCollision(collisionObjectArr, 0, 0, 0, 5)) player.x -= player.xSpeed
+        player.xFacing = -1;
+        animate(player, player.imgContainerLeft, 6, 8);
       }
-      if (player.moveUp && player.y > 0 && !player.checkCollision(collisionObjectArr, 5, 0, 0, 0)) {
-        player.y -= player.ySpeed;
+      if (player.moveUp && player.y > 0) {
+        if (!player.checkCollision(collisionObjectArr, 5, 0, 0, 0)) player.y -= player.ySpeed;
+        if(player.xFacing === 1 && !player.moveRight) {
+          animate(player, player.imgContainerRight, 6, 8);
+        }
+        if(player.xFacing === -1 && !player.moveLeft) {
+          animate(player, player.imgContainerLeft, 6, 8);
+        }
       }
-      if (player.moveDown && player.y < myCanvas.height - player.height && !player.checkCollision(collisionObjectArr, 0, 0, 5, 0)) {
-        player.y += player.ySpeed;
+      if (player.moveDown && player.y < myCanvas.height - player.height) {
+        if (!player.checkCollision(collisionObjectArr, 0, 0, 5, 0)) player.y += player.ySpeed;
+        if(player.xFacing === 1 && !player.moveRight) {
+          animate(player, player.imgContainerRight, 6, 8);
+        }
+        if(player.xFacing === -1 && !player.moveLeft) {
+          animate(player, player.imgContainerLeft, 6, 8);
+        }     
+      }
+      if (!player.moveDown && !player.moveLeft && !player.moveRight && !player.moveUp) {
+        if(player.xFacing === 1) {
+          animate(player, player.imgContainerIdleRight, 4, 6);
+        }
+        if(player.xFacing === -1) {
+          animate(player, player.imgContainerIdleLeft, 4, 6);
+        }
       }
       
       // Shooting
@@ -515,21 +580,7 @@ window.onload = () => {
         setTimeout(() => {
           player.canShoot = true;
         }, player.weaponShootInterval); // Passing in shootInterval from player as timeout value
-      }
-
-      // Temp player
-      ctx.beginPath();
-      if (player.race === "Dino") {
-        ctx.fillStyle = "green";
-      }
-      else if (player.race === "Undead") {        
-        ctx.fillStyle = "black";
-      }
-      else if (player.race === "Human") {        
-        ctx.fillStyle = "yellow";
-      }
-      ctx.fillRect(player.x, player.y, player.width, player.height);
-      ctx.closePath();
+      }      
     }
   }
 
@@ -543,7 +594,7 @@ window.onload = () => {
       }
       enemyArr[i].moveTowardsTarget(enemyArr[i].moveTo);
 
-      animate(enemyArr[i], enemyArr[i].spriteSpeed);
+      animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
     }
   }
 
@@ -566,9 +617,9 @@ window.onload = () => {
     }
   }
 
-  function animate(obj, speed) {
+  function animate(obj, imgContainer, imageFrames, speed) {
     // Reset the sprite count
-    if (obj.currentFrame >= obj.imageFrames - 1) {
+    if (obj.currentFrame >= imageFrames - 1) {
       // Reset frames
       if (animateId % speed === 0) {
         obj.currentFrame = -1;
@@ -579,7 +630,7 @@ window.onload = () => {
     if (animateId % speed === 0) {
       obj.currentFrame++;
     }
-    obj.img.src = obj.imgContainer[obj.currentFrame];
+    obj.img.src = imgContainer[obj.currentFrame];
     // Draw sprite
     ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
   }
