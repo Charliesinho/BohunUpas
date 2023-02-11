@@ -169,6 +169,7 @@ class Player {
 
 }
 
+
 const enemyArr = [];
 class Enemy {
   constructor(name, x, y, width, height) {
@@ -197,6 +198,9 @@ class Enemy {
     this.iframes = 100;
     this.damage;
     this.takenDamage = false;
+    this.randomMoveTimer;
+    this.moveSpeed;
+    this.moveTo;
   }
 
   initialize() {
@@ -204,11 +208,54 @@ class Enemy {
       this.hp = 10;
       this.damage = 1;
       this.imageFrames = 4;
+      this.moveSpeed = 1;
+      this.randomMoveTimer = Math.floor(Math.random() * (400 - 200) + 200);
+      console.log(this.randomMoveTimer)
+      this.moveTo = this.getRandomCoordinates();
+      this.moveTowardsTarget(this.moveTo);
       for (let i = 0; i < this.imageFrames; i++) {
         this.imgContainer.push("../images/Meadow/Slime/slime"+i+".png");
       }
     }
   } 
+
+  getRandomCoordinates() {
+    const randomPointX = myCanvas.width;
+    const randomPointY = myCanvas.height;
+    const randomCoordinates = {
+      x: Math.floor(Math.random() * ((randomPointX - this.width - 60) - (this.width + 60) + (this.width + 60))),
+      y: Math.floor(Math.random() * ((randomPointY - this.height - 60) - (this.height + 60) + (this.width + 60))),
+    };
+    return randomCoordinates;
+  }
+
+  checkCollision(arr, ot, or, ob, ol) {
+    for (let i = 0; i < arr.length; i++) {
+      if (this.left - ol < arr[i].right &&
+        this.right + or > arr[i].left &&
+        this.top - ot < arr[i].bottom &&
+        this.bottom + ob >= arr[i].top) { 
+          if (arr[i].getType() === "environment") {
+            return true;
+          }
+        }
+    }
+  }
+
+  moveTowardsTarget(randomCoordinates) {
+    // Horizontal Movement
+    if (this.x < randomCoordinates.x && this.x < myCanvas.width - this.width && !this.checkCollision(collisionObjectArr, 0, 10, 0, 0)) {
+      this.x += this.moveSpeed;
+    } else if (this.x > randomCoordinates.x && this.x > 0 && !this.checkCollision(collisionObjectArr, 0, 0, 0, 10)) {
+      this.x -= this.moveSpeed;
+    }
+    // Vertial Movement
+    if (this.y > randomCoordinates.y && this.y > 0 && !this.checkCollision(collisionObjectArr, 10, 0, 0, 0)) {
+      this.y -= this.moveSpeed;
+    } else if (this.x < randomCoordinates.y && this.y < myCanvas.height - this.height && !this.checkCollision(collisionObjectArr, 0, 0, 10, 0)) {
+      this.y += this.moveSpeed;
+    }
+  }
 
   updateCollision() {
     this.left = this.x;
@@ -238,6 +285,7 @@ class Enemy {
     return this.type; 
   }
 }
+
 
 const projectileArr = [];
 class Projectile {
@@ -385,12 +433,19 @@ window.onload = () => {
     // ROOM TRANSITIONING LEFT
     collisionObjectArr.push(new CollisionObject(0, 150, 15, 440, "roomtransit", false));
 
-    const slime = new Enemy("slime", 900, 400, 90, 80);
-    slime.initialize();
-    enemyArr.push(slime);
-    const slime2 = new Enemy("slime", 200, 200, 90, 80);
-    slime2.initialize();
-    enemyArr.push(slime2);
+    // ENEMIES
+    enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
+    enemyArr.push(new Enemy("slime", 200, 200, 90, 80));
+    enemyArr.push(new Enemy("slime", 300, 600, 90, 80));
+    enemyArr.push(new Enemy("slime", 500, 600, 90, 80));
+    enemyArr.push(new Enemy("slime", 200, 500, 90, 80));
+    enemyArr.push(new Enemy("slime", 800, 600, 90, 80));
+    
+    // Initialize enemies
+    for (let i = 0; i < enemyArr.length; i++) {
+      enemyArr[i].initialize();
+    }
+
 
     gameplayLoop();
   }
@@ -479,8 +534,13 @@ window.onload = () => {
   //Update Enemies
   function updateEnemies() {
     for (let i = 0; i < enemyArr.length; i++) {
-      enemyArr[i].x += .1;
       enemyArr[i].updateCollision();
+
+      if (animateId % enemyArr[i].randomMoveTimer === 0) {
+        enemyArr[i].moveTo = enemyArr[i].getRandomCoordinates();
+      }
+      enemyArr[i].moveTowardsTarget(enemyArr[i].moveTo);
+
       animate(enemyArr[i], enemyArr[i].spriteSpeed);
     }
   }
@@ -493,8 +553,8 @@ window.onload = () => {
   function updateProjectiles() {
     for (let i = 0; i < projectileArr.length; i++) {
         if (projectileArr[i] !== undefined) projectileArr[i].updateProjectile();
-        if (projectileArr[i] !== undefined)projectileArr[i].checkCollision(enemyArr, 0, 0, 0, 0);
-        if (projectileArr[i] !== undefined)projectileArr[i].checkCollision(collisionObjectArr, 0, 0, 0, 0);
+        if (projectileArr[i] !== undefined) projectileArr[i].checkCollision(enemyArr, 0, 0, 0, 0);
+        if (projectileArr[i] !== undefined) projectileArr[i].checkCollision(collisionObjectArr, 0, 0, 0, 0);
     }
   }
 
