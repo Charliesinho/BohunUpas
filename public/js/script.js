@@ -446,7 +446,7 @@ window.onload = () => {
   }
 
   function gameplayLoop() {
-    if (!roomTransitioning) {
+    if (roomTransitioning) {
       // Reset for new drawing
       ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
       //Background Test
@@ -660,7 +660,7 @@ window.onload = () => {
 
   function loadScreen0() {
     // Set Background for Screen
-    background.src = "../images/CanvasTest.png"
+    background.src = "../images/Meadow/Backgrounds/meadow0.png"
     // TOP LEFT TREE GROUP
     collisionObjectArr.push(new CollisionObject(0, 0, 225, 50, "environment", false));
     collisionObjectArr.push(new CollisionObject(0, 50, 175, 25, "environment", false));
