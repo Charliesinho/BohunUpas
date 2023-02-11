@@ -446,7 +446,6 @@ window.onload = () => {
   }
 
   function gameplayLoop() {
-    if (!roomTransitioning) {
       // Reset for new drawing
       ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
       //Background Test
@@ -462,9 +461,6 @@ window.onload = () => {
       
       // Gameplay loop
       animateId = requestAnimationFrame(gameplayLoop);
-    } else {
-      roomTransitioning();
-    }
   }
 
   // Transit rooms
