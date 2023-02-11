@@ -97,6 +97,7 @@ class Player {
 
     // Equipment
     this.weaponLifeSpan = 30;
+    this.armor = 2;
 
     // Shoot
     this.shootRight = false;
@@ -151,13 +152,20 @@ class Player {
   }
 
   hit(damage) {
+    // Check iframes
     if (!this.takenDamage) {
       this.takenDamage = true;
-      this.hp -= damage;
+      // Receive Damage
+      if (damage - this.armor > 0) {
+        this.hp -= damage - this.armor;
+      } else {
+        this.hp -= 1;
+      }
       console.log("HIT - ", this.hp)
+      // Kill player
       if (this.hp <= 0) {
         this.destroy();
-      } else {
+      } else { // Reset iframes
         setTimeout(() => {
           this.takenDamage = false;
         }, this.iframes)
@@ -209,7 +217,7 @@ class Enemy {
   initialize() {
     if (this.name === "slime") {
       this.hp = 10;
-      this.damage = 1;
+      this.damage = 5;
       this.imageFrames = 4;
       this.moveSpeed = 1;
       this.randomMoveTimer = Math.floor(Math.random() * (400 - 200) + 200);
