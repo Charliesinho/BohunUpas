@@ -169,11 +169,15 @@ router.get("/characterProfile", isLoggedIn, async (req, res, next) => {
 });
 
 
-router.get("/soulkeeper", isLoggedIn, async (req, res, next) => {
+router.get("/soulkeeper/:charId", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
-  const sessionRace = await User.find({username: req.session.user.username}).populate("character");
-  const character = await Character.findOne({character: req.session.user.character});
-  res.render("user/soulkeeper", {character: character, errorMessage: "", sessionRace: sessionRace[0].character, session: loginCheck});
+
+  const sessionRace = await User.findOne({username: req.session.user.username}).populate("character");
+  const character = await Character.findById(req.params.charId);
+  console.log(character);
+  console.log("CHARACTER: ",character, "SOULS: ", character.souls);
+  
+  res.render("user/soulkeeper", {character: character, errorMessage: "", sessionRace: sessionRace.character, session: loginCheck});
 });
 
 router.post("/soulkeeper/spend/:id", isLoggedIn, async (req, res, next) => {
@@ -184,6 +188,8 @@ router.post("/soulkeeper/spend/:id", isLoggedIn, async (req, res, next) => {
   const characterProfile = await Character.findById(character.id)
   const currentSouls = parseInt(characterProfile.souls);
   const spentSouls = parseInt(req.body.spentSouls);
+
+  console.log(currentSouls)
 
   await Character.findByIdAndUpdate(character.id, {souls: currentSouls - spentSouls})
 
