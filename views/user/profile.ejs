@@ -1,6 +1,18 @@
 <%- include("../../partials/nav-bar.ejs") %>
 <h1>Profile</h1>
-<h2>Details</h2>
+<% if (sessionRace.length) { %>
+    <h2>Your Character</h2> 
+    <div>
+        <p>Name: <%=profile.username%></p>
+        <p>Race: <%=profile.character[0].race%></p>
+        <p>Weapon: <%=profile.character[0].weapon%></p>
+        <p>Armor: <%=profile.character[0].armor%></p>
+        <p>Artifact: <%=profile.character[0].artifact%></p>
+        <p>Souls: <%=profile.character[0].souls%></p>
+    </div>
+<% } %>
+<hr/>
+<h2>Account Details</h2>
 <div>
     <div>Username: <%-profile.username%> </div>
     <div>Email: <%-profile.email%> </div>
@@ -9,12 +21,4 @@
     </form>
 </div>
 
-<% if (sessionRace.length) { %>
-    <%=profile.username%>
-    <%=profile.character[0].race%>
-    <%=profile.character[0].weapon%>
-    <%=profile.character[0].armor%>
-    <%=profile.character[0].artifact%>
-    <%=profile.character[0].souls%>
-    <% } %>
 

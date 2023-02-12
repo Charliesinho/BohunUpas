@@ -490,7 +490,7 @@ window.onload = () => {
   myCanvas.style.backgroundColor = "white";
   myCanvas.style.border = "1px solid black";
   myCanvas.style.align = "center";
-  const player = new Player(race ,100, 300, 75, 75, 5, 5, 1, 0);
+  const player = new Player(race, 100, 300, 75, 75, 5, 5, 1, 0);
 
   function startGame() {
     player.initialize()
@@ -841,8 +841,7 @@ window.onload = () => {
     collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 75, 80, 15, "environment", -1, "", false));
     collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 105, 35, 30, "environment", -1, "", false));
     // ROOM TRANSITIONING TOP
-    collisionObjectArr.push(new CollisionObject(myCanvas.width/4 - 70, 0, 305, 15, "roomtransit", 1, "down", false));
-    collisionObjectArr.push(new CollisionObject(myCanvas.width/2 - 15, 0, 320, 15, "roomtransit", 1, "down", false));
+    collisionObjectArr.push(new CollisionObject(myCanvas.width/4 - 70, 0, 675, 15, "roomtransit", 1, "down", true));
     // ROOM TRANSITIONING RIGHT
     collisionObjectArr.push(new CollisionObject(myCanvas.width - 15, 155, 15, 430, "roomtransit", false));
     // ROOM TRANSITIONING BOTTOM

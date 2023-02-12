@@ -1,8 +1,10 @@
 <%- include("../../partials/nav-bar.ejs") %>
-<h1>Hello</h1>
-<%=profile.username%>
-<%=profile.character[0].race%>
-<%=profile.character[0].weapon%>
-<%=profile.character[0].armor%>
-<%=profile.character[0].artifact%>
-<%=profile.character[0].souls%>
+<h1>Character</h1>
+<div>
+    <p>Name: <%=profile.username%></p>
+    <p>Race: <%=profile.character[0].race%></p>
+    <p>Weapon: <%=profile.character[0].weapon%></p>
+    <p>Armor: <%=profile.character[0].armor%></p>
+    <p>Artifact: <%=profile.character[0].artifact%></p>
+    <p>Souls: <%=profile.character[0].souls%></p>
+</div>

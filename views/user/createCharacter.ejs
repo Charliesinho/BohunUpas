@@ -4,14 +4,17 @@
   
       <label for="">
         Choose race:
-        <input type="text" name="race" required autofocus />
+        <select name="race" required>
+          <option value="Dino">Dino</option>
+          <option value="Undead">Undead</option>
+          <option value="Human">Human</option>
+        </select>
       </label>
-  
       <button type="submit">Create</button>
     </form>
   
     <% if (errorMessage !== "") { %>
       <div class="display-error-message centralize"><%=errorMessage%></div>
-  <% } %>
+    <% } %>
   
   </section>
