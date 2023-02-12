@@ -4,25 +4,33 @@ const { Schema, model } = require("mongoose");
 const weaponSchema = new Schema(
   {
     name: {
-          type: String,
-          required: true,
+      type: String,
+      required: true,
+    },
+    equip: {
+      type: String,
+      default: "Weapon"
     },
     type: {
-        type: String,      
-        required: true, 
-        enum: ["none", "Bow", "Gun", "Wand"],
-        default: "none"     
+      type: String,      
+      required: true, 
+      enum: ["none", "Bow", "Gun", "Wand"],
+      default: "none"     
     },
     damage: {
-        type: Number,
-        default: 1,
-        required: true,
+      type: Number,
+      default: 1,
+      required: true,
     },
     race: {
-        type: String,      
-        required: true, 
-        enum: ["Dino", "Undead", "Human"],
+      type: String,      
+      required: true, 
+      enum: ["Dino", "Undead", "Human"],
     },
+    value: {
+      type: Number,
+      default: 1
+    }
   },
   {
     timestamps: true

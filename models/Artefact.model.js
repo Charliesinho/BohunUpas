@@ -12,6 +12,10 @@ const artefactSchema = new Schema(
       required: true, 
       enum: ["Ring", "Bracelet", "Amulet", "Beads"],    
     },
+    equip: {
+      type: String,
+      default: "Artefact"
+    },
     attribute: {
       type: [String],
       modifyingAttribute: {
@@ -30,6 +34,10 @@ const artefactSchema = new Schema(
       required: true, 
       enum: ["Dino", "Undead", "Human"],   
     },
+    value: {
+      type: Number,
+      default: 1
+    }
   },
   {
     timestamps: true

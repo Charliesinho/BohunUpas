@@ -153,19 +153,19 @@ router.post("/createcharacter", isLoggedIn, async (req, res) => {
     console.log("Error creating the Character, please try again: ", error);
     res.render("user/createcharacter", {errorMessage: "Error creating the Character, please try again", sessionRace: sessionRace[0].character, session: loginCheck})
   }
+  
 });
 
 router.get("/characterProfile", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
   const profile = await User.findOne({username: req.session.user.username}).populate('character');
-
   const sessionName= req.session.user.username;
-  const sessionRace = await User.find({username: sessionName})
-
+  const sessionRace = await User.find({username: sessionName});
+  const character = await Character.findOne(profile.character[0]._id).populate("inventory")
   if (!profile.character.length) {
     res.redirect("/user/createcharacter");
   } else {
-    res.render("user/characterProfile", {errorMessage: "", profile: profile, sessionRace: sessionRace[0].character, session: loginCheck});
+    res.render("user/characterProfile", {errorMessage: "", profile: profile, character: character, sessionRace: sessionRace[0].character, session: loginCheck});
   }
 });
 
@@ -175,8 +175,6 @@ router.get("/soulkeeper/:charId", isLoggedIn, async (req, res, next) => {
 
   const sessionRace = await User.findOne({username: req.session.user.username}).populate("character");
   const character = await Character.findById(req.params.charId).populate("inventory");
-  console.log("CHARACTER: ",character, "SOULS: ", character.souls);
-  
   res.render("user/soulkeeper", {character: character, inventory: character.inventory, errorMessage: "", sessionRace: sessionRace.character, session: loginCheck});
 });
 

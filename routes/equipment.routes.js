@@ -18,6 +18,7 @@ function checkLogin(session) {
   }
 }
 
+// BUY ITEM
 router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
     checkLogin(req.session.user);
     try {
@@ -35,7 +36,8 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
                     name: "Awesome Weapon",
                     type: "Wand",
                     damage: 1,
-                    race: "Dino"
+                    race: "Dino",
+                    value: 5
                 }
                 const craftedWeapon = await Weapon.create(newWeapon);
                 character.inventory.push(craftedWeapon._id);
@@ -55,5 +57,36 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
         console.log("Something went wrong: ", err)
     }
   });
+
+// SELL ITEM
+router.post("/sellItem/:charId/:itemId/:equip", async (req, res, next) => {
+  checkLogin(req.session.user);
+  try {
+    // Get Character
+    const profile = await User.findOne({username: req.session.user.username}).populate('character');
+    const sessionName= req.session.user.username;
+    const sessionRace = await User.find({username: sessionName});
+    const character = await Character.findById(req.params.charId).populate("inventory");
+    
+    // Get Item type
+    let item;
+    if (req.params.equip === "Weapon") item = await Weapon.findById(req.params.itemId); 
+    if (req.params.equip === "Armor") item =  await Armor.findById(req.params.itemId); 
+    if (req.params.equip === "Artefact") item =  await Artefact.findById(req.params.itemId); 
+    const value = item.value;
+    character.souls = parseInt(character.souls) + value;
+    character.save();
+    if (req.params.equip === "Weapon") await Weapon.findByIdAndDelete(req.params.itemId); 
+    if (req.params.equip === "Armor")  await Armor.findByIdAndDelete(req.params.itemId); 
+    if (req.params.equip === "Artefact")  await Artefact.findByIdAndDelete(req.params.itemId); 
+
+
+    console.log("TRANSACTION DONE")
+    res.redirect("/user/characterProfile");
+    
+  } catch (error) {
+    console.log("Error selling item: ", error);
+  }
+});
 
 module.exports = router;
