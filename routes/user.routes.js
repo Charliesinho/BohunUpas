@@ -5,6 +5,7 @@ const session = require('express-session');
 const { isLoggedIn } = require('../middleware/route-guard');
 const User = require('../models/User.model');
 const Character = require('../models/Character.model');
+const { findOneAndUpdate } = require('../models/User.model');
 let loginCheck = false;
 
 function checkLogin(session) {
@@ -92,8 +93,7 @@ router.post("/profile-update", isLoggedIn, async (req, res, next) => {
       req.session.user = {
         username: updatedUser.username,
         email: updatedUser.email,
-      };     
-      console.log("im working")
+      };           
       res.redirect("/user/profile");
     } catch (error) {
       console.log("error1")
@@ -108,13 +108,29 @@ router.post("/profile-update", isLoggedIn, async (req, res, next) => {
 });
 
 router.get("/game", isLoggedIn, async (req, res, next) => {
-  checkLogin(req.session.user);
+  checkLogin(req.session.user); 
 
   const sessionName= req.session.user.username;
   const sessionRace2 = await User.find({username: sessionName}).populate('character')
   const sessionRace = await User.find({username: sessionName})
+  
 
   res.render("user/game", {sessionRace2: sessionRace2[0], sessionRace: sessionRace, session: loginCheck});
+});
+
+router.post("/:id/game", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
+
+  
+  const user = await User.findOne({username: req.session.user.username}).populate('character')
+  const character = req.params.id
+  let souls = parseInt(req.body.souls) + user.character[0].souls;
+  console.log("OldSouls", souls)
+  const newSouls = await Character.findByIdAndUpdate(req.params.id, {souls: souls})
+  console.log("newSouls", newSouls)
+  
+  
+  res.redirect("/user/characterProfile");
 });
 
 router.get("/createcharacter", isLoggedIn, async (req, res, next) => {
@@ -138,8 +154,7 @@ router.post("/createcharacter", isLoggedIn, async (req, res) => {
 
   try {
     const character = await Character.create(req.body)
-    const user = await User.findOneAndUpdate({username: req.session.user.username}, {character: character._id}).populate('character')
-    console.log(user)
+    const user = await User.findOneAndUpdate({username: req.session.user.username}, {character: character._id}).populate('character')    
     res.redirect("/user/characterProfile")
   } catch (error) {
     console.log("Error creating the Character, please try again: ", error);

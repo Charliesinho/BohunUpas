@@ -56,7 +56,7 @@ if (noWeapon.style.display === "block") {
   console.log("no weapon")
 }
 
-let souls = parseInt(document.querySelector("#souls").innerHTML)
+let souls = parseInt(document.querySelector("#souls").value)
 
 
 
@@ -167,7 +167,27 @@ class Player {
         this.imgContainerIdleLeft.push("../images/Races/Dino/IdleLeft/dino"+i+".png");
         this.imgContainerIdleRight.push("../images/Races/Dino/IdleRight/dino"+i+".png");
       }
-    } console.log(this.imgContainerRight)
+    } 
+    if (this.race === "Undead") {      
+      for (let i = 0; i < 6; i++) {
+        this.imgContainerRight.push("../images/Races/Undead/RunRight/undead"+i+".png");
+        this.imgContainerLeft.push("../images/Races/Undead/RunLeft/undead"+i+".png");
+      }
+      for (let i = 0; i < 4; i++) {
+        this.imgContainerIdleLeft.push("../images/Races/Undead/IdleLeft/undead"+i+".png");
+        this.imgContainerIdleRight.push("../images/Races/Undead/IdleRight/undead"+i+".png");
+      }
+    } 
+    if (this.race === "Human") {      
+      for (let i = 0; i < 6; i++) {
+        this.imgContainerRight.push("../images/Races/Human/IdleLeft/RunRight/human"+i+".png");
+        this.imgContainerLeft.push("../images/Races/Human/IdleLeft/RunLeft/human"+i+".png");
+      }
+      for (let i = 0; i < 4; i++) {
+        this.imgContainerIdleLeft.push("../images/Races/Human/IdleLeft/IdleLeft/human"+i+".png");
+        this.imgContainerIdleRight.push("../images/Races/Human/IdleLeft/IdleRight/human"+i+".png");
+      }
+    } 
   } 
 
   updateCollision() {
@@ -490,7 +510,7 @@ window.onload = () => {
   myCanvas.style.backgroundColor = "white";
   myCanvas.style.border = "1px solid black";
   myCanvas.style.align = "center";
-  const player = new Player(race, 100, 300, 75, 75, 5, 5, 1, 0);
+  const player = new Player(race, 100, 300, 85, 85, 5, 5, 1, 0);
 
   function startGame() {
     player.initialize()
@@ -547,7 +567,7 @@ window.onload = () => {
       updateEnemies();
       // Collisions
       updateCollisionObjects();
-      document.querySelector("#souls").innerHTML = souls
+      document.querySelector("#souls").value = souls
       // Gameplay loop
       animateId = requestAnimationFrame(gameplayLoop);
     } else {
@@ -841,7 +861,7 @@ window.onload = () => {
     collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 75, 80, 15, "environment", -1, "", false));
     collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 105, 35, 30, "environment", -1, "", false));
     // ROOM TRANSITIONING TOP
-    collisionObjectArr.push(new CollisionObject(myCanvas.width/4 - 70, 0, 675, 15, "roomtransit", 1, "down", true));
+    collisionObjectArr.push(new CollisionObject(myCanvas.width/4 - 70, 0, 675, 15, "roomtransit", 1, "down", false));
     // ROOM TRANSITIONING RIGHT
     collisionObjectArr.push(new CollisionObject(myCanvas.width - 15, 155, 15, 430, "roomtransit", false));
     // ROOM TRANSITIONING BOTTOM

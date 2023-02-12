@@ -42,7 +42,11 @@
         <% } %>
 
 <!-- Souls -->    
-    <% if (session) { %>
-    <div id="souls" style="display: block;"><%=sessionRace2.character[0].souls%></div>    
+<form method="POST" action="/user/<%=sessionRace2.character[0]._id%>/game">
+    <% if (session) { %>       
+    <input id="souls" style="display: block;" name="souls" type="number" value="<%=sessionRace2.character[0].souls%>" readonly></input>   
+    <% %> 
     <% } else %></p>
+    <button type="submit">Save</button>
+</form>
 </section>
