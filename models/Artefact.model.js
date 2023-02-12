@@ -10,14 +10,13 @@ const artefactSchema = new Schema(
     type: {
       type: String,      
       required: true, 
-      enum: ["none", "Ring", "Bracelet", "Amulet", "Beads"],
-      default: "none"     
+      enum: ["Ring", "Bracelet", "Amulet", "Beads"],    
     },
     attribute: {
       type: [String],
       modifyingAttribute: {
         type: String,
-        enum: ["none", "damage", "armor", "speed"]
+        enum: ["damage", "armor", "speed"]
       },
       required: true,
     },
@@ -25,6 +24,11 @@ const artefactSchema = new Schema(
       type: Number,
       default: 1,
       required: true,
+    },
+    race: {
+      type: String,      
+      required: true, 
+      enum: ["Dino", "Undead", "Human"],   
     },
   },
   {

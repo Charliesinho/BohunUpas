@@ -18,6 +18,11 @@ const weaponSchema = new Schema(
         default: 1,
         required: true,
     },
+    race: {
+        type: String,      
+        required: true, 
+        enum: ["Dino", "Undead", "Human"],
+    },
   },
   {
     timestamps: true

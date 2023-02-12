@@ -9,25 +9,33 @@ const characterSchema = new Schema(
       enum: ["none", "Dino", "Undead", "Human"],
       default: "none"     
     },
-    weapon: {
-      type: String,
-      required: true,
-      default: "none"            
-    },
-    armor: {
-      type: String,
-      required: true,
-      default: "none"
-    },
-    artifact: {
-      type: String,
-      required: true,
-      default: "none"
-    },
     souls: {
       type: Number,
       required: true,
       default: 0
+    },
+    inventory: {
+      type: [Schema.Types.ObjectId],
+      ref: "Weapon",
+    },
+    weapon: {
+      type: [Schema.Types.ObjectId],
+      ref: "Weapon",
+      required: true,
+    },
+    armor: {
+      type: [Schema.Types.ObjectId], 
+      ref: "Armor",
+      required: true,
+    },
+    artefact: {
+      type: [Schema.Types.ObjectId], 
+      ref: "Artefact",
+      required: true,
+    },
+    achievements: {
+      type: [Schema.Types.ObjectId], 
+      ref: "Achievement",
     }
   },
   {

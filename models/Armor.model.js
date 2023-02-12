@@ -10,14 +10,18 @@ const armorSchema = new Schema(
     type: {
         type: String,      
         required: true, 
-        enum: ["none", "Light", "Medium", "Heavy"],
-        default: "none"     
+        enum: ["Light", "Medium", "Heavy"],    
     },
     protection: {
         type: Number,
         default: 1,
         required: true,
     },
+    race: {
+        type: String,      
+        required: true, 
+        enum: ["Dino", "Undead", "Human"],
+      },
   },
   {
     timestamps: true
