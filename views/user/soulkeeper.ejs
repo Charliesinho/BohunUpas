@@ -2,15 +2,35 @@
 <h1>Soulkeeper</h1> 
 
 <div>
-    <h2>Your souls</h2>
-    <div>Amount: <%=character.souls%></div>
+    <div>Amount of souls: <%=character.souls%></div>
+    <div>Items in inventory: <%=character.inventory.length%> / 20</div>
 </div>
 
 <div>
     <h2>Soulkeeper is hard at work ...</h2>
     <div>Do you wish to spend your souls for rewards?</div>
-    <form action="/user/soulkeeper/spend/<%=character._id%>" method="POST">
-        <input type="number" name="spentSouls" value="<%=character.souls%>" min="0" max="<%=character.souls%>" />
-        <button type="submit">Spend Souls</button>
+
+    <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
+        <input type="number" name="availableSouls" value="<%=character.souls%>" style="display: none" />
+        <input type="text" name="name" value="Standard Pack" readonly />
+        <input type="number" name="price" value="1" readonly/>
+        <button type="submit">Purchase!</button>
     </form>
+    <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
+        <input type="number" name="availableSouls" value="<%=character.souls%>" style="display: none" />
+        <input type="text" name="name" value="Medium Pack" readonly />
+        <input type="number" name="price" value="5" readonly/>
+        <button type="submit">Purchase!</button>
+    </form>
+    <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
+        <input type="number" name="availableSouls" value="<%=character.souls%>" style="display: none" />
+        <input type="text" name="name" value="Legendary Pack" readonly />
+        <input type="number" name="price" value="5000" readonly/>
+        <button type="submit">Purchase!</button>
+    </form>
+
+    </form>
+    <% if (errorMessage !== "") { %>
+        <div class="display-error-message centralize"><%=errorMessage%></div>
+      <% } %>
 </div>

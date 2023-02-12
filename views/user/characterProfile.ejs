@@ -12,9 +12,32 @@
     <div id="stats">    
         <h1><%=profile.username%></h1>
         <p>Race: <%=profile.character[0].race%></p>
-        <p>Weapon: <%=profile.character[0].weapon%></p>
-        <p>Armor: <%=profile.character[0].armor%></p>
-        <p>Artifact: <%=profile.character[0].artifact%></p>
         <p>Souls: <%=profile.character[0].souls%></p>
+        <div>
+            Equipped:
+            <ul>
+                <li>Weapon: <%=profile.character[0].weapon%></li>
+                <li>Armor: <%=profile.character[0].armor%></li>
+                <li>Artefact: <%=profile.character[0].artefact%></li>
+            </ul>
+        </div>
+    </div>
+    <div id="inventory">
+        <h1>Inventory</h1>
+        <% character.inventory.forEach((item) => { %>
+            <div>Name: <%=item.name%></div>
+            <div>Type: <%=item.type%></div>
+            <div>Damage: <%=item.damage%></div>
+            <div>For: <%=item.race%></div>
+            <div>Value: <%=item.value%></div>
+            <form action="/equipment/equipItem/<%=character._id%>/<%=item._id%>/<%=item.equip%>" method="POST">
+                <button type="submit">Equip</button>
+            </form>
+            <form action="/equipment/sellItem/<%=character._id%>/<%=item._id%>/<%=item.equip%>" method="POST">
+                <button type="submit">Sell</button>
+            </form>
+            <br>
+        <% }) %>
+
     </div>
 </section>
