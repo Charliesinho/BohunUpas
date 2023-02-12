@@ -168,4 +168,13 @@ router.get("/characterProfile", isLoggedIn, async (req, res, next) => {
   }
 });
 
+
+router.get("/soulkeeper", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
+  const sessionRace = await User.find({username: req.session.user.username})
+  res.render("user/soulkeeper", {errorMessage: "", sessionRace: sessionRace[0].character, session: loginCheck});
+});
+
+
+
 module.exports = router;
