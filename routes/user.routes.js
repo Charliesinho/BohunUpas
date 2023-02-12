@@ -5,7 +5,7 @@ const session = require('express-session');
 const { isLoggedIn } = require('../middleware/route-guard');
 const User = require('../models/User.model');
 const Character = require('../models/Character.model');
-const { findOneAndUpdate } = require('../models/User.model');
+const { findOneAndUpdate, findByIdAndUpdate } = require('../models/User.model');
 let loginCheck = false;
 
 function checkLogin(session) {
@@ -167,5 +167,33 @@ router.get("/characterProfile", isLoggedIn, async (req, res, next) => {
     res.render("user/characterProfile", {errorMessage: "", profile: profile, sessionRace: sessionRace[0].character, session: loginCheck});
   }
 });
+
+
+router.get("/soulkeeper", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
+  const sessionRace = await User.find({username: req.session.user.username}).populate("character");
+  const character = await Character.findOne({character: req.session.user.character});
+  res.render("user/soulkeeper", {character: character, errorMessage: "", sessionRace: sessionRace[0].character, session: loginCheck});
+});
+
+router.post("/soulkeeper/spend/:id", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
+  const sessionRace = await User.find({username: req.session.user.username}).populate("character");
+  
+  const character = req.params;
+  const characterProfile = await Character.findById(character.id)
+  const currentSouls = parseInt(characterProfile.souls);
+  const spentSouls = parseInt(req.body.spentSouls);
+
+  await Character.findByIdAndUpdate(character.id, {souls: currentSouls - spentSouls})
+
+  if (spentSouls === 0) {
+    res.redirect("/user/soulkeeper");
+  } else {
+    res.render("user/soulkeeper", {character: character, errorMessage: "", sessionRace: sessionRace[0].character, session: loginCheck})
+  }
+})
+
+
 
 module.exports = router;

@@ -1,0 +1,16 @@
+<%- include("../../partials/nav-bar.ejs") %>
+<h1>Soulkeeper</h1> 
+
+<div>
+    <h2>Your souls</h2>
+    <div>Amount: <%=character.souls%></div>
+</div>
+
+<div>
+    <h2>Soulkeeper is hard at work ...</h2>
+    <div>Do you wish to spend your souls for rewards?</div>
+    <form action="/user/soulkeeper/spend/<%=character._id%>" method="POST">
+        <input type="number" name="spentSouls" value="<%=character.souls%>" min="0" max="<%=character.souls%>" />
+        <button type="submit">Spend Souls</button>
+    </form>
+</div>

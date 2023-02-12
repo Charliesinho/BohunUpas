@@ -2,14 +2,11 @@
 <h1>Profile</h1>
 <% if (sessionRace.length) { %>
     <h2>Your Character</h2> 
-    <div>
+    <form action="/user/characterProfile" method="GET">
         <p>Name: <%=profile.username%></p>
         <p>Race: <%=profile.character[0].race%></p>
-        <p>Weapon: <%=profile.character[0].weapon%></p>
-        <p>Armor: <%=profile.character[0].armor%></p>
-        <p>Artifact: <%=profile.character[0].artifact%></p>
-        <p>Souls: <%=profile.character[0].souls%></p>
-    </div>
+        <button type="submit">See Character Details</button>
+    </form>
 <% } %>
 <hr/>
 <h2>Account Details</h2>

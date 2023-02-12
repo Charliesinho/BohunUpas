@@ -60,7 +60,14 @@ router.get("/accountcheck", isLoggedOut, async (req, res, next) => {
       res.redirect("/user/createCharacter");
     }
     catch (error) {
-     console.log(error);
+      console.log("Error creating user: ", error);
+      if (error instanceof mongoose.Error.ValidationError) {
+          res.status(500).render("auth/signup", {username: body.username, email: body.email, errorMessage: error.message, session: loginCheck});
+      } else if (error.code === 11000) {
+          res.status(500).render("auth/signup", {username: body.username, email: body.email, errorMessage: "Username and / or email already in use.", session: loginCheck});
+      } else {
+          next(error);
+      }
     }
 })
 

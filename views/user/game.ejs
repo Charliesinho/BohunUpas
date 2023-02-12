@@ -2,6 +2,13 @@
 
 <section id="gameSection">
 <h1>Game</h1>
+
+<% if (session) { %> 
+    <div id="sessionInProgress" style="display: block;"></div>
+<% } else { %>
+    <div id="sessionInProgress" style="display: none;"></div>
+<% } %>
+
 <div id="game-board" style="display: flex; align-items: center; justify-content: center;">
     <canvas id="canvas" width="1200" height="700"></canvas>
 </div>  
