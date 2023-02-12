@@ -120,16 +120,8 @@ router.get("/game", isLoggedIn, async (req, res, next) => {
 
 router.post("/:id/game", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
-
-  
-  const user = await User.findOne({username: req.session.user.username}).populate('character')
-  const character = req.params.id
-  let souls = parseInt(req.body.souls) + user.character[0].souls;
-  console.log("OldSouls", souls)
-  const newSouls = await Character.findByIdAndUpdate(req.params.id, {souls: souls})
-  console.log("newSouls", newSouls)
-  
-  
+  let souls = parseInt(req.body.souls);
+  await Character.findByIdAndUpdate(req.params.id, {souls: souls})
   res.redirect("/user/characterProfile");
 });
 
