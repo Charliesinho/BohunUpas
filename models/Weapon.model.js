@@ -30,6 +30,10 @@ const weaponSchema = new Schema(
     value: {
       type: Number,
       default: 1
+    },
+    equipped: {
+      type: Boolean,
+      default: false
     }
   },
   {
@@ -38,5 +42,4 @@ const weaponSchema = new Schema(
 );
 
 const Weapon = model("Weapon", weaponSchema);
-
 module.exports = Weapon;

@@ -29,6 +29,10 @@ const armorSchema = new Schema(
     value: {
       type: Number,
       default: 1
+    },
+    equipped: {
+      type: Boolean,
+      default: false
     }
   },
   {

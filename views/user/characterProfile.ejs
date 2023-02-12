@@ -16,9 +16,9 @@
         <div>
             Equipped:
             <ul>
-            <li>Weapon: <%=profile.character[0].weapon%></li>
-            <li>Armor: <%=profile.character[0].armor%></li>
-            <li>Artefact: <%=profile.character[0].artefact%></li>
+                <li>Weapon: <%=profile.character[0].weapon%></li>
+                <li>Armor: <%=profile.character[0].armor%></li>
+                <li>Artefact: <%=profile.character[0].artefact%></li>
             </ul>
         </div>
     </div>
@@ -30,8 +30,11 @@
             <div>Damage: <%=item.damage%></div>
             <div>For: <%=item.race%></div>
             <div>Value: <%=item.value%></div>
+            <form action="/equipment/equipItem/<%=character._id%>/<%=item._id%>/<%=item.equip%>" method="POST">
+                <button type="submit">Equip</button>
+            </form>
             <form action="/equipment/sellItem/<%=character._id%>/<%=item._id%>/<%=item.equip%>" method="POST">
-                <button type="submit">Sell Item</button>
+                <button type="submit">Sell</button>
             </form>
             <br>
         <% }) %>

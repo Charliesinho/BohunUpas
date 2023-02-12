@@ -34,7 +34,7 @@ const characterSchema = new Schema(
       required: true,
     },
     achievements: {
-      type: [Schema.Types.ObjectId], 
+      type: Schema.Types.ObjectId, 
       ref: "Achievement",
     }
   },
