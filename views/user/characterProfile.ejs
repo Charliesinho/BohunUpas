@@ -1,10 +1,20 @@
 <%- include("../../partials/nav-bar.ejs") %>
-<h1>Character</h1>
-<div>
-    <p>Name: <%=profile.username%></p>
-    <p>Race: <%=profile.character[0].race%></p>
-    <p>Weapon: <%=profile.character[0].weapon%></p>
-    <p>Armor: <%=profile.character[0].armor%></p>
-    <p>Artifact: <%=profile.character[0].artifact%></p>
-    <p>Souls: <%=profile.character[0].souls%></p>
-</div>
+<section id="characterProfile">
+    <% if (profile.character[0].race === "Human") { %>
+        <iframe class="characterFrame" width="600" height="600" src="https://my.spline.design/untitled-efbebd8fdddb4af99ddc732238ccbb9e/"></iframe>     
+    <% } %>
+    <% if (profile.character[0].race === "Undead") { %>
+        <iframe class="characterFrame" width="600" height="600" src="https://my.spline.design/untitled-b2f04639964593eed26a81fa8a9823c4/"></iframe>     
+    <% } %>
+    <% if (profile.character[0].race === "Dino") { %>
+        <iframe class="characterFrame" width="600" height="600" src="https://my.spline.design/untitled-4b790425ef4f04c074add4bb192060c1/"></iframe>     
+    <% } %>
+    <div id="stats">    
+        <h1><%=profile.username%></h1>
+        <p>Race: <%=profile.character[0].race%></p>
+        <p>Weapon: <%=profile.character[0].weapon%></p>
+        <p>Armor: <%=profile.character[0].armor%></p>
+        <p>Artifact: <%=profile.character[0].artifact%></p>
+        <p>Souls: <%=profile.character[0].souls%></p>
+    </div>
+</section>
