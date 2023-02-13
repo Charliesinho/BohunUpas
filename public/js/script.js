@@ -84,7 +84,7 @@ if (sessionInProgress) {
   let screen3init = false;
   let screen4init = false;
 
-  let levelScreen = 0;
+  let levelScreen = 4;
 
   let animateId;
   let roomTransit = false;
@@ -287,6 +287,10 @@ if (sessionInProgress) {
       this.top = this.y;
       this.bottom = this.y + this.height;
 
+      // Dir
+      this.xDir;
+      this.yDir;
+
       // Gameplay values
       this.hp;
       this.iframes = 100;
@@ -309,6 +313,19 @@ if (sessionInProgress) {
         this.moveTowardsTarget(this.moveTo);
         for (let i = 0; i < this.imageFrames; i++) {
           this.imgContainer.push("../images/Meadow/Slime/slime"+i+".png");
+        }
+      }
+      if (this.name === "slimeBoss") {
+        this.souls = 100;
+        this.hp = 100;
+        this.damage = 10;
+        this.imageFrames = 6;
+        this.moveSpeed = 5;
+        this.randomMoveTimer = Math.floor(Math.random() * (400 - 200) + 200);
+        this.xDir = -1;
+        this.yDir = -1;
+        for (let i = 0; i < this.imageFrames; i++) {
+          this.imgContainer.push("../images/Meadow/SlimeBoss/slime"+i+".png");
         }
       }
     } 
@@ -349,6 +366,14 @@ if (sessionInProgress) {
       } else if (this.x < randomCoordinates.y && this.y < myCanvas.height - this.height && !this.checkCollision(collisionObjectArr, 0, 0, 10, 0)) {
         this.y += this.moveSpeed;
       }
+    }
+
+    slimeBossMovement() {
+      // Horizontal Movement
+      if (this.checkCollision(collisionObjectArr, 0, 1, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 0, 1)) this.xDir *= -1;
+      if (this.checkCollision(collisionObjectArr, 1, 0, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 1, 0) || this.y > myCanvas.height - this.height) this.yDir *= -1;
+      this.x += this.moveSpeed * this.xDir;
+      this.y += this.moveSpeed * this.yDir;
     }
 
     updateCollision() {
@@ -746,7 +771,8 @@ if (sessionInProgress) {
           enemyArr[i].moveTo = enemyArr[i].getRandomCoordinates();
         }
           
-        enemyArr[i].moveTowardsTarget(enemyArr[i].moveTo);
+        if (enemyArr[i].name === "slime") enemyArr[i].moveTowardsTarget(enemyArr[i].moveTo);
+        if (enemyArr[i].name === "slimeBoss") enemyArr[i].slimeBossMovement();
         enemyArr[i].updateCollision();
         animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
       }
@@ -1053,25 +1079,26 @@ if (sessionInProgress) {
 
     function loadScreen4() {
       // ENVIRONMENT
-      collisionObjectArr.push(new CollisionObject(0, 0, 60, myCanvas.height, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(60, 0, 60, 200, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(120, 0, 60, 140, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(180, 0, 40, 100, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(0, 0, 60, myCanvas.height, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(60, 0, 160, 60, "environment", -1, "", true));
       
-      collisionObjectArr.push(new CollisionObject(900, 0, 300, 100, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(920, 100, 280, 50, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(980, 150, 280, 25, "environment", -1, "", false));
+      //collisionObjectArr.push(new CollisionObject(120, 0, 60, 140, "environment", -1, "", true));
+      //collisionObjectArr.push(new CollisionObject(180, 0, 40, 100, "environment", -1, "", true));
       
-      collisionObjectArr.push(new CollisionObject(myCanvas.width - 40, 175, 280, myCanvas.height - 175, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(900, 0, 300, 100, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(920, 100, 280, 50, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(980, 150, 280, 25, "environment", -1, "", true));
       
-      collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 50, 220, 50, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(60, myCanvas.height - 100, 60, 60, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(900, myCanvas.height - 40, 280, 40, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(950, myCanvas.height - 80, 380, 40, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 40, 175, 280, myCanvas.height - 175, "environment", -1, "", true));
+      
+      collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 50, 220, 50, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(60, myCanvas.height - 100, 60, 60, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(900, myCanvas.height - 40, 280, 40, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(1000, myCanvas.height - 80, 380, 40, "environment", -1, "", true));
       // ABOVE GATE
-      collisionObjectArr.push(new CollisionObject(220, 0, 680, 60, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(220, 0, 680, 60, "environment", -1, "", true));
       // ROOM TRANSIT
-      collisionObjectArr.push(new CollisionObject(220, myCanvas.height - 15, 680, 15, "roomtransit", 3, "up", false));
+      collisionObjectArr.push(new CollisionObject(220, myCanvas.height - 15, 680, 15, "roomtransit", 3, "up", true));
 
       // ENEMIES
       enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
@@ -1080,6 +1107,7 @@ if (sessionInProgress) {
       enemyArr.push(new Enemy("slime", 500, 600, 90, 80));
       enemyArr.push(new Enemy("slime", 200, 500, 90, 80));
       enemyArr.push(new Enemy("slime", 800, 600, 90, 80));
+      enemyArr.push(new Enemy("slimeBoss", myCanvas.width / 2 - 75, myCanvas.height / 2, 300, 280));
       
       // Initialize enemies
       for (let i = 0; i < enemyArr.length; i++) {
