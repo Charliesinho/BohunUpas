@@ -71,20 +71,22 @@ if (sessionInProgress) {
 
 
   // Backgrounds
-  const backgroundArrMeadow = [];
-  const backgroundArrCave = [];
+  const backgroundArr = [];
   let background = new Image();
 
-  let levelMeadowInit = false;
-  let levelCaveInit = false;
+  let worldInit = false;
 
   let screen0init = false;
   let screen1init = false;
   let screen2init = false;
   let screen3init = false;
   let screen4init = false;
+  let screen5init = false;
+  let screen6init = false;
+  let screen7init = false;
+  let screen8init = false;
 
-  let levelScreen = 4;
+  let levelScreen = 0;
 
   let animateId;
   let roomTransit = false;
@@ -212,7 +214,7 @@ if (sessionInProgress) {
           this.right + or > arr[i].left &&
           this.top - ot < arr[i].bottom &&
           this.bottom + ob >= arr[i].top) { 
-            if (arr[i].getType() === "environment") {
+            if (arr[i].getType() === "environment" || arr[i].getType() === "playerblock") {
               return true;
             } else if (arr[i].getType() === "enemy") {
               this.hit(arr[i].damage)
@@ -319,7 +321,7 @@ if (sessionInProgress) {
       }
       if (this.name === "slimeBoss") {
         this.souls = 100;
-        this.hp = 1;
+        this.hp = 100;
         this.damage = 10;
         this.imageFrames = 6;
         this.moveSpeed = 100;
@@ -349,7 +351,7 @@ if (sessionInProgress) {
           this.right + or > arr[i].left &&
           this.top - ot < arr[i].bottom &&
           this.bottom + ob >= arr[i].top) { 
-            if (arr[i].getType() === "environment" || arr[i].getType() === "enemy") {
+            if (arr[i].getType() === "environment" && arr[i].getType() !== "playerblock") {
               return true;
             }
         }
@@ -375,12 +377,10 @@ if (sessionInProgress) {
       // Horizontal Collisions
       if (this.checkCollision(collisionObjectArr, 0, 5, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 0, 5)) {
         this.xDir *= -1;
-        console.log(this.xDir)
       }
       // Vertical Collisions
-      if (this.checkCollision(collisionObjectArr, 5, 0, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 5, 0) || this.y > myCanvas.height - this.height) {
+      if (this.checkCollision(collisionObjectArr, 5, 0, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 0, 0)) {
         this.yDir *= -1;
-        console.log(this.yDir);
       }
       // Move 
       this.x += (this.moveSpeed / 1.2 / this.hp) * this.xDir;
@@ -407,12 +407,14 @@ if (sessionInProgress) {
     }
 
     destroy() {
+      if (this.name === "slimeBoss") {
+        collisionObjectArr.pop()
+        collisionObjectArr.pop()
+        clearInterval(this.spawnInterval);
+      }
       this.dropSouls()
       const posInArr = enemyArr.indexOf(this);
       enemyArr.splice(posInArr, 1);
-      if (this.name === "slimeBoss") {
-        clearInterval(this.spawnInterval);
-      }
     }
 
     dropSouls() {
@@ -545,6 +547,11 @@ if (sessionInProgress) {
       }
     }
 
+    destroy() {
+      const posInArr = collisionObjectArr.indexOf(this);
+      collisionObjectArr.splice(posInArr, 1);
+    }
+
     getType() {
       return this.type;
     }
@@ -572,31 +579,36 @@ if (sessionInProgress) {
       switch (levelScreen) {
         // Meadow Screens
         case 0:
-          if (!levelMeadowInit) loadMedow();
+          if (!worldInit) loadWorld();
           if (!screen0init) loadScreen0();
-          background.src = backgroundArrMeadow[0].source;
+          background.src = backgroundArr[levelScreen].source;
           break;
         case 1:
-          if (!levelMeadowInit) loadMedow();
+          if (!worldInit) loadWorld();
           if (!screen1init) loadScreen1();
-          background.src = backgroundArrMeadow[1].source;
+          background.src = backgroundArr[levelScreen].source;
           break;
         case 2:
-          if (!levelMeadowInit) loadMedow();
+          if (!worldInit) loadWorld();
           if (!screen2init) loadScreen2();
-          background.src = backgroundArrMeadow[2].source;
+          background.src = backgroundArr[levelScreen].source;
           break;
         case 3:
-          if (!levelMeadowInit) loadMedow();
+          if (!worldInit) loadWorld();
           if (!screen3init) loadScreen3();
-          background.src = backgroundArrMeadow[3].source;
+          background.src = backgroundArr[levelScreen].source;
           break;
         case 4:
-          if (!levelMeadowInit) loadMedow();
+          if (!worldInit) loadWorld();
           if (!screen4init) loadScreen4();
-          background.src = backgroundArrMeadow[4].source;
+          background.src = backgroundArr[levelScreen].source;
           break;
         // Cave Screens
+        case 5:
+          if (!worldInit) loadWorld();
+          if (!screen5init) loadScreen5();
+          background.src = backgroundArr[levelScreen].source;
+          break;
       }
     }
 
@@ -630,18 +642,16 @@ if (sessionInProgress) {
       // Reset for new drawing
       ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
       // Moving DOWN a screen
-      if (transitDir === "down" && backgroundArrMeadow[levelScreen].y < 0) {
+      if (transitDir === "down" && backgroundArr[levelScreen].y < 0) {
         transitMoveElements();
       // Moving UP a screen
-      } else if (transitDir === "up" && backgroundArrMeadow[levelScreen].y > 0) {
+      } else if (transitDir === "up" && backgroundArr[levelScreen].y > 0) {
         transitMoveElements();
       // Moving RIGHT a screen
-      } else if (transitDir === "right" && backgroundArrMeadow[levelScreen].x > 0) {
-        console.log(levelScreen)
+      } else if (transitDir === "right" && backgroundArr[levelScreen].x > 0) {
         transitMoveElements();
       // Moving LEFT a screen
-      } else if (transitDir === "left" && backgroundArrMeadow[levelScreen].x < 0) {
-        console.log(levelScreen)
+      } else if (transitDir === "left" && backgroundArr[levelScreen].x < 0) {
         transitMoveElements();
       // Resume Game
       } else {
@@ -655,12 +665,12 @@ if (sessionInProgress) {
 
     function transitMoveElements() {
       // Shift and draw backgrounds
-      for (let i = 0; i < backgroundArrMeadow.length; i++) {
-        if (transitDir === "up") backgroundArrMeadow[i].y -= transitSpeed;
-        if (transitDir === "down") backgroundArrMeadow[i].y += transitSpeed;
-        if (transitDir === "right") backgroundArrMeadow[i].x -= transitSpeed;
-        if (transitDir === "left") backgroundArrMeadow[i].x += transitSpeed;
-        ctx.drawImage(backgroundArrMeadow[i].img, backgroundArrMeadow[i].x, backgroundArrMeadow[i].y, backgroundArrMeadow[i].width, backgroundArrMeadow[i].height);
+      for (let i = 0; i < backgroundArr.length; i++) {
+        if (transitDir === "up") backgroundArr[i].y -= transitSpeed;
+        if (transitDir === "down") backgroundArr[i].y += transitSpeed;
+        if (transitDir === "right") backgroundArr[i].x -= transitSpeed;
+        if (transitDir === "left") backgroundArr[i].x += transitSpeed;
+        ctx.drawImage(backgroundArr[i].img, backgroundArr[i].x, backgroundArr[i].y, backgroundArr[i].width, backgroundArr[i].height);
       }
       // Shift enemies
       for (let i = 0; i < enemyArr.length; i++) {
@@ -754,21 +764,21 @@ if (sessionInProgress) {
         // Shooting
         if (player.canShoot) {
           if (player.shootLeft && player.shootUp) { // TOP LEFT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, -1, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, -1, 8, 548, player.weaponLifeSpan);
           } else if (player.shootUp && player.shootRight) { // TOP RIGHT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, -1, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, -1, 8, 548, player.weaponLifeSpan);
           } else if (player.shootRight && player.shootDown) { // BOTTOM RIGHT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 1, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 1, 8, 548, player.weaponLifeSpan);
           } else if (player.shootDown && player.shootLeft) { // BOTTOM LEFT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 1, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 1, 8, 548, player.weaponLifeSpan);
           } else if (player.shootRight) { // RIGHT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 0, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 0, 8, 548, player.weaponLifeSpan);
           } else if (player.shootLeft) { // LEFT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 0, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 0, 8, 548, player.weaponLifeSpan);
           } else if (player.shootDown) { // DOWN
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, 1, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, 1, 8, 548, player.weaponLifeSpan);
           } else if (player.shootUp) { // UP
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, -1, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, -1, 8, 548, player.weaponLifeSpan);
           }
           player.canShoot = false;
           setTimeout(() => {
@@ -795,8 +805,19 @@ if (sessionInProgress) {
             enemyArr[i].spawnInterval = setInterval(() => {
               const newEnemy = new Enemy("slime", myCanvas.width / 2 - 90, myCanvas.height / 2 - 80, 90, 80);
               newEnemy.initialize();
-              enemyArr.push(newEnemy);
+              enemyArr.splice(enemyArr.length-2, 0, newEnemy);
             }, 5000)
+            setTimeout(() => {
+              // ROOM TRANSIT
+              collisionObjectArr.push(new CollisionObject(220, myCanvas.height - 15, 680, 15, "roomtransit", 3, "up", true));
+              // TO DUNGEON
+              collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 380, 0, 680, 15, "roomtransit", 5, "down", true));
+              // GET DESTROYED
+              collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, 0, 120, 50, "environment", -1, "", true));
+            }, 1500)
+            setTimeout(() => {
+              collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 50, myCanvas.width, 50, "environment", -1, "", true));
+            }, 4000)
           }
         }
 
@@ -915,14 +936,15 @@ if (sessionInProgress) {
 
 
     // SCREENS AND LEVELS DEFINED HERE
-    function loadMedow() {
+    function loadWorld() {
       // Get Backgrounds
-      backgroundArrMeadow.push(new Background(0, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow0.png`));
-      backgroundArrMeadow.push(new Background(0, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow1.png`));
-      backgroundArrMeadow.push(new Background(0, myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow2.png`));
-      backgroundArrMeadow.push(new Background(myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow3.png`));
-      backgroundArrMeadow.push(new Background(myCanvas.width, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow4.png`));
-      levelMeadowInit = true;
+      backgroundArr.push(new Background(0, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow0.png`));
+      backgroundArr.push(new Background(0, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow1.png`));
+      backgroundArr.push(new Background(0, myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow2.png`));
+      backgroundArr.push(new Background(myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow3.png`));
+      backgroundArr.push(new Background(myCanvas.width, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow4.png`));
+      backgroundArr.push(new Background(myCanvas.width, -myCanvas.height * 2, myCanvas.width, myCanvas.height, "../images/Dungeon/dungeon0.png"));
+      worldInit = true;
     }
 
     function loadScreen0() {
@@ -1064,9 +1086,7 @@ if (sessionInProgress) {
       for (let i = 0; i < enemyArr.length; i++) {
         enemyArr[i].initialize();
       }
-
       screen2init = true;
-
     }
 
     function loadScreen3() {
@@ -1106,26 +1126,17 @@ if (sessionInProgress) {
 
     function loadScreen4() {
       // ENVIRONMENT
-      collisionObjectArr.push(new CollisionObject(0, 0, 50, myCanvas.height, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(0, 0, 50, myCanvas.height, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(50, 0, myCanvas.width / 2 - 150, 50, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 20, 0, myCanvas.width / 2 - 50, 50, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 50, 0, 50, myCanvas.height, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(50, myCanvas.height - 50, 170, 50, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 300, myCanvas.height - 50, 250, 50, "environment", -1, "", false));
 
-      collisionObjectArr.push(new CollisionObject(50, 0, myCanvas.width / 2 - 150, 50, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 20, 0, myCanvas.width / 2 - 50, 50, "environment", -1, "", true));
+      // SOME COLLISIONS AND TRANSITS CREATED IN UPDATEENEMY()
 
-      collisionObjectArr.push(new CollisionObject(myCanvas.width - 50, 0, 50, myCanvas.height, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(50, myCanvas.height - 50, 170, 50, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width - 300, myCanvas.height - 50, 250, 50, "environment", -1, "", true));
-      // ROOM TRANSIT
-      collisionObjectArr.push(new CollisionObject(220, myCanvas.height - 15, 680, 15, "roomtransit", 3, "up", true));
-
-      // ENEMIES
-      enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
-      enemyArr.push(new Enemy("slime", 200, 200, 90, 80));
-      enemyArr.push(new Enemy("slime", 300, 600, 90, 80));
-      enemyArr.push(new Enemy("slime", 500, 600, 90, 80));
-      enemyArr.push(new Enemy("slime", 200, 500, 90, 80));
-      enemyArr.push(new Enemy("slime", 800, 600, 90, 80));
       // BOSS
-      enemyArr.push(new Enemy("slimeBoss", myCanvas.width / 2 - 75, myCanvas.height / 2, 300, 280));
+      enemyArr.push(new Enemy("slimeBoss", myCanvas.width / 2 - 100, myCanvas.height + 50, 300, 280));
       
       // Initialize enemies
       for (let i = 0; i < enemyArr.length; i++) {
@@ -1133,6 +1144,21 @@ if (sessionInProgress) {
       }
 
       screen4init = true;
+    }
+
+    function loadScreen5() {
+      collisionObjectArr.push(new CollisionObject(0, 0, myCanvas.width / 2 - 200, myCanvas.height, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 200, 0, 100, 100, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 450, 0, myCanvas.width / 2 - 200, myCanvas.height, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 560, 0, 110, 100, "environment", -1, "", true));
+
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 200, myCanvas.height - 100, 100, 100, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 560, myCanvas.height - 100, 110, 100, "environment", -1, "", true));
+      
+      // ROOM TRANSITIONING TOP
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 110, 0, 150, 15, "roomtransit", 6, "down", true)); // TOP
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 110, myCanvas.height - 15, 150, 15, "roomtransit", 4, "top", true)); // BOTTOM
+      screen5init = true;
     }
   }
 
