@@ -16,7 +16,15 @@
         <div>
             Equipped:
             <ul>
-                <li>Weapon: <%=profile.character[0].weapon%></li>
+                <li>Weapon:</li>
+                <% if (character.weapon.length) { %>
+                <ul>
+                    <li>Name: <%=character.weapon[0].name%></li>
+                    <li>Damage: <%=character.weapon[0].damage%></li>
+                    <li>Type: <%=character.weapon[0].type%></li>
+                    <li>Value: <%=character.weapon[0].value%> Souls</li>
+                </ul>
+                <% } %>
                 <li>Armor: <%=profile.character[0].armor%></li>
                 <li>Artefact: <%=profile.character[0].artefact%></li>
             </ul>

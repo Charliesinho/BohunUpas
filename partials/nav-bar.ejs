@@ -10,8 +10,8 @@
         <% if (session) { %>          
           <% console.log("session Race:", sessionRace) %>
           <% if (sessionRace.length === 1) { %>
-            <li><p><a style="text-decoration: none" href="/user/createcharacter"> Character </a></p></li>            
             <li><p><a style="text-decoration: none" href="/user/profile"> Profile </a></p></li>
+            <li><p><a style="text-decoration: none" href="/user/createcharacter"> Character </a></p></li>            
             <li><p><a style="text-decoration: none" href="/user/soulkeeper/<%=sessionRace[0]._id%>">Soulkeeper</a></p></li>
             <% } %>
             
