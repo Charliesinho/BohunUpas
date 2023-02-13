@@ -18,16 +18,6 @@ function checkLogin(session) {
   }
 }
 
-function reassignWeaponIndex(weaponsArr) {
-  let lastIndex = 0;
-  for (let i = 0; i < weaponsArr.length; i++) {
-    weaponsArr[i].invIndex = i;
-    weaponsArr[i].save();
-    lastIndex = i;
-  }
-  return lastIndex;
-}
-
 // BUY ITEM
 router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
@@ -78,7 +68,7 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
 
 
 // EQUIP
-router.post("/equipItem/:charId/:itemId/:equip/:id", async(req, res, next) => {
+router.post("/equipItem/:charId/:equip/:itemId", async(req, res, next) => {
   checkLogin(req.session.user);
   // Get Character
   try {
@@ -90,12 +80,12 @@ router.post("/equipItem/:charId/:itemId/:equip/:id", async(req, res, next) => {
       // FIND THE INDEX IN THE INVENTORY
       let thisIndex;
       for (let i = 0; i < character.inventory.length; i++) {
-        if (JSON.stringify(character.inventory[i]._id) === `"${req.params.id}"`) {
+        if (JSON.stringify(character.inventory[i]._id) === `"${req.params.itemId}"`) {
           thisIndex = i;
         }
       }
       if (!character.weapon.length) { // None equipped yet
-        const invWeapon = character.inventory.splice(index, 1);
+        const invWeapon = character.inventory.splice(thisIndex, 1);
         await Weapon.findByIdAndUpdate(itemId, {equipped: true}, {new: true});
         character.weapon.push(invWeapon[0]);
         await character.save();
@@ -133,12 +123,17 @@ router.post("/equipItem/:charId/:itemId/:equip/:id", async(req, res, next) => {
 
 
 // SELL ITEM
-router.post("/sellItem/:charId/:itemId/:equip/:invIndex", async (req, res, next) => {
+router.post("/sellItem/:charId/:equip/:itemId", async (req, res, next) => {
   checkLogin(req.session.user);
   try {
     // Get Character
-    const character = await Character.findById(req.params.charId).populate("inventory");
-    
+    const character = await Character.findById(req.params.charId).populate("inventory").populate("weapon").populate("armor").populate("artefact");
+    let thisIndex;
+    for (let i = 0; i < character.inventory.length; i++) {
+      if (JSON.stringify(character.inventory[i]._id) === `"${req.params.itemId}"`) {
+        thisIndex = i;
+      }
+    }
     // Get Item type
     let item;
     if (req.params.equip === "Weapon") item = await Weapon.findById(req.params.itemId); 
@@ -147,9 +142,11 @@ router.post("/sellItem/:charId/:itemId/:equip/:invIndex", async (req, res, next)
     const value = item.value;
     character.souls = parseInt(character.souls) + value;
     character.save();
+    character.inventory.splice(thisIndex, 1);
     if (req.params.equip === "Weapon") await Weapon.findByIdAndDelete(req.params.itemId); 
     if (req.params.equip === "Armor")  await Armor.findByIdAndDelete(req.params.itemId); 
     if (req.params.equip === "Artefact")  await Artefact.findByIdAndDelete(req.params.itemId); 
+    
 
     res.redirect("/user/characterProfile");
   } catch (error) {
@@ -157,22 +154,5 @@ router.post("/sellItem/:charId/:itemId/:equip/:invIndex", async (req, res, next)
   }
 });
 
-
-router.post("/test/:charId", async (req, res, next) => {
-  const character = await Character.findById(req.params.charId).populate("inventory").populate("weapon").populate("armor").populate("artefact");
-
-  const promiseArr = [];
-  const emptyArr = []
-  /* for (let i = 0; i < character.inventory.length; i++) {
-    charac
-    //promiseArr.push(await Weapon.findByIdAndDelete(character.inventory[i]._id));
-  }
-   */
-  character.inventory = emptyArr;
-  //Promise.all(promiseArr)
-
-
-  res.redirect("/user/characterProfile");
-})
 
 module.exports = router;
