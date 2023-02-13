@@ -78,22 +78,20 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
 
 
 // EQUIP
-router.post("/equipItem/:charId/:itemId/:equip/:invIndex/:id", async(req, res, next) => {
+router.post("/equipItem/:charId/:itemId/:equip/:id", async(req, res, next) => {
   checkLogin(req.session.user);
   // Get Character
   try {
     const character = await Character.findById(req.params.charId).populate("inventory").populate("weapon").populate("armor").populate("artefact");
     const itemEquip = req.params.equip;
     const itemId = req.params.itemId;
-    const index = req.params.invIndex;
 
     if (itemEquip === "Weapon") {
+      // FIND THE INDEX IN THE INVENTORY
       let thisIndex;
       for (let i = 0; i < character.inventory.length; i++) {
         if (JSON.stringify(character.inventory[i]._id) === `"${req.params.id}"`) {
           thisIndex = i;
-        } else {
-          console.log(JSON.stringify(character.inventory[i]._id), "   ", `"${req.params.id}"`)
         }
       }
       if (!character.weapon.length) { // None equipped yet
@@ -101,36 +99,14 @@ router.post("/equipItem/:charId/:itemId/:equip/:invIndex/:id", async(req, res, n
         await Weapon.findByIdAndUpdate(itemId, {equipped: true}, {new: true});
         character.weapon.push(invWeapon[0]);
         await character.save();
-
-        // REASSIGN INVITEM IDs
-        for (let i = 0; i < character.inventory.length; i++) {
-          const checkWeapon = await Weapon.findById(character.inventory[i]._id)
-          if (!checkWeapon.equipped) {
-            await Weapon.findByIdAndUpdate(character.inventory[i]._id, {invIndex: i}, {new: true})
-          }
-        }
       } else { // One equipped already
-        const promiseArr = [];
         const previousWeapon = character.weapon.pop();
-        promiseArr.push(await Weapon.findOneAndUpdate(previousWeapon._id, {equipped: false}, {new: true}));
+        await Weapon.findOneAndUpdate(previousWeapon._id, {equipped: false}, {new: true});
         const invWeapon = character.inventory.splice(thisIndex, 1)
-        promiseArr.push(await Weapon.findOneAndUpdate(invWeapon[0]._id, {equipped: true}, {new: true}));
-        console.log("PREVIOUS WEAPON: ", previousWeapon)
-        console.log("INV WEAPON: ", invWeapon[0])
-
-        character.inventory.push(previousWeapon);
+        await Weapon.findOneAndUpdate(invWeapon[0]._id, {equipped: true}, {new: true});
+        character.inventory.splice(thisIndex, 0, previousWeapon);
         character.weapon.push(invWeapon[0]);
         await character.save();
-        const allWeapons = await Weapon.find();
-        
-        // REASSIGN INVITEM IDs
-        for (let i = 0; i < allWeapons.length; i++) {
-          const checkWeapon = await Weapon.findById(allWeapons[i]._id);
-          if (!checkWeapon.equipped) {
-            promiseArr.push(await Weapon.findByIdAndUpdate(allWeapons[i]._id, {invIndex: i}, {new: true}));
-          }
-        }
-        Promise.all(promiseArr);
       }
     } else if (itemEquip === "Armor") {
       if (!character.armor) { // None equipped yet

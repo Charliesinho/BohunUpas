@@ -596,6 +596,9 @@ if (sessionInProgress) {
       // Moving UP a screen
       } else if (transitDir === "up" && backgroundArrMeadow[levelScreen].y > 0) {
         transitMoveElements();
+      // Moving RIGHT a screen
+      } else if (transitDir === "right" && backgroundArrMeadow[levelScreen].x > 0) {
+        transitMoveElements();
       // Resume Game
       } else {
         roomTransit = false;
@@ -840,6 +843,7 @@ if (sessionInProgress) {
       backgroundArrMeadow.push(new Background(0, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow0.png`));
       backgroundArrMeadow.push(new Background(0, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow1.png`));
       backgroundArrMeadow.push(new Background(0, myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow2.png`));
+      backgroundArrMeadow.push(new Background(0, myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow3.png`));
       levelMeadowInit = true;
     }
 
