@@ -318,19 +318,23 @@ if (sessionInProgress) {
       }
       if (this.name === "slimeBoss") {
         this.souls = 100;
-        this.hp = 100;
+        this.hp = 200;
         this.damage = 10;
         this.imageFrames = 6;
-        this.moveSpeed = 5;
+        this.moveSpeed = 100;
         this.randomMoveTimer = Math.floor(Math.random() * (400 - 200) + 200);
         this.xDir = -1;
         this.yDir = -1;
-        this.canSpawn = true;
+        this.canSpawn = false;
         for (let i = 0; i < this.imageFrames; i++) {
           this.imgContainer.push("../images/Meadow/SlimeBoss/slime"+i+".png");
         }
       }
     } 
+
+    getPosition() {
+      return this.x
+    }
 
     getRandomCoordinates() {
       const randomPointX = myCanvas.width;
@@ -348,7 +352,7 @@ if (sessionInProgress) {
           this.right + or > arr[i].left &&
           this.top - ot < arr[i].bottom &&
           this.bottom + ob >= arr[i].top) { 
-            if (arr[i].getType() === "environment") {
+            if (arr[i].getType() === "environment" || arr[i].getType() === "enemy") {
               return true;
             }
         }
@@ -371,14 +375,19 @@ if (sessionInProgress) {
     }
 
     slimeBossMovement() {
-      // Horizontal Movement
-      if (this.checkCollision(collisionObjectArr, 0, 1, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 0, 1)) this.xDir *= -1;
-      if (this.checkCollision(collisionObjectArr, 1, 0, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 1, 0) || this.y > myCanvas.height - this.height) this.yDir *= -1;
-      this.x += this.moveSpeed * this.xDir;
-      this.y += this.moveSpeed * this.yDir;
-      if (this.canSpawn) {
-
+      // Horizontal Collisions
+      if (this.checkCollision(collisionObjectArr, 0, 5, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 0, 5)) {
+        this.xDir *= -1;
+        console.log(this.xDir)
       }
+      // Vertical Collisions
+      if (this.checkCollision(collisionObjectArr, 5, 0, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 5, 0) || this.y > myCanvas.height - this.height) {
+        this.yDir *= -1;
+        console.log(this.yDir);
+      }
+      // Move 
+      this.x += (this.moveSpeed / 1.2 / this.hp) * this.xDir;
+      this.y += (this.moveSpeed / this.hp) * this.yDir;
     }
 
     updateCollision() {
@@ -404,6 +413,9 @@ if (sessionInProgress) {
       this.dropSouls()
       const posInArr = enemyArr.indexOf(this);
       enemyArr.splice(posInArr, 1);
+      if (this.name === "slimeBoss") {
+        console.log("BOSS DOWN")
+      }
     }
 
     dropSouls() {
@@ -775,9 +787,22 @@ if (sessionInProgress) {
         if (animateId % enemyArr[i].randomMoveTimer === 0) {
           enemyArr[i].moveTo = enemyArr[i].getRandomCoordinates();
         }
-          
+        // Normal enemies
         if (enemyArr[i].name === "slime") enemyArr[i].moveTowardsTarget(enemyArr[i].moveTo);
-        if (enemyArr[i].name === "slimeBoss") enemyArr[i].slimeBossMovement();
+
+        // Bosses
+        if (enemyArr[i].name === "slimeBoss") {
+          enemyArr[i].slimeBossMovement();
+          if (!enemyArr[i].canSpawn) {
+            enemyArr[i].canSpawn = true;
+            setInterval(() => {
+              const newEnemy = new Enemy("slime", myCanvas.width / 2 - 90, myCanvas.height / 2 - 80, 90, 80);
+              newEnemy.initialize();
+              enemyArr.push(newEnemy);
+            }, 5000)
+          }
+        }
+
         enemyArr[i].updateCollision();
         animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
       }
@@ -1085,23 +1110,10 @@ if (sessionInProgress) {
     function loadScreen4() {
       // ENVIRONMENT
       collisionObjectArr.push(new CollisionObject(0, 0, 50, myCanvas.height, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(60, 0, 160, 60, "environment", -1, "", true));
-      
-      //collisionObjectArr.push(new CollisionObject(120, 0, 60, 140, "environment", -1, "", true));
-      //collisionObjectArr.push(new CollisionObject(180, 0, 40, 100, "environment", -1, "", true));
-      
-      collisionObjectArr.push(new CollisionObject(900, 0, 300, 100, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(1000, 100, 280, 50, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(1050, 150, 280, 25, "environment", -1, "", true));
-      
-      collisionObjectArr.push(new CollisionObject(myCanvas.width - 40, 175, 280, myCanvas.height - 175, "environment", -1, "", true));
-      
-      collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 50, 220, 50, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(60, myCanvas.height - 100, 60, 60, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(900, myCanvas.height - 15, 280, 40, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(1000, myCanvas.height - 55, 380, 40, "environment", -1, "", true));
-      // ABOVE GATE
-      collisionObjectArr.push(new CollisionObject(220, 0, 680, 60, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(50, 0, myCanvas.width - 50, 50, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 50, 0, 50, myCanvas.height, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(50, myCanvas.height - 50, 170, 50, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 300, myCanvas.height - 50, 250, 50, "environment", -1, "", true));
       // ROOM TRANSIT
       collisionObjectArr.push(new CollisionObject(220, myCanvas.height - 15, 680, 15, "roomtransit", 3, "up", true));
 
