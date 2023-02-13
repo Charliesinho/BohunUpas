@@ -32,18 +32,14 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
       if (price <= availableSouls) { // ENOUGH SOULS CHECK
           if (character.inventory.length < 20) { // INVENTORY CHECK
             // Check next free inventory slot  
-            const weaponsArr = await Weapon.find();
-            const lastIndex = reassignWeaponIndex(weaponsArr);
-            
             const newWeapon = {
-              name: `Awesome Weapon ${lastIndex}`,
+              name: `Awesome Weapon`,
               equip: "Weapon",
               type: "Wand",
               damage: 5,
               race: "Dino",
               value: 5,
               equipped: false,
-              invIndex: lastIndex + 1
             }
 
             const craftedWeapon = await Weapon.create(newWeapon);
