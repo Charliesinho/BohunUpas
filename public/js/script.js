@@ -1080,9 +1080,10 @@ if (sessionInProgress) {
     function loadScreen4() {
       // ENVIRONMENT
       collisionObjectArr.push(new CollisionObject(0, 0, 60, myCanvas.height, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(60, 0, 60, 200, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(120, 0, 60, 140, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(180, 0, 40, 100, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(60, 0, 160, 60, "environment", -1, "", true));
+      
+      //collisionObjectArr.push(new CollisionObject(120, 0, 60, 140, "environment", -1, "", true));
+      //collisionObjectArr.push(new CollisionObject(180, 0, 40, 100, "environment", -1, "", true));
       
       collisionObjectArr.push(new CollisionObject(900, 0, 300, 100, "environment", -1, "", true));
       collisionObjectArr.push(new CollisionObject(920, 100, 280, 50, "environment", -1, "", true));
