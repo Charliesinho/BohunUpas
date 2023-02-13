@@ -86,7 +86,7 @@ if (sessionInProgress) {
   let screen7init = false;
   let screen8init = false;
 
-  let levelScreen = 5;
+  let levelScreen = 0;
 
   let animateId;
   let roomTransit = false;
@@ -614,6 +614,16 @@ if (sessionInProgress) {
           if (!screen6init) loadScreen6();
           background.src = backgroundArr[levelScreen].source;
           break;
+        case 7:
+          if (!worldInit) loadWorld();
+          if (!screen7init) loadScreen7();
+          background.src = backgroundArr[levelScreen].source;
+          break;
+        case 8:
+          if (!worldInit) loadWorld();
+          if (!screen8init) loadScreen8();
+          background.src = backgroundArr[levelScreen].source;
+          break;
       }
     }
 
@@ -950,6 +960,8 @@ if (sessionInProgress) {
       backgroundArr.push(new Background(myCanvas.width, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow4.png`));
       backgroundArr.push(new Background(myCanvas.width, -myCanvas.height * 2, myCanvas.width, myCanvas.height, "../images/Dungeon/dungeon0.png"));
       backgroundArr.push(new Background(myCanvas.width, -myCanvas.height * 3, myCanvas.width, myCanvas.height, "../images/Dungeon/dungeon1.png"));
+      backgroundArr.push(new Background(myCanvas.width, -myCanvas.height * 4, myCanvas.width, myCanvas.height, "../images/Dungeon/dungeon2.png"));
+      backgroundArr.push(new Background(myCanvas.width, -myCanvas.height * 5, myCanvas.width, myCanvas.height, "../images/Dungeon/dungeon3.png"));
       worldInit = true;
     }
 
@@ -1192,6 +1204,37 @@ if (sessionInProgress) {
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, 0, 130, 15, "roomtransit", 7, "down", false));
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height-15, 130, 15, "roomtransit", 5, "up", false));
       screen6init = true;
+    }
+
+    function  loadScreen7() {
+      // COLLISIONS
+      collisionObjectArr.push(new CollisionObject(0, 0, 60, myCanvas.height, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 60, 0, 60, myCanvas.height, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(0, 0, 475, 70, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, 0, 600, 70, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 90, 485, 90, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, myCanvas.height / 2 + 110, 600, 240, "environment", -1, "", false));
+
+      // Transitions
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, 0, 130, 15, "roomtransit", 8, "down", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height-15, 130, 15, "roomtransit", 6, "up", false));
+
+      screen7init = true;
+    }
+
+    function  loadScreen8() {
+      // COLLISIONS
+      collisionObjectArr.push(new CollisionObject(0, 0, 240, myCanvas.height, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 250, 0, 250, myCanvas.height, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(0, 0, 600, 130, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 160, 0, 600, 130, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 180, 485, 180, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, myCanvas.height - 180, 600, 250, "environment", -1, "", false));
+
+      // Transitions
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 20, 0, 130, 15, "roomtransit", 9, "down", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height - 15, 130, 15, "roomtransit", 7, "up", false));
+      screen8init = true;
     }
   }
 
