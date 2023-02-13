@@ -5,9 +5,6 @@ const session = require('express-session');
 const { isLoggedIn } = require('../middleware/route-guard');
 const User = require('../models/User.model');
 const Character = require('../models/Character.model');
-const Weapon = require("../models/Weapon.model");
-const Armor = require("../models/Armor.model");
-const Artefact = require("../models/Artefact.model");
 let loginCheck = false;
 
 function checkLogin(session) {
@@ -159,9 +156,10 @@ router.post("/createcharacter", isLoggedIn, async (req, res) => {
 router.get("/characterProfile", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
   const profile = await User.findOne({username: req.session.user.username}).populate('character');
-  const sessionName= req.session.user.username;
+  const sessionName = req.session.user.username;
   const sessionRace = await User.find({username: sessionName});
-  const character = await Character.findOne(profile.character[0]._id).populate("inventory")
+  const character = await Character.findOne(profile.character[0]._id).populate("inventory").populate("weapon").populate("armor").populate("artefact")
+  console.log("CHARACTEEEEER: ", character);
   if (!profile.character.length) {
     res.redirect("/user/createcharacter");
   } else {

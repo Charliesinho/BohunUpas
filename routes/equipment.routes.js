@@ -34,7 +34,7 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
               const newWeapon = {
                   name: "Awesome Weapon",
                   type: "Wand",
-                  damage: 1,
+                  damage: 5,
                   race: "Dino",
                   value: 5
               }
@@ -80,7 +80,6 @@ router.post("/equipItem/:charId/:itemId/:equip", async(req, res, next) => {
         equipped: true,
       };
       const newWeapon = await Weapon.create(tempWeapon);
-      const invItem = await Character.findById(req.params.itemId)
       if (!character.weapon.length) { // None equipped yet
         character.weapon.push(newWeapon);
         character.save();
