@@ -95,7 +95,14 @@ h1 {
   text-shadow: 0 0px 10px rgb(255, 255, 255);
   color: rgb(255, 230, 224);  
   margin-top: 0;
-  margin-bottom: 50px;
+  margin-bottom: -50px;
   margin-right: 0px;
   padding-right: 0px;
+}
+
+#characterRace {
+  font-size: 30px;
+  color: rgb(255, 139, 31);
+  text-shadow: 0 6px black;
+  margin-left: 20px;
 }
