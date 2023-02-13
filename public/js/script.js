@@ -287,9 +287,10 @@ if (sessionInProgress) {
       this.top = this.y;
       this.bottom = this.y + this.height;
 
-      // Dir
+      // Boss
       this.xDir;
       this.yDir;
+      this.canSpawn;
 
       // Gameplay values
       this.hp;
@@ -324,6 +325,7 @@ if (sessionInProgress) {
         this.randomMoveTimer = Math.floor(Math.random() * (400 - 200) + 200);
         this.xDir = -1;
         this.yDir = -1;
+        this.canSpawn = true;
         for (let i = 0; i < this.imageFrames; i++) {
           this.imgContainer.push("../images/Meadow/SlimeBoss/slime"+i+".png");
         }
@@ -374,6 +376,9 @@ if (sessionInProgress) {
       if (this.checkCollision(collisionObjectArr, 1, 0, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 1, 0) || this.y > myCanvas.height - this.height) this.yDir *= -1;
       this.x += this.moveSpeed * this.xDir;
       this.y += this.moveSpeed * this.yDir;
+      if (this.canSpawn) {
+
+      }
     }
 
     updateCollision() {
@@ -1079,22 +1084,22 @@ if (sessionInProgress) {
 
     function loadScreen4() {
       // ENVIRONMENT
-      collisionObjectArr.push(new CollisionObject(0, 0, 60, myCanvas.height, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(0, 0, 50, myCanvas.height, "environment", -1, "", true));
       collisionObjectArr.push(new CollisionObject(60, 0, 160, 60, "environment", -1, "", true));
       
       //collisionObjectArr.push(new CollisionObject(120, 0, 60, 140, "environment", -1, "", true));
       //collisionObjectArr.push(new CollisionObject(180, 0, 40, 100, "environment", -1, "", true));
       
       collisionObjectArr.push(new CollisionObject(900, 0, 300, 100, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(920, 100, 280, 50, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(980, 150, 280, 25, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(1000, 100, 280, 50, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(1050, 150, 280, 25, "environment", -1, "", true));
       
       collisionObjectArr.push(new CollisionObject(myCanvas.width - 40, 175, 280, myCanvas.height - 175, "environment", -1, "", true));
       
       collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 50, 220, 50, "environment", -1, "", true));
       collisionObjectArr.push(new CollisionObject(60, myCanvas.height - 100, 60, 60, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(900, myCanvas.height - 40, 280, 40, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(1000, myCanvas.height - 80, 380, 40, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(900, myCanvas.height - 15, 280, 40, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(1000, myCanvas.height - 55, 380, 40, "environment", -1, "", true));
       // ABOVE GATE
       collisionObjectArr.push(new CollisionObject(220, 0, 680, 60, "environment", -1, "", true));
       // ROOM TRANSIT
