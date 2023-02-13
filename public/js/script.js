@@ -519,7 +519,7 @@ if (sessionInProgress) {
     myCanvas.style.backgroundColor = "white";
     myCanvas.style.border = "1px solid black";
     myCanvas.style.align = "center";
-    const player = new Player(race, 100, 300, 85, 85, 5, 5, 1, 0);
+    const player = new Player(race, 100, 300, 80, 80, 5, 5, 1, 0);
 
     function startGame() {
       player.initialize()
