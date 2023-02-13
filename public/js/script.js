@@ -944,6 +944,7 @@ if (sessionInProgress) {
       backgroundArr.push(new Background(myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow3.png`));
       backgroundArr.push(new Background(myCanvas.width, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow4.png`));
       backgroundArr.push(new Background(myCanvas.width, -myCanvas.height * 2, myCanvas.width, myCanvas.height, "../images/Dungeon/dungeon0.png"));
+      backgroundArr.push(new Background(myCanvas.width, -myCanvas.height * 3, myCanvas.width, myCanvas.height, "../images/Dungeon/dungeon1.png"));
       worldInit = true;
     }
 
@@ -1147,17 +1148,17 @@ if (sessionInProgress) {
     }
 
     function loadScreen5() {
-      collisionObjectArr.push(new CollisionObject(0, 0, myCanvas.width / 2 - 200, myCanvas.height, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 200, 0, 100, 100, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width - 450, 0, myCanvas.width / 2 - 200, myCanvas.height, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width - 560, 0, 110, 100, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(0, 0, myCanvas.width / 2 - 200, myCanvas.height, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 200, 0, 100, 100, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 450, 0, myCanvas.width / 2 - 200, myCanvas.height, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 560, 0, 110, 100, "environment", -1, "", false));
 
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 200, myCanvas.height - 100, 100, 100, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width - 560, myCanvas.height - 100, 110, 100, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 200, myCanvas.height - 100, 100, 100, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 560, myCanvas.height - 100, 110, 100, "environment", -1, "", false));
       
       // ROOM TRANSITIONING TOP
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 110, 0, 150, 15, "roomtransit", 6, "down", true)); // TOP
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 110, myCanvas.height - 15, 150, 15, "roomtransit", 4, "top", true)); // BOTTOM
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 110, 0, 150, 15, "roomtransit", 6, "down", false)); // TOP
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 110, myCanvas.height - 15, 150, 15, "roomtransit", 4, "top", false)); // BOTTOM
       screen5init = true;
     }
   }
