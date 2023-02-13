@@ -6,21 +6,50 @@
 
     <div>
       <ul id="navList">
-        <li><p><a style="text-decoration: none" href="/"> Main Page </a></p></li>
+        <li><p><a style="text-decoration: none" href="/">
+          <div class="navImg">
+          <img  src="/images/Icons/Scroll.png" height="60px">
+        </div>
+        </a></p></li>
+
         <% if (session) { %>          
           <% console.log("session Race:", sessionRace) %>
           <% if (sessionRace.length === 1) { %>
-            <li><p><a style="text-decoration: none" href="/user/profile"> Profile </a></p></li>
-            <li><p><a style="text-decoration: none" href="/user/createcharacter"> Character </a></p></li>            
-            <li><p><a style="text-decoration: none" href="/user/soulkeeper/<%=sessionRace[0]._id%>">Soulkeeper</a></p></li>
-            <% } %>
             
+            <li><p><a style="text-decoration: none" href="/user/createcharacter">
+              <div class="navImg">
+              <img  src="/images/Icons/Bag.png" height="60px">
+            </div>
+            </a></p></li>                
+            <li><p><a style="text-decoration: none" href="/user/soulkeeper/<%=sessionRace[0]._id%>">
+              <div class="navImg">
+              <img  src="/images/Icons/Stone.png" height="60px">
+            </div>
+            </a></p></li>
+            <% } %>     
+
             <% if (sessionRace.length === 0) { %>              
-           <li><p><a style="text-decoration: none" href="/user/characterProfile"> Character </a></p></li>            
+           <li><p><a style="text-decoration: none" href="/user/characterProfile">
+            <div class="navImg">
+              <img  src="/images/Icons/Bag.png" height="60px">
+            </div>
+          </a></p></li>            
           <% } %>
-          <li>Collections</li>
-          <li>Marketplace</li>
-          <li>Trading</li>
+          <!-- <li>Collections</li> -->
+          <li>
+            <div class="navImg">
+              <p><a><img src="/images/Icons/Coin.png" height="60px"></a></p>
+            </div>
+          </li>
+          <!-- <li>Trading</li> -->
+          <li>
+            <div class="navImg">
+              <p><a><img src="/images/Icons/Book.png" height="60px"></a></p>
+            </div>
+          </li>
+          <li><p><a style="text-decoration: none" href="/user/profile">
+            <div class="navImg"><img  src="/images/Icons/Gear.png" height="60px"></div>
+          </a></p></li>
         <% } %>
       </ul>
     </div>
