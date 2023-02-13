@@ -291,6 +291,7 @@ if (sessionInProgress) {
       this.xDir;
       this.yDir;
       this.canSpawn;
+      this.spawnInterval;
 
       // Gameplay values
       this.hp;
@@ -318,7 +319,7 @@ if (sessionInProgress) {
       }
       if (this.name === "slimeBoss") {
         this.souls = 100;
-        this.hp = 200;
+        this.hp = 1;
         this.damage = 10;
         this.imageFrames = 6;
         this.moveSpeed = 100;
@@ -331,10 +332,6 @@ if (sessionInProgress) {
         }
       }
     } 
-
-    getPosition() {
-      return this.x
-    }
 
     getRandomCoordinates() {
       const randomPointX = myCanvas.width;
@@ -414,7 +411,7 @@ if (sessionInProgress) {
       const posInArr = enemyArr.indexOf(this);
       enemyArr.splice(posInArr, 1);
       if (this.name === "slimeBoss") {
-        console.log("BOSS DOWN")
+        clearInterval(this.spawnInterval);
       }
     }
 
@@ -795,7 +792,7 @@ if (sessionInProgress) {
           enemyArr[i].slimeBossMovement();
           if (!enemyArr[i].canSpawn) {
             enemyArr[i].canSpawn = true;
-            setInterval(() => {
+            enemyArr[i].spawnInterval = setInterval(() => {
               const newEnemy = new Enemy("slime", myCanvas.width / 2 - 90, myCanvas.height / 2 - 80, 90, 80);
               newEnemy.initialize();
               enemyArr.push(newEnemy);
@@ -1110,7 +1107,10 @@ if (sessionInProgress) {
     function loadScreen4() {
       // ENVIRONMENT
       collisionObjectArr.push(new CollisionObject(0, 0, 50, myCanvas.height, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(50, 0, myCanvas.width - 50, 50, "environment", -1, "", true));
+
+      collisionObjectArr.push(new CollisionObject(50, 0, myCanvas.width / 2 - 150, 50, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 20, 0, myCanvas.width / 2 - 50, 50, "environment", -1, "", true));
+
       collisionObjectArr.push(new CollisionObject(myCanvas.width - 50, 0, 50, myCanvas.height, "environment", -1, "", true));
       collisionObjectArr.push(new CollisionObject(50, myCanvas.height - 50, 170, 50, "environment", -1, "", true));
       collisionObjectArr.push(new CollisionObject(myCanvas.width - 300, myCanvas.height - 50, 250, 50, "environment", -1, "", true));
@@ -1124,6 +1124,7 @@ if (sessionInProgress) {
       enemyArr.push(new Enemy("slime", 500, 600, 90, 80));
       enemyArr.push(new Enemy("slime", 200, 500, 90, 80));
       enemyArr.push(new Enemy("slime", 800, 600, 90, 80));
+      // BOSS
       enemyArr.push(new Enemy("slimeBoss", myCanvas.width / 2 - 75, myCanvas.height / 2, 300, 280));
       
       // Initialize enemies
