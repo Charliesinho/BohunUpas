@@ -34,6 +34,10 @@ const weaponSchema = new Schema(
     equipped: {
       type: Boolean,
       default: false
+    },
+    invIndex: {
+      type: Number,
+      default: 0
     }
   },
   {
