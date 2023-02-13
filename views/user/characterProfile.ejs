@@ -1,14 +1,5 @@
 <%- include("../../partials/nav-bar.ejs") %>
-<section id="characterProfile">
-    <% if (profile.character[0].race === "Human") { %>
-        <iframe class="characterFrame" width="600" height="600" src="https://my.spline.design/untitled-efbebd8fdddb4af99ddc732238ccbb9e/"></iframe>     
-    <% } %>
-    <% if (profile.character[0].race === "Undead") { %>
-        <iframe class="characterFrame" width="600" height="600" src="https://my.spline.design/untitled-b2f04639964593eed26a81fa8a9823c4/"></iframe>     
-    <% } %>
-    <% if (profile.character[0].race === "Dino") { %>
-        <iframe class="characterFrame" width="600" height="600" src="https://my.spline.design/untitled-4b790425ef4f04c074add4bb192060c1/"></iframe>     
-    <% } %>
+<section id="characterProfile">    
     <div id="stats">    
         <h1 id="characterName"><%=profile.username%></h1>
         <p>Race: <%=profile.character[0].race%></p>
@@ -30,6 +21,15 @@
             </ul>
         </div>
     </div>
+    <% if (profile.character[0].race === "Human") { %>
+        <iframe class="characterFrame" width="800" height="800" src="https://my.spline.design/untitled-efbebd8fdddb4af99ddc732238ccbb9e/"></iframe>     
+    <% } %>
+    <% if (profile.character[0].race === "Undead") { %>
+        <iframe class="characterFrame" width="800" height="800" src="https://my.spline.design/untitled-b2f04639964593eed26a81fa8a9823c4/"></iframe>     
+    <% } %>
+    <% if (profile.character[0].race === "Dino") { %>
+        <iframe class="characterFrame" width="800" height="800" src="https://my.spline.design/untitled-4b790425ef4f04c074add4bb192060c1/"></iframe>     
+    <% } %>
     <div id="inventory">
         <h1>Inventory</h1>
         <% character.inventory.forEach((item) => { %>

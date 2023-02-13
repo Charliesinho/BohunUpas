@@ -1,7 +1,8 @@
 body {  
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;  
   margin: 0;
-  background-color: rgb(19, 19, 19);
+  background: rgb(27,156,204);
+background: radial-gradient(circle, rgba(27,156,204,1) 0%, rgba(31,20,17,1) 0%, rgba(0,0,0,1) 100%);
   color: white;
 }
 
@@ -81,10 +82,12 @@ h1 {
 
 .characterFrame {
   border-color: transparent;
+  margin-top: -100px;
+  
 }
 
 #characterName {
-  font-size: 80px;
+  font-size: 120px;
   font-weight: bolder;
   text-shadow: 0 0 15px rgba(255, 255, 255, 0.397);
 }
