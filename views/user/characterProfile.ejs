@@ -38,17 +38,13 @@
             <div>Damage: <%=item.damage%></div>
             <div>For: <%=item.race%></div>
             <div>Value: <%=item.value%></div>
-            <form action="/equipment/equipItem/<%=character._id%>/<%=item._id%>/<%=item.equip%>/<%=item._id%>" method="POST">
+            <form action="/equipment/equipItem/<%=character._id%>/<%=item.equip%>/<%=item._id%>" method="POST">
                 <button type="submit">Equip</button>
             </form>
-            <form action="/equipment/sellItem/<%=character._id%>/<%=item._id%>/<%=item.equip%>/<%=item.invIndex%>" method="POST">
+            <form action="/equipment/sellItem/<%=character._id%>/<%=item.equip%>/<%=item._id%>" method="POST">
                 <button type="submit">Sell</button>
             </form>
             <br>
-            <% }) %>
-        <form action="/equipment/test/<%=character._id%>" method="POST">
-            <button type="submit">DELETE INVENTORY</button>
-        </form>
-
+        <% }) %>
     </div>
 </section>

@@ -598,6 +598,11 @@ if (sessionInProgress) {
         transitMoveElements();
       // Moving RIGHT a screen
       } else if (transitDir === "right" && backgroundArrMeadow[levelScreen].x > 0) {
+        console.log(levelScreen)
+        transitMoveElements();
+      // Moving LEFT a screen
+      } else if (transitDir === "left" && backgroundArrMeadow[levelScreen].x < 0) {
+        console.log(levelScreen)
         transitMoveElements();
       // Resume Game
       } else {
@@ -614,12 +619,16 @@ if (sessionInProgress) {
       for (let i = 0; i < backgroundArrMeadow.length; i++) {
         if (transitDir === "up") backgroundArrMeadow[i].y -= transitSpeed;
         if (transitDir === "down") backgroundArrMeadow[i].y += transitSpeed;
+        if (transitDir === "right") backgroundArrMeadow[i].x -= transitSpeed;
+        if (transitDir === "left") backgroundArrMeadow[i].x += transitSpeed;
         ctx.drawImage(backgroundArrMeadow[i].img, backgroundArrMeadow[i].x, backgroundArrMeadow[i].y, backgroundArrMeadow[i].width, backgroundArrMeadow[i].height);
       }
       // Shift enemies
       for (let i = 0; i < enemyArr.length; i++) {
         if (transitDir === "up") enemyArr[i].y -= transitSpeed;
         if (transitDir === "down") enemyArr[i].y += transitSpeed;
+        if (transitDir === "right") enemyArr[i].x -= transitSpeed;
+        if (transitDir === "left") enemyArr[i].x += transitSpeed;
         enemyArr[i].img.src = enemyArr[i].imgContainer[0];
         ctx.drawImage(enemyArr[i].img, enemyArr[i].x, enemyArr[i].y, enemyArr[i].width, enemyArr[i].height)
       }
@@ -627,15 +636,30 @@ if (sessionInProgress) {
       for (let i = 0; i < collisionObjectArr.length; i++) {
         if (transitDir === "up") collisionObjectArr[i].y -= transitSpeed;
         if (transitDir === "down") collisionObjectArr[i].y += transitSpeed;
+        if (transitDir === "right") collisionObjectArr[i].x -= transitSpeed;
+        if (transitDir === "left") collisionObjectArr[i].x += transitSpeed;
       }
       // Destroy Projectiles
       for (let i = 0; i < projectileArr.length; i++) {
         projectileArr[i].destroy();
       }
       // Player
-      if (transitDir === "up") player.y -= transitSpeed - 1;
-      if (transitDir === "down") player.y += transitSpeed - 1;
-      animate(player, player.imgContainerRight, 6, 8);
+      if (transitDir === "up") {
+        player.y -= transitSpeed - 1;
+        animate(player, player.imgContainerRight, 6, 8);
+      }
+      if (transitDir === "down") {
+        player.y += transitSpeed - 1;
+        animate(player, player.imgContainerLeft, 6, 8);
+      }
+      if (transitDir === "right") {
+        player.x -= transitSpeed - 1;
+        animate(player, player.imgContainerRight, 6, 8);
+      }
+      if (transitDir === "left") {
+        player.x += transitSpeed - 1;
+        animate(player, player.imgContainerLeft, 6, 8);
+      }
     }
 
 
@@ -843,7 +867,8 @@ if (sessionInProgress) {
       backgroundArrMeadow.push(new Background(0, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow0.png`));
       backgroundArrMeadow.push(new Background(0, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow1.png`));
       backgroundArrMeadow.push(new Background(0, myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow2.png`));
-      backgroundArrMeadow.push(new Background(0, myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow3.png`));
+      backgroundArrMeadow.push(new Background(myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow3.png`));
+      backgroundArrMeadow.push(new Background(myCanvas.width, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow4.png`));
       levelMeadowInit = true;
     }
 
@@ -876,7 +901,7 @@ if (sessionInProgress) {
       // ROOM TRANSITIONING TOP
       collisionObjectArr.push(new CollisionObject(myCanvas.width/4 - 70, 0, 675, 15, "roomtransit", 1, "down", false));
       // ROOM TRANSITIONING RIGHT
-      collisionObjectArr.push(new CollisionObject(myCanvas.width - 15, 155, 15, 430, "roomtransit", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 15, 155, 15, 430, "roomtransit", 3, "right", false));
       // ROOM TRANSITIONING BOTTOM
       collisionObjectArr.push(new CollisionObject(212, myCanvas.height - 15, 740, 15, "roomtransit", 2, "up", false));
       // ROOM TRANSITIONING LEFT
@@ -928,6 +953,18 @@ if (sessionInProgress) {
       // ROOM TRANSIT
       collisionObjectArr.push(new CollisionObject(190, myCanvas.height - 15, 820, 15, "roomtransit", 0, "up", false));
 
+      // ENEMIES
+      enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
+      enemyArr.push(new Enemy("slime", 200, 200, 90, 80));
+      enemyArr.push(new Enemy("slime", 300, 600, 90, 80));
+      enemyArr.push(new Enemy("slime", 500, 600, 90, 80));
+      enemyArr.push(new Enemy("slime", 200, 500, 90, 80));
+      enemyArr.push(new Enemy("slime", 800, 600, 90, 80));
+      
+      // Initialize enemies
+      for (let i = 0; i < enemyArr.length; i++) {
+        enemyArr[i].initialize();
+      }
       screen1init = true;
     }
     
@@ -959,23 +996,97 @@ if (sessionInProgress) {
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 65, myCanvas.height / 2 - 145, 30, 160, "environment", -1, "", false));
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 35, myCanvas.height / 2 - 145, 90, 120, "environment", -1, "", false));
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 55, myCanvas.height / 2 - 95, 20, 70, "environment", -1, "", false));
-      // ROOM TRANSITIONING
-      collisionObjectArr.push(new CollisionObject(230, 0, 675, 15, "roomtransit", 0, "down", false));
+      // ROOM TRANSITIONING TOP
+      collisionObjectArr.push(new CollisionObject(220, 0, 740, 15, "roomtransit", 0, "down", false));
+
+      // ENEMIES
+      enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
+      enemyArr.push(new Enemy("slime", 200, 200, 90, 80));
+      enemyArr.push(new Enemy("slime", 300, 600, 90, 80));
+      enemyArr.push(new Enemy("slime", 500, 600, 90, 80));
+      enemyArr.push(new Enemy("slime", 200, 500, 90, 80));
+      enemyArr.push(new Enemy("slime", 800, 600, 90, 80));
+      
+      // Initialize enemies
+      for (let i = 0; i < enemyArr.length; i++) {
+        enemyArr[i].initialize();
+      }
 
       screen2init = true;
 
     }
 
     function loadScreen3() {
+      // TREES TOP LEFT GROUP
+      collisionObjectArr.push(new CollisionObject(0, 0, 220, 130, "environment", -1, "", false));
+      // TREES TOP RIGHT GROUP
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 280, 0, 280, 70, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 200, 70, 230, 50, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 110, 120, 130, 600, "environment", -1, "", false));
+      // BOTTOM GROUP
+      collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 90, 100, 90, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(100, myCanvas.height - 50, myCanvas.width - 100, 50, "environment", -1, "", false));
+      // BOTTOM RIGHT
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 280, myCanvas.height - 190, 200, 200, "environment", -1, "", false));
+      
+      // ROOM TRANSITIONING LEFT
+      collisionObjectArr.push(new CollisionObject(0, 130, 15, 675, "roomtransit", 0, "left", false));
+      // ROOM TRANSITIONING TOP
+      collisionObjectArr.push(new CollisionObject(220, 0, 700, 15, "roomtransit", 4, "down", false));
+
+      // ENEMIES
+      enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
+      enemyArr.push(new Enemy("slime", 200, 200, 90, 80));
+      enemyArr.push(new Enemy("slime", 300, 600, 90, 80));
+      enemyArr.push(new Enemy("slime", 500, 600, 90, 80));
+      enemyArr.push(new Enemy("slime", 200, 500, 90, 80));
+      enemyArr.push(new Enemy("slime", 800, 600, 90, 80));
+      
+      // Initialize enemies
+      for (let i = 0; i < enemyArr.length; i++) {
+        enemyArr[i].initialize();
+      }
 
       screen3init = true;
 
     }
 
     function loadScreen4() {
+      // ENVIRONMENT
+      collisionObjectArr.push(new CollisionObject(0, 0, 60, myCanvas.height, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(60, 0, 60, 200, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(120, 0, 60, 140, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(180, 0, 40, 100, "environment", -1, "", false));
+      
+      collisionObjectArr.push(new CollisionObject(900, 0, 300, 100, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(920, 100, 280, 50, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(980, 150, 280, 25, "environment", -1, "", false));
+      
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 40, 175, 280, myCanvas.height - 175, "environment", -1, "", false));
+      
+      collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 50, 220, 50, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(60, myCanvas.height - 100, 60, 60, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(900, myCanvas.height - 40, 280, 40, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(950, myCanvas.height - 80, 380, 40, "environment", -1, "", false));
+      // ABOVE GATE
+      collisionObjectArr.push(new CollisionObject(220, 0, 680, 60, "environment", -1, "", false));
+      // ROOM TRANSIT
+      collisionObjectArr.push(new CollisionObject(220, myCanvas.height - 15, 680, 15, "roomtransit", 3, "up", false));
+
+      // ENEMIES
+      enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
+      enemyArr.push(new Enemy("slime", 200, 200, 90, 80));
+      enemyArr.push(new Enemy("slime", 300, 600, 90, 80));
+      enemyArr.push(new Enemy("slime", 500, 600, 90, 80));
+      enemyArr.push(new Enemy("slime", 200, 500, 90, 80));
+      enemyArr.push(new Enemy("slime", 800, 600, 90, 80));
+      
+      // Initialize enemies
+      for (let i = 0; i < enemyArr.length; i++) {
+        enemyArr[i].initialize();
+      }
 
       screen4init = true;
-
     }
   }
 
