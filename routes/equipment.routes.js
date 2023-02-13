@@ -18,6 +18,16 @@ function checkLogin(session) {
   }
 }
 
+function reassignWeaponIndex(weaponsArr) {
+  let lastIndex = 0;
+  for (let i = 0; i < weaponsArr.length; i++) {
+    weaponsArr[i].invIndex = i;
+    weaponsArr[i].save();
+    lastIndex = i;
+  }
+  return lastIndex;
+}
+
 // BUY ITEM
 router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
@@ -31,22 +41,29 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
 
       if (price <= availableSouls) { // ENOUGH SOULS CHECK
           if (character.inventory.length < 20) { // INVENTORY CHECK
-              const newWeapon = {
-                  name: "Awesome Weapon",
-                  type: "Wand",
-                  damage: 5,
-                  race: "Dino",
-                  value: 5
-              }
-              const craftedWeapon = await Weapon.create(newWeapon);
-              character.inventory.push(craftedWeapon);
-              character.souls = parseInt(character.souls) - price;
-              character.save();
+            // Check next free inventory slot  
+            const weaponsArr = await Weapon.find();
+            const lastIndex = reassignWeaponIndex(weaponsArr);
+            
+            const newWeapon = {
+              name: `Awesome Weapon ${lastIndex}`,
+              equip: "Weapon",
+              type: "Wand",
+              damage: 5,
+              race: "Dino",
+              value: 5,
+              equipped: false,
+              invIndex: lastIndex + 1
+            }
 
-              console.log("TRANSACTION DONE")
-              res.render("user/soulkeeper", {session: loginCheck, profile: profile, sessionRace: sessionRace[0].character, character: character, session: loginCheck, errorMessage: ""});
+            const craftedWeapon = await Weapon.create(newWeapon);
+            character.inventory.push(craftedWeapon);
+            // Deduct souls and save
+            character.souls = parseInt(character.souls) - price;
+            character.save();
+            res.render("user/soulkeeper", {session: loginCheck, profile: profile, sessionRace: sessionRace[0].character, character: character, session: loginCheck, errorMessage: ""});
           } else { // INVENTORY FULL
-              res.render("user/soulkeeper", {session: loginCheck, profile: profile, sessionRace: sessionRace[0].character, character: character, session: loginCheck, errorMessage: "Your inventory is full!"});
+            res.render("user/soulkeeper", {session: loginCheck, profile: profile, sessionRace: sessionRace[0].character, character: character, session: loginCheck, errorMessage: "Your inventory is full!"});
           }
       } else { // CAN'T AFFORD
         console.log("TOO EXPENSIVE!")
@@ -61,33 +78,51 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
 
 
 // EQUIP
-router.post("/equipItem/:charId/:itemId/:equip", async(req, res, next) => {
+router.post("/equipItem/:charId/:itemId/:equip/:invIndex", async(req, res, next) => {
   checkLogin(req.session.user);
   // Get Character
   try {
     const character = await Character.findById(req.params.charId).populate("inventory").populate("weapon").populate("armor").populate("artefact");
     const itemEquip = req.params.equip;
+    const itemId = req.params.itemId;
+    const index = req.params.invIndex;
 
     if (itemEquip === "Weapon") {
-      const weapon = await Weapon.findByIdAndDelete(req.params.itemId);
-      let tempWeapon = {
-        name: weapon.name,
-        equip: weapon.right,
-        type: weapon.type,
-        damage: weapon.damage,
-        race: weapon.race,
-        value: weapon.value,
-        equipped: true,
-      };
-      const newWeapon = await Weapon.create(tempWeapon);
       if (!character.weapon.length) { // None equipped yet
-        character.weapon.push(newWeapon);
-        character.save();
+        const invWeapon = character.inventory.splice(index, 1);
+        await Weapon.findByIdAndUpdate(itemId, {equipped: true}, {new: true});
+        character.weapon.push(invWeapon[0]);
+        await character.save();
+
+        // REASSIGN INVITEM IDs
+        for (let i = 0; i < character.inventory.length; i++) {
+          const checkWeapon = await Weapon.findById(character.inventory[i]._id)
+          if (!checkWeapon.equipped) {
+            await Weapon.findByIdAndUpdate(character.inventory[i]._id, {invIndex: i}, {new: true})
+          }
+        }
       } else { // One equipped already
+        const promiseArr = [];
         const previousWeapon = character.weapon.pop();
+        promiseArr.push(await Weapon.findOneAndUpdate(previousWeapon._id, {equipped: false}, {new: true}));
+        const invWeapon = character.inventory.splice(index, 1)
+        promiseArr.push(await Weapon.findOneAndUpdate(invWeapon[0]._id, {equipped: true}, {new: true}));
+        console.log("PREVIOUS WEAPON: ", previousWeapon)
+        console.log("INV WEAPON: ", invWeapon[0])
+
         character.inventory.push(previousWeapon);
-        character.weapon.push(newWeapon);
-        character.save();
+        character.weapon.push(invWeapon[0]);
+        await character.save();
+        const allWeapons = await Weapon.find();
+        
+        // REASSIGN INVITEM IDs
+        for (let i = 0; i < allWeapons.length; i++) {
+          const checkWeapon = await Weapon.findById(allWeapons[i]._id);
+          if (!checkWeapon.equipped) {
+            promiseArr.push(await Weapon.findByIdAndUpdate(allWeapons[i]._id, {invIndex: i}, {new: true}));
+          }
+        }
+        Promise.all(promiseArr);
       }
     } else if (itemEquip === "Armor") {
       if (!character.armor) { // None equipped yet
@@ -114,7 +149,7 @@ router.post("/equipItem/:charId/:itemId/:equip", async(req, res, next) => {
 
 
 // SELL ITEM
-router.post("/sellItem/:charId/:itemId/:equip", async (req, res, next) => {
+router.post("/sellItem/:charId/:itemId/:equip/:invIndex", async (req, res, next) => {
   checkLogin(req.session.user);
   try {
     // Get Character
@@ -137,5 +172,20 @@ router.post("/sellItem/:charId/:itemId/:equip", async (req, res, next) => {
     console.log("Error selling item: ", error);
   }
 });
+
+
+router.post("/test/:charId", async (req, res, next) => {
+  const character = await Character.findById(req.params.charId).populate("inventory").populate("weapon").populate("armor").populate("artefact");
+
+  const promiseArr = [];
+  for (let i = 0; i < character.inventory.length; i++) {
+    charac
+    //promiseArr.push(await Weapon.findByIdAndDelete(character.inventory[i]._id));
+  }
+  //Promise.all(promiseArr)
+
+
+  res.redirect("/user/characterProfile");
+})
 
 module.exports = router;
