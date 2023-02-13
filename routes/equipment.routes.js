@@ -78,7 +78,7 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
 
 
 // EQUIP
-router.post("/equipItem/:charId/:itemId/:equip/:invIndex", async(req, res, next) => {
+router.post("/equipItem/:charId/:itemId/:equip/:invIndex/:id", async(req, res, next) => {
   checkLogin(req.session.user);
   // Get Character
   try {
@@ -88,6 +88,14 @@ router.post("/equipItem/:charId/:itemId/:equip/:invIndex", async(req, res, next)
     const index = req.params.invIndex;
 
     if (itemEquip === "Weapon") {
+      let thisIndex;
+      for (let i = 0; i < character.inventory.length; i++) {
+        if (JSON.stringify(character.inventory[i]._id) === `"${req.params.id}"`) {
+          thisIndex = i;
+        } else {
+          console.log(JSON.stringify(character.inventory[i]._id), "   ", `"${req.params.id}"`)
+        }
+      }
       if (!character.weapon.length) { // None equipped yet
         const invWeapon = character.inventory.splice(index, 1);
         await Weapon.findByIdAndUpdate(itemId, {equipped: true}, {new: true});
@@ -105,7 +113,7 @@ router.post("/equipItem/:charId/:itemId/:equip/:invIndex", async(req, res, next)
         const promiseArr = [];
         const previousWeapon = character.weapon.pop();
         promiseArr.push(await Weapon.findOneAndUpdate(previousWeapon._id, {equipped: false}, {new: true}));
-        const invWeapon = character.inventory.splice(index, 1)
+        const invWeapon = character.inventory.splice(thisIndex, 1)
         promiseArr.push(await Weapon.findOneAndUpdate(invWeapon[0]._id, {equipped: true}, {new: true}));
         console.log("PREVIOUS WEAPON: ", previousWeapon)
         console.log("INV WEAPON: ", invWeapon[0])
@@ -178,10 +186,13 @@ router.post("/test/:charId", async (req, res, next) => {
   const character = await Character.findById(req.params.charId).populate("inventory").populate("weapon").populate("armor").populate("artefact");
 
   const promiseArr = [];
-  for (let i = 0; i < character.inventory.length; i++) {
+  const emptyArr = []
+  /* for (let i = 0; i < character.inventory.length; i++) {
     charac
     //promiseArr.push(await Weapon.findByIdAndDelete(character.inventory[i]._id));
   }
+   */
+  character.inventory = emptyArr;
   //Promise.all(promiseArr)
 
 
