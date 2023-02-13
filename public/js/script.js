@@ -429,18 +429,22 @@ if (sessionInProgress) {
 
   const projectileArr = [];
   class Projectile {
-    constructor(x, y, rad, color, xDir, yDir, speed, damage, lifeSpan) {
+    constructor(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan) {
       this.type = "projectile";
 
       this.x = x;
       this.y = y;
-      this.rad = rad,
+      this.width = width;
+      this.height = height;
       this.color = color;
       this.xDir = xDir;
       this.yDir = yDir;
       this.speed = speed;
       this.damage = damage;
       this.lifeSpan = lifeSpan;
+
+      this.img = new Image();
+      this.img.src = "../images/Projectiles/weak.png"
 
       // Collision
       this.left = this.x;
@@ -452,9 +456,9 @@ if (sessionInProgress) {
     updateProjectile() {
       // Collision
       this.left = this.x;
-      this.right = this.x + this.rad / 2;
+      this.right = this.x + this.width
       this.top = this.y;
-      this.bottom = this.y + this.rad / 2;
+      this.bottom = this.y + this.height;
 
       // Move projectiles
       if (this.xDir + this.yDir === 1) {
@@ -465,11 +469,7 @@ if (sessionInProgress) {
         this.y += this.speed / 1.4 * this.yDir;
       }
       // Draw
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.rad, 0, Math.PI * 2, false);
-      ctx.fillStyle = "red";
-      ctx.fill();
-      ctx.closePath();
+      ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
 
       // Destory if lifeSpan reached
       this.lifeSpan--;
@@ -497,7 +497,7 @@ if (sessionInProgress) {
           }
       }
       // Leaving canvas
-      if (this.x < 0 || this.y < 0 || this.x > myCanvas.width + this.rad || this.y > myCanvas.height + this.height) {
+      if (this.x < 0 || this.y < 0 || this.x > myCanvas.width + this.width || this.y > myCanvas.height + this.height) {
         this.destroy();
       }
     }
@@ -764,21 +764,21 @@ if (sessionInProgress) {
         // Shooting
         if (player.canShoot) {
           if (player.shootLeft && player.shootUp) { // TOP LEFT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, -1, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", -1, -1, 8, 5, player.weaponLifeSpan);
           } else if (player.shootUp && player.shootRight) { // TOP RIGHT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, -1, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", 1, -1, 8, 5, player.weaponLifeSpan);
           } else if (player.shootRight && player.shootDown) { // BOTTOM RIGHT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 1, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", 1, 1, 8, 5, player.weaponLifeSpan);
           } else if (player.shootDown && player.shootLeft) { // BOTTOM LEFT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 1, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", -1, 1, 8, 5, player.weaponLifeSpan);
           } else if (player.shootRight) { // RIGHT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 0, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", 1, 0, 8, 5, player.weaponLifeSpan);
           } else if (player.shootLeft) { // LEFT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 0, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", -1, 0, 8, 5, player.weaponLifeSpan);
           } else if (player.shootDown) { // DOWN
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, 1, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", 0, 1, 8, 5, player.weaponLifeSpan);
           } else if (player.shootUp) { // UP
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, -1, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", 0, -1, 8, 5, player.weaponLifeSpan);
           }
           player.canShoot = false;
           setTimeout(() => {
@@ -817,7 +817,7 @@ if (sessionInProgress) {
             }, 1500)
             setTimeout(() => {
               collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 50, myCanvas.width, 50, "environment", -1, "", true));
-            }, 4000)
+            }, 6500)
           }
         }
 
@@ -826,8 +826,8 @@ if (sessionInProgress) {
       }
     }
 
-    function spawnProjectile(x, y, rad, color, xDir, yDir, speed, damage, lifeSpan) {
-      const projectile = new Projectile(x, y, rad, color, xDir, yDir, speed, damage, lifeSpan);
+    function spawnProjectile(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan) {
+      const projectile = new Projectile(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan);
       projectileArr.push(projectile);
     }
 
