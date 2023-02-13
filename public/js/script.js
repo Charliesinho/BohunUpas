@@ -308,8 +308,8 @@ if (sessionInProgress) {
     initialize() {
       if (this.name === "slime") {
         this.souls = 1;
-        this.hp = 10;
-        this.damage = 5;
+        this.hp = 15;
+        this.damage = 7;
         this.imageFrames = 4;
         this.moveSpeed = 1;
         this.randomMoveTimer = Math.floor(Math.random() * (400 - 200) + 200);
@@ -318,6 +318,9 @@ if (sessionInProgress) {
         for (let i = 0; i < this.imageFrames; i++) {
           this.imgContainer.push("../images/Meadow/Slime/slime"+i+".png");
         }
+      }
+      if (this.name === "bat") {
+
       }
       if (this.name === "slimeBoss") {
         this.souls = 100;
