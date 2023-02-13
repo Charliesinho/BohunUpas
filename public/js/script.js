@@ -764,21 +764,21 @@ if (sessionInProgress) {
         // Shooting
         if (player.canShoot) {
           if (player.shootLeft && player.shootUp) { // TOP LEFT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, -1, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, -1, 8, 5, player.weaponLifeSpan);
           } else if (player.shootUp && player.shootRight) { // TOP RIGHT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, -1, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, -1, 8, 5, player.weaponLifeSpan);
           } else if (player.shootRight && player.shootDown) { // BOTTOM RIGHT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 1, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 1, 8, 5, player.weaponLifeSpan);
           } else if (player.shootDown && player.shootLeft) { // BOTTOM LEFT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 1, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 1, 8, 5, player.weaponLifeSpan);
           } else if (player.shootRight) { // RIGHT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 0, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 1, 0, 8, 5, player.weaponLifeSpan);
           } else if (player.shootLeft) { // LEFT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 0, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", -1, 0, 8, 5, player.weaponLifeSpan);
           } else if (player.shootDown) { // DOWN
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, 1, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, 1, 8, 5, player.weaponLifeSpan);
           } else if (player.shootUp) { // UP
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, -1, 8, 548, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 16, "red", 0, -1, 8, 5, player.weaponLifeSpan);
           }
           player.canShoot = false;
           setTimeout(() => {
@@ -944,6 +944,7 @@ if (sessionInProgress) {
       backgroundArr.push(new Background(myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow3.png`));
       backgroundArr.push(new Background(myCanvas.width, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow4.png`));
       backgroundArr.push(new Background(myCanvas.width, -myCanvas.height * 2, myCanvas.width, myCanvas.height, "../images/Dungeon/dungeon0.png"));
+      backgroundArr.push(new Background(myCanvas.width, -myCanvas.height * 3, myCanvas.width, myCanvas.height, "../images/Dungeon/dungeon1.png"));
       worldInit = true;
     }
 
@@ -1147,17 +1148,17 @@ if (sessionInProgress) {
     }
 
     function loadScreen5() {
-      collisionObjectArr.push(new CollisionObject(0, 0, myCanvas.width / 2 - 200, myCanvas.height, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 200, 0, 100, 100, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width - 450, 0, myCanvas.width / 2 - 200, myCanvas.height, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width - 560, 0, 110, 100, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(0, 0, myCanvas.width / 2 - 200, myCanvas.height, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 200, 0, 100, 100, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 450, 0, myCanvas.width / 2 - 200, myCanvas.height, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 560, 0, 110, 100, "environment", -1, "", false));
 
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 200, myCanvas.height - 100, 100, 100, "environment", -1, "", true));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width - 560, myCanvas.height - 100, 110, 100, "environment", -1, "", true));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 200, myCanvas.height - 100, 100, 100, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 560, myCanvas.height - 100, 110, 100, "environment", -1, "", false));
       
       // ROOM TRANSITIONING TOP
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 110, 0, 150, 15, "roomtransit", 6, "down", true)); // TOP
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 110, myCanvas.height - 15, 150, 15, "roomtransit", 4, "top", true)); // BOTTOM
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 110, 0, 150, 15, "roomtransit", 6, "down", false)); // TOP
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 110, myCanvas.height - 15, 150, 15, "roomtransit", 4, "top", false)); // BOTTOM
       screen5init = true;
     }
   }
