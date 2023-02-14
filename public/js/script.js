@@ -86,7 +86,7 @@ if (sessionInProgress) {
   let screen7init = false;
   let screen8init = false;
 
-  let levelScreen = 0;
+  let levelScreen = 8;
 
   let animateId;
   let roomTransit = false;
@@ -232,7 +232,7 @@ if (sessionInProgress) {
     }
 
     getUnstuck() {
-      this.x = 100;
+      this.x = 300;
       this.y = 300
     }
 
@@ -320,7 +320,15 @@ if (sessionInProgress) {
         }
       }
       if (this.name === "bat") {
-
+        this.souls = 1;
+        this.hp = 15;
+        this.damage = 7;
+        this.imageFrames = 4;
+        this.xDir = -1;
+        this.moveSpeed = 1;
+        for (let i = 0; i < this.imageFrames; i++) {
+          this.imgContainer.push("../images/Dungeon/Bat/bat"+i+".png");
+        }
       }
       if (this.name === "slimeBoss") {
         this.souls = 100;
@@ -346,6 +354,10 @@ if (sessionInProgress) {
         y: Math.floor(Math.random() * ((randomPointY - this.height - 60) - (this.height + 60) + (this.width + 60))),
       };
       return randomCoordinates;
+    }
+
+    getRandomShootInterval() {
+
     }
 
     checkCollision(arr, ot, or, ob, ol) {
@@ -374,6 +386,13 @@ if (sessionInProgress) {
       } else if (this.x < randomCoordinates.y && this.y < myCanvas.height - this.height && !this.checkCollision(collisionObjectArr, 0, 0, 10, 0)) {
         this.y += this.moveSpeed;
       }
+    }
+
+    moveLeftRight() {
+      if (this.checkCollision(collisionObjectArr, 0, 5, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 0, 5)) {
+        this.xDir *= -1;
+      }
+      this.x += this.moveSpeed * this.xDir;
     }
 
     slimeBossMovement() {
@@ -814,6 +833,7 @@ if (sessionInProgress) {
         }
         // Normal enemies
         if (enemyArr[i].name === "slime") enemyArr[i].moveTowardsTarget(enemyArr[i].moveTo);
+        if (enemyArr[i].name === "bat") enemyArr[i].moveLeftRight();
 
         // Bosses
         if (enemyArr[i].name === "slimeBoss") {
@@ -1206,6 +1226,26 @@ if (sessionInProgress) {
       // Transitions
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, 0, 130, 15, "roomtransit", 7, "down", false));
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height-15, 130, 15, "roomtransit", 5, "up", false));
+      
+      // ENEMIES
+      enemyArr.push(new Enemy("bat", 100, 120, 52, 36));
+      enemyArr.push(new Enemy("bat", 200, 120, 52, 36));
+      enemyArr.push(new Enemy("bat", 300, 120, 52, 36));
+      enemyArr.push(new Enemy("bat", 400, 120, 52, 36));
+      enemyArr.push(new Enemy("bat", 500, 120, 52, 36));
+
+      enemyArr.push(new Enemy("bat", 600, 120, 52, 36));
+      enemyArr.push(new Enemy("bat", 700, 120, 52, 36));
+      enemyArr.push(new Enemy("bat", 800, 120, 52, 36));
+      enemyArr.push(new Enemy("bat", 900, 120, 52, 36));
+      enemyArr.push(new Enemy("bat", 1000, 120, 52, 36));
+
+      // Initialize enemies
+      for (let i = 0; i < enemyArr.length; i++) {
+        enemyArr[i].initialize();
+        if (i > 4) enemyArr[i].xDir = 1;
+      }
+      
       screen6init = true;
     }
 
@@ -1229,11 +1269,12 @@ if (sessionInProgress) {
       // COLLISIONS
       collisionObjectArr.push(new CollisionObject(0, 0, 240, myCanvas.height, "environment", -1, "", false));
       collisionObjectArr.push(new CollisionObject(myCanvas.width - 250, 0, 250, myCanvas.height, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(0, 0, 600, 130, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 160, 0, 600, 130, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 180, 485, 180, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, myCanvas.height - 180, 600, 250, "environment", -1, "", false));
-
+      collisionObjectArr.push(new CollisionObject(0, 0, 600, 110, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 160, 0, 600, 110, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 190, 485, 190, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, myCanvas.height - 190, 600, 190, "environment", -1, "", false));
+      
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 120, myCanvas.height / 2 - 90, 225, 70, "environment", -1, "", false));
       // Transitions
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 20, 0, 130, 15, "roomtransit", 9, "down", false));
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height - 15, 130, 15, "roomtransit", 7, "up", false));
