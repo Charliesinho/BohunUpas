@@ -40,7 +40,7 @@ const characterSchema = new Schema(
     level: {
       type: Number,
       required: true,
-      default: 0
+      default: 1
     }, 
     experience: {
       type: Number,

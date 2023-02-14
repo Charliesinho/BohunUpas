@@ -68,7 +68,7 @@ if (sessionInProgress) {
   let souls = parseInt(document.querySelector("#souls").value)
   let experience = parseInt(document.querySelector("#experience").value)
 
-
+  console.log(document.querySelector("#playerweapon"))
 
   // Backgrounds
   const backgroundArr = [];
@@ -148,7 +148,6 @@ if (sessionInProgress) {
       // Equipment
       this.weaponShootInterval = 500;
       this.weaponLifeSpan = 30;
-      this.armor = 2;
 
       // Shoot
       this.shootRight = false;
@@ -168,7 +167,8 @@ if (sessionInProgress) {
       this.takenDamage = false;
       this.iframes = 500;
       this.alive = true;
-      this.hp = 30;
+      this.hp = 10;
+      this.armor = 0;
     }
 
     initialize() {
@@ -317,7 +317,7 @@ if (sessionInProgress) {
         this.souls = 1;
         this.experience = 1;
         this.hp = 15;
-        this.damage = 7;
+        this.damage = 5;
         this.imageFrames = 4;
         this.moveSpeed = 1;
         this.randomMoveTimer = Math.floor(Math.random() * (400 - 200) + 200);

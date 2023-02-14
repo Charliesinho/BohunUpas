@@ -110,6 +110,9 @@ router.get("/game", isLoggedIn, async (req, res, next) => {
 
   const sessionName = req.session.user.username;
   const sessionRace2 = await User.find({username: sessionName}).populate('character')
+  charId = JSON.stringify(sessionRace2.character)
+  const character = await Character.findById(sessionRace2[0].character._id).populate("weapon");
+  console.log(character);
   const sessionRace = await User.find({username: sessionName})
   
 
@@ -119,7 +122,8 @@ router.get("/game", isLoggedIn, async (req, res, next) => {
 router.post("/:id/game", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
   let souls = parseInt(req.body.souls);
-  await Character.findByIdAndUpdate(req.params.id, {souls: souls})
+  let experience = parseInt(req.body.experience);
+  await Character.findByIdAndUpdate(req.params.id, {souls: souls, experience: experience})
   res.redirect("/user/characterProfile");
 });
 

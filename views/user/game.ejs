@@ -33,7 +33,7 @@
     
 
 <!-- Weapons -->
-    <% if (session && sessionRace2.character[0].weapon === "none") { %>
+    <% if (session && sessionRace2.character[0].weapon !== "none") { %>
     <div id="noWeapon" style="display: block;"></div>
     <% } else { %>
         <div id="noWeapon" style="display: none;"></div>
@@ -50,7 +50,8 @@
 <form method="POST" action="/user/<%=sessionRace2.character[0]._id%>/game">
     <% if (session) { %>       
     <label>Souls: <input id="souls" style="display: block;" name="souls" type="number" value="<%=sessionRace2.character[0].souls%>" readonly></input></label>
-    <label>XP: <input id="experience" style="display: block;" name="experience" type="number" value="<%=sessionRace2.character[0].experience%>" readonly></input></label>   
+    <label>XP: <input id="experience" style="display: block;" name="experience" type="number" value="<%=sessionRace2.character[0].experience%>" readonly></input></label> 
+    <input id="playerweapon" style="display: block;" name="weapon" value="<%=sessionRace2.character[0].weapon%>" readonly>  
     <% } %></p>
     <button type="submit">Save</button>
 </form>
