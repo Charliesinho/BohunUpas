@@ -130,6 +130,61 @@ function generateItemRare() {
   
 }
 
+function generateItemLegendary() {
+  let randomNum = Math.floor(Math.random() * 100);
+  console.log(randomNum)
+  let namePosition = Math.floor(Math.random() * 4)
+  let randomName1 = ["Bad ", "Broken ", "Shady ", "Illegal ", "Probably ", "Weird "]
+  let randomName2 = ["Cool ", "Chill ", "Nice ", "Charming "]
+  let randomName3 = ["Insane ", "Awesome ", "Brutal ", "Scary "]
+
+  if (randomNum >= 0 && randomNum <= 20) {
+    const newItem = {
+      name: randomName2[namePosition] + `Heavy sword`,
+      image: "../images/Weapons/heavySword.png",
+      type: "Weapon",
+      subtype: "Sword",
+      modifier: Math.floor(Math.random() * (20 - 5) + 5),
+      value: 10,
+      equipped: false,
+    }
+    return newItem;
+  } else if (randomNum >= 41 && randomNum <= 90) {
+    const newItem = {
+      name: randomName2[namePosition] + `Lancer`,
+      image: "../images/Weapons/Lancer.png",
+      type: "Weapon",
+      subtype: "Sword",
+      modifier: Math.floor(Math.random() * (15 - 5) + 5),
+      value: 12,
+      equipped: false,
+    }
+    return newItem;
+  } else if (randomNum >= 91 && randomNum <= 99) {
+    const newItem = {
+      name: randomName2[namePosition] + `Leather Armor`,
+      image: "../images/Armor/leatherArmor.png",
+      type: "Armor",
+      subtype: "Medium",
+      modifier: Math.floor(Math.random() * (10 - 3) + 3),
+      value: 15,
+      equipped: false,
+    }
+    return newItem;
+  } else if (randomNum >= 21 && randomNum <= 40) {
+    const newItem = {
+      name: randomName2[namePosition] + `Iron Armor`,
+      image: "../images/Armor/ironArmor.png",
+      type: "Armor",
+      subtype: "Heavy",
+      modifier: Math.floor(Math.random() * (12 - 5) + 5),
+      value: 12,
+      equipped: false,
+    }
+    return newItem;
+  }
+  
+}
               // name: `Awesome Weapon`,
               // equip: "Weapon",
               // type: "Wand",

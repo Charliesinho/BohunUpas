@@ -1,26 +1,27 @@
 <%- include("../../partials/nav-bar.ejs") %>
 
 <h1>Browse offers</h1>
-
-<div id="marketplaceItems">
-<% item.forEach(item => { %>
-    <div class="itemTable">       
-        <ul class="removeListStyle">
-            <!-- <li id="equipment">Equipment</li> -->
-            <ul class="removeListStyle allignList">
-                <li><img class="itemImage" src="../<%=item.item.image%>" width="130px"></li>
-                <div class="weaponStats">           
-                <li><%=item.item.name%></li>                         
-                    <div class="inlineStats">   
-                        <li>⚔️ <%=item.item.modifier%></li>
-                        <li>👻 <%=item.price%></li>
-                    </div>
-                </div> 
+<div id="marketAlign">
+    <div id="marketplaceItems">
+    <% item.forEach(item => { %>
+        <div class="itemTable">       
+            <ul class="removeListStyle">
+                <!-- <li id="equipment">Equipment</li> -->
+                <ul class="removeListStyle allignList">
+                    <li><img class="itemImage" src="../<%=item.item.image%>" width="130px"></li>
+                    <div class="weaponStats">           
+                    <li><%=item.item.name%></li>                         
+                        <div class="inlineStats">   
+                            <li>⚔️ <%=item.item.modifier%></li>
+                            <li>👻 <%=item.price%></li>
+                        </div>
+                    </div> 
+                </ul>
             </ul>
-        </ul>
-        <% if (JSON.stringify(item.owner._id) === `"${sessionRace[0].charId}"`) {%>
-            <div style="color: green";>Your Offer</div>
-        <% } %>
-    </div> 
-<% }) %>
+            <% if (JSON.stringify(item.owner._id) === `"${sessionRace[0].charId}"`) {%>
+                <div style="color: green";>Your Offer</div>
+            <% } %>
+        </div> 
+    <% }) %>
+    </div>
 </div>
