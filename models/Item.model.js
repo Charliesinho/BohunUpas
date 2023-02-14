@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
-const armorSchema = new Schema(
+const itemSchema = new Schema(
   {
     name: {
       type: String,
@@ -14,20 +14,14 @@ const armorSchema = new Schema(
     type: {
       type: String,      
       required: true, 
-      enum: ["Light", "Medium", "Heavy"],    
+      enum: ["Weapon", "Armor", "Artefact"],    
     },
-    equip: {
-      type: String,
-      default: "Armor"
-    },
-    protection: {
+    modifier: {
       type: Number,
       default: 1,
-      required: true,
     },
     race: {
       type: String,      
-      required: true, 
       enum: ["Dino", "Undead", "Human"],
     },
     value: {
@@ -44,6 +38,6 @@ const armorSchema = new Schema(
   }
 );
 
-const Armor = model("Armor", armorSchema);
+const Item = model("Item", itemSchema);
 
-module.exports = Armor;
+module.exports = Item;
