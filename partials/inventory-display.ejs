@@ -9,6 +9,7 @@
             
         </div>
 
+        <% if (rendering === "characterProfile") { %>
         <div class="invButtons">
             <form action="/equipment/equipItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
                 <button class="buttonItem" type="submit">📥 +<%=item.modifier%></button>
@@ -16,6 +17,13 @@
             <form action="/equipment/sellItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
                 <button class="buttonItem" type="submit">👻 <%=item.value%></button>
             </form>    
-        </div>       
+        </div>     
+        <% } else if (rendering === "marketplace") { %>
+        <div class="invButtons">
+            <form action="/marketplace/create-offer/<%=item._id%>" method="GET">
+                <button class="buttonItem" type="submit">Select</button>
+            </form>    
+        </div>      
+        <% } %>
     </div>
     <% }) %>
