@@ -2,12 +2,14 @@
 <section id="characterProfile">    
     <div id="stats"> 
         <div>  
+           <div class="aboveNameStats">
+            
+            <p>Level: <%=profile.character[0].level%></p> 
+            <p>XP: <%=profile.character[0].experience%> / 100</p> 
+           </div>
         <div>
         <h1 id="characterName"><%=profile.username%></h1>
         <p id="characterRace">The <%=profile.character[0].race%></p> 
-        <p>Souls: <%=profile.character[0].souls%></p> 
-        <p>XP: <%=profile.character[0].experience%> / 100</p> 
-        <p>Level: <%=profile.character[0].level%></p> 
         </div>
         
 <div >   
@@ -23,9 +25,8 @@
                     <li><img class="itemImage" src="<%=character.weapon[0].image%>" width="130px"></li>
                     <div class="weaponStats">                   
                     <li class="itemName"><%=character.weapon[0].name%></li>
-                        <div class="inlineStats">
-                            <!-- <li><%=character.weapon[0].type%></li> -->
-                            <li>⚔️ <%=character.weapon[0].damage%></li>
+                        <div class="inlineStats">                            
+                            <li>⚔️ <%=character.weapon[0].modifier%></li>
                             <li>👻 <%=character.weapon[0].value%></li>
                         </div>
                     </div> 
@@ -43,8 +44,8 @@
                         <div class="weaponStats">                   
                         <li class="itemName"><%=character.armor[0].name%></li>
                             <div class="inlineStats">
-                                <!-- <li><%=character.armor[0].type%></li> -->
-                                <li>⚔️ <%=character.armor[0].protection%></li>
+                                <% console.log(character.armor[0]) %>                                
+                                <li>⚔️ <%=character.armor[0].modifier%></li>
                                 <li>👻 <%=character.armor[0].value%></li>
                             </div>
                         </div> 
@@ -75,20 +76,31 @@
     <% if (profile.character[0].race === "Dino") { %>
         <iframe class="characterFrame" width="800" height="800" src="https://my.spline.design/untitled-4b790425ef4f04c074add4bb192060c1/"></iframe>     
     <% } %>
+
     <div id="inventory">
         <h1>Inventory</h1>
+        <p>Souls: <%=profile.character[0].souls%></p> 
+    <div id="inventoryArray">
         <% character.inventory.forEach((item) => { %>
-            <div>Name: <%=item.name%></div>
-            <div>Type: <%=item.type%></div>
-            <div>Modifier: <%=item.modifier%></div>
-            <div>Value: <%=item.value%></div>
-            <form action="/equipment/equipItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
-                <button type="submit">Equip</button>
-            </form>
-            <form action="/equipment/sellItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
-                <button type="submit">Sell</button>
-            </form>
-            <br>
+        <div class="invItem">
+            <div><img class="invItemImage" src="<%=item.image%>"></div> 
+
+            <div><%=item.name%></div>   
+            
+            <div class="invStats">
+                
+            </div>
+
+            <div class="invButtons">
+                <form action="/equipment/equipItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
+                    <button class="buttonItem" type="submit">📥 +<%=item.modifier%></button>
+                </form>
+                <form action="/equipment/sellItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
+                    <button class="buttonItem" type="submit">💵 <%=item.value%></button>
+                </form>    
+            </div>       
+        </div>
         <% }) %>
+    </div>
     </div>
 </section>

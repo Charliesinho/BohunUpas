@@ -70,7 +70,7 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
       const price = parseInt(req.body.price)
 
       if (price <= availableSouls) { // ENOUGH SOULS CHECK
-          if (character.inventory.length < 20) { // INVENTORY CHECK
+          if (character.inventory.length < 6) { // INVENTORY CHECK
             // Check next free inventory slot  
             let newItem = generateItemCommon(); 
             console.log(newItem)           
