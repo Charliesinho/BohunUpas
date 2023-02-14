@@ -885,7 +885,7 @@ if (sessionInProgress) {
     }
 
     function spawnProjectile(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan) {
-      const projectile = new Projectile(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan, "player", "../images/Projectiles/weak.png");
+      const projectile = new Projectile(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan, "player");
       projectileArr.push(projectile);
     }
 
