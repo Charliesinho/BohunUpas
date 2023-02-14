@@ -16,21 +16,21 @@ const characterSchema = new Schema(
     },
     inventory: {
       type: [Schema.Types.ObjectId],
-      ref: "Weapon",
+      ref: "Item"
     },
     weapon: {
       type: [Schema.Types.ObjectId],
-      ref: "Weapon",
+      ref: "Item",
       required: true,
     },
     armor: {
       type: [Schema.Types.ObjectId], 
-      ref: "Armor",
+      ref: "Item",
       required: true,
     },
     artefact: {
       type: [Schema.Types.ObjectId], 
-      ref: "Artefact",
+      ref: "Item",
       required: true,
     },
     achievements: {

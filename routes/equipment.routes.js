@@ -5,9 +5,8 @@ const session = require('express-session');
 const { isLoggedIn } = require('../middleware/route-guard');
 const User = require('../models/User.model');
 const Character = require('../models/Character.model');
-const Weapon = require("../models/Weapon.model");
-const Armor = require("../models/Armor.model");
-const Artefact = require("../models/Artefact.model");
+const Item = require('../models/Item.model');
+
 let loginCheck = false;
 
 function checkLogin(session) {
@@ -21,16 +20,29 @@ function checkLogin(session) {
 //Generate bad quality Item
 function generateItemCommon() {
       let randomNum = Math.floor(Math.random() * 100);
+      console.log(randomNum)
       let namePosition = Math.floor(Math.random() * 6)
-      let randomName = ["Bad ", "Broken ", "Shady ", "Illegally obtained ", "Probably a ", "Weird "]
+      let randomName = ["Bad ", "Broken ", "Shady ", "Illegally obtained ", "Probably some ", "Weird "]
 
-      if (randomNum >= 0 && randomNum <= 99) {
+      if (randomNum >= 0 && randomNum <= 40) {
         const newItem = {
           name: randomName[namePosition] + `Wooden wand`,
           image: "../images/Weapons/woodenWand.png",
           equip: "Weapon",
-          type: "Sword",
-          damage: Math.floor(Math.random() * (6 - 1) - 1),
+          type: "Wand",
+          damage: Math.floor(Math.random() * (6 - 1) + 1),
+          race: "Dino",
+          value: 5,
+          equipped: false,
+        }
+        return newItem;
+      } else if (randomNum >= 41 && randomNum <= 90) {
+        const newItem = {
+          name: randomName[namePosition] + `old Armor`,
+          image: "../images/Armor/peasantArmor.png",
+          equip: "Armor",
+          type: "Light",
+          protection: Math.floor(Math.random() * (6 - 1) + 1),
           race: "Dino",
           value: 5,
           equipped: false,
@@ -62,10 +74,16 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
       if (price <= availableSouls) { // ENOUGH SOULS CHECK
           if (character.inventory.length < 20) { // INVENTORY CHECK
             // Check next free inventory slot  
-            const newWeapon = generateItemCommon();
-
-            const craftedWeapon = await Weapon.create(newWeapon);
-            character.inventory.push(craftedWeapon);
+            let newItem = generateItemCommon(); 
+            console.log(newItem)           
+            
+            if (newItem.equip === "Armor") {
+              newItem = await Armor.create(newItem);
+            }   
+            else if (newItem.equip === "Weapon") {
+              newItem = await Weapon.create(newItem);
+            }         
+            character.inventory.push(newItem);
             // Deduct souls and save
             character.souls = parseInt(character.souls) - price;
             character.save();
@@ -118,6 +136,27 @@ router.post("/equipItem/:charId/:equip/:itemId", async(req, res, next) => {
       }
     } else if (itemEquip === "Armor") {
       if (!character.armor) { // None equipped yet
+
+        let thisIndex;
+      for (let i = 0; i < character.inventory.length; i++) {
+        if (JSON.stringify(character.inventory[i]._id) === `"${req.params.itemId}"`) {
+          thisIndex = i;
+        }
+      }
+      if (!character.armor.length) { // None equipped yet
+        const invArmor = character.inventory.splice(thisIndex, 1);
+        await Armor.findByIdAndUpdate(itemId, {equipped: true}, {new: true});
+        character.armor.push(invArmor[0]);
+        await character.save();
+      } else { // One equipped already
+        const previousArmor = character.armor.pop();
+        await Armor.findOneAndUpdate(previousArmor._id, {equipped: false}, {new: true});
+        const invArmor = character.inventory.splice(thisIndex, 1)
+        await Armor.findOneAndUpdate(invArmor[0]._id, {equipped: true}, {new: true});
+        character.inventory.splice(thisIndex, 0, previousArmor);
+        character.armor.push(invArmor[0]);
+        await character.save();
+      }
 
       } else { // One equipped already
 
