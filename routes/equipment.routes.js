@@ -71,7 +71,7 @@ router.post("/equipItem/:charId/:equip/:itemId", async(req, res, next) => {
     const character = await Character.findById(req.params.charId).populate("inventory").populate("weapon").populate("armor").populate("artefact");
     const itemEquip = req.params.equip;
     const itemId = req.params.itemId;
-
+    
     if (itemEquip === "Weapon") {
       // FIND THE INDEX IN THE INVENTORY
       let thisIndex;
