@@ -143,7 +143,7 @@ if (sessionInProgress) {
       this.currentFrame = 0;
 
       // Equipment
-      this.weaponShootInterval = 300;
+      this.weaponShootInterval = 500;
       this.weaponLifeSpan = 30;
       this.armor = 2;
 
@@ -296,6 +296,7 @@ if (sessionInProgress) {
       this.spawnInterval;
 
       // Gameplay values
+      this.initialized = false;
       this.hp;
       this.iframes = 100;
       this.damage;
@@ -320,6 +321,7 @@ if (sessionInProgress) {
         for (let i = 0; i < this.imageFrames; i++) {
           this.imgContainer.push("../images/Meadow/Slime/slime"+i+".png");
         }
+        this.initialized = true;
       }
       if (this.name === "bat") {
         this.souls = 1;
@@ -330,10 +332,18 @@ if (sessionInProgress) {
         this.moveSpeed = 1;
         this.canShoot = true;
         this.shootInterval = this.getRandomShootInterval();
-        console.log(this.shootInterval);
         for (let i = 0; i < this.imageFrames; i++) {
           this.imgContainer.push("../images/Dungeon/Bat/bat"+i+".png");
         }
+      }
+      if (this.name === "enemyprojectile") {
+        this.souls = 0;
+        this.hp = 10;
+        this.damage = 15;
+        this.imageFrames = 1;
+        this.yDir = 1;
+        this.moveSpeed = 1;
+        this.imgContainer.push("../images/Projectiles/weakFire.png");
       }
       if (this.name === "slimeBoss") {
         this.souls = 100;
@@ -403,11 +413,15 @@ if (sessionInProgress) {
     shootDown() {
       if (this.canShoot) {
         this.canShoot = false;
-        projectileArr.push(new Projectile(this.x, this.y, 30, 30, "red", 0, 1, 1, this.damage, 2000, "enemy", "../images/Projectiles/weakFire.png"));
+        enemyArr.push(new Enemy("enemyprojectile", this.x, this.y, 32, 32));
         setTimeout(() => {
           this.canShoot = true;
         }, this.shootInterval);
       }
+    }
+
+    moveDown() {
+      this.y += this.moveSpeed;
     }
 
     slimeBossMovement() {
@@ -432,6 +446,7 @@ if (sessionInProgress) {
     }
 
     hit(damage) {
+      if (this.name === "enemyprojectile") this.destroy();
       this.takenDamage = true;
       this.hp -= damage;
       if (this.hp <= 0) {
@@ -818,21 +833,21 @@ if (sessionInProgress) {
         // Shooting
         if (player.canShoot) {
           if (player.shootLeft && player.shootUp) { // TOP LEFT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", -1, -1, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", -1, -1, 8, 5, player.weaponLifeSpan);
           } else if (player.shootUp && player.shootRight) { // TOP RIGHT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", 1, -1, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 1, -1, 8, 5, player.weaponLifeSpan);
           } else if (player.shootRight && player.shootDown) { // BOTTOM RIGHT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", 1, 1, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 1, 1, 8, 5, player.weaponLifeSpan);
           } else if (player.shootDown && player.shootLeft) { // BOTTOM LEFT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", -1, 1, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", -1, 1, 8, 5, player.weaponLifeSpan);
           } else if (player.shootRight) { // RIGHT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", 1, 0, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 1, 0, 8, 5, player.weaponLifeSpan);
           } else if (player.shootLeft) { // LEFT
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", -1, 0, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", -1, 0, 8, 5, player.weaponLifeSpan);
           } else if (player.shootDown) { // DOWN
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", 0, 1, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 0, 1, 8, 5, player.weaponLifeSpan);
           } else if (player.shootUp) { // UP
-            spawnProjectile(player.x + player.width / 2, player.y + player.height / 2, 50, 50, "red", 0, -1, 8, 5, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 0, -1, 8, 5, player.weaponLifeSpan);
           }
           player.canShoot = false;
           setTimeout(() => {
@@ -854,6 +869,11 @@ if (sessionInProgress) {
           enemyArr[i].moveLeftRight();
           enemyArr[i].shootDown();
         }
+        if (enemyArr[i].name === "enemyprojectile") {
+          if(!enemyArr[i].initialized) enemyArr[i].initialize()
+          enemyArr[i].moveDown();
+        }
+
 
         // Bosses
         if (enemyArr[i].name === "slimeBoss") {
