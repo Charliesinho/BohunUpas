@@ -46,12 +46,11 @@
         <div id="noArmor" style="display: none;"></div>
         <% } %>
 
-<!-- Souls -->    
+<!-- Souls / XP Save -->    
 <form method="POST" action="/user/<%=sessionRace2.character[0]._id%>/game">
     <% if (session) { %>       
-    <input id="souls" style="display: block;" name="souls" type="number" value="<%=sessionRace2.character[0].souls%>" readonly></input>   
-    <% %> 
-    <% } else %></p>
+    <label>Souls: <input id="souls" style="display: block;" name="souls" type="number" value="<%=sessionRace2.character[0].souls%>" readonly></input></label>
+    <label>XP: <input id="experience" style="display: block;" name="experience" type="number" value="<%=sessionRace2.character[0].experience%>" readonly></input></label>   
+    <% } %></p>
     <button type="submit">Save</button>
 </form>
-</section>
