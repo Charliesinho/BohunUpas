@@ -80,13 +80,12 @@
         <% character.inventory.forEach((item) => { %>
             <div>Name: <%=item.name%></div>
             <div>Type: <%=item.type%></div>
-            <div>Damage: <%=item.damage%></div>
-            <div>For: <%=item.race%></div>
+            <div>Modifier: <%=item.modifier%></div>
             <div>Value: <%=item.value%></div>
-            <form action="/equipment/equipItem/<%=character._id%>/<%=item.equip%>/<%=item._id%>" method="POST">
+            <form action="/equipment/equipItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
                 <button type="submit">Equip</button>
             </form>
-            <form action="/equipment/sellItem/<%=character._id%>/<%=item.equip%>/<%=item._id%>" method="POST">
+            <form action="/equipment/sellItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
                 <button type="submit">Sell</button>
             </form>
             <br>

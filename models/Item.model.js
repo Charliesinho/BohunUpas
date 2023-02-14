@@ -16,13 +16,14 @@ const itemSchema = new Schema(
       required: true, 
       enum: ["Weapon", "Armor", "Artefact"],    
     },
+    subtype: {
+      type: String,
+      required: true,
+      enum: ["none", "Bow", "Gun", "Wand", "Sword", "Light", "Medium", "Heavy", "Ring", "Bracelet", "Amulet", "Beads"]
+    },
     modifier: {
       type: Number,
       default: 1,
-    },
-    race: {
-      type: String,      
-      enum: ["Dino", "Undead", "Human"],
     },
     value: {
       type: Number,

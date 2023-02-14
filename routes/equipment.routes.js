@@ -28,10 +28,9 @@ function generateItemCommon() {
         const newItem = {
           name: randomName[namePosition] + `Wooden wand`,
           image: "../images/Weapons/woodenWand.png",
-          equip: "Weapon",
-          type: "Wand",
-          damage: Math.floor(Math.random() * (6 - 1) + 1),
-          race: "Dino",
+          type: "Weapon",
+          subtype: "Wand",
+          modifier: Math.floor(Math.random() * (6 - 1) + 1),
           value: 5,
           equipped: false,
         }
@@ -40,10 +39,9 @@ function generateItemCommon() {
         const newItem = {
           name: randomName[namePosition] + `old Armor`,
           image: "../images/Armor/peasantArmor.png",
-          equip: "Armor",
-          type: "Light",
-          protection: Math.floor(Math.random() * (6 - 1) + 1),
-          race: "Dino",
+          type: "Armor",
+          subtype: "Light",
+          modifier: Math.floor(Math.random() * (6 - 1) + 1),
           value: 5,
           equipped: false,
         }
@@ -77,11 +75,11 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
             let newItem = generateItemCommon(); 
             console.log(newItem)           
             
-            if (newItem.equip === "Armor") {
-              newItem = await Armor.create(newItem);
+            if (newItem.type === "Armor") {
+              newItem = await Item.create(newItem);
             }   
-            else if (newItem.equip === "Weapon") {
-              newItem = await Weapon.create(newItem);
+            else if (newItem.type === "Weapon") {
+              newItem = await Item.create(newItem);
             }         
             character.inventory.push(newItem);
             // Deduct souls and save
@@ -104,15 +102,15 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
 
 
 // EQUIP
-router.post("/equipItem/:charId/:equip/:itemId", async(req, res, next) => {
+router.post("/equipItem/:charId/:type/:itemId", async(req, res, next) => {
   checkLogin(req.session.user);
   // Get Character
   try {
     const character = await Character.findById(req.params.charId).populate("inventory").populate("weapon").populate("armor").populate("artefact");
-    const itemEquip = req.params.equip;
+    const itemType = req.params.type;
     const itemId = req.params.itemId;
     
-    if (itemEquip === "Weapon") {
+    if (itemType === "Weapon") {
       // FIND THE INDEX IN THE INVENTORY
       let thisIndex;
       for (let i = 0; i < character.inventory.length; i++) {
@@ -121,47 +119,42 @@ router.post("/equipItem/:charId/:equip/:itemId", async(req, res, next) => {
         }
       }
       if (!character.weapon.length) { // None equipped yet
-        const invWeapon = character.inventory.splice(thisIndex, 1);
-        await Weapon.findByIdAndUpdate(itemId, {equipped: true}, {new: true});
-        character.weapon.push(invWeapon[0]);
-        await character.save();
+          const invWeapon = character.inventory.splice(thisIndex, 1);
+          await Item.findByIdAndUpdate(itemId, {equipped: true}, {new: true});
+          character.weapon.push(invWeapon[0]);
+          await character.save();
       } else { // One equipped already
-        const previousWeapon = character.weapon.pop();
-        await Weapon.findOneAndUpdate(previousWeapon._id, {equipped: false}, {new: true});
-        const invWeapon = character.inventory.splice(thisIndex, 1)
-        await Weapon.findOneAndUpdate(invWeapon[0]._id, {equipped: true}, {new: true});
-        character.inventory.splice(thisIndex, 0, previousWeapon);
-        character.weapon.push(invWeapon[0]);
-        await character.save();
-      }
-    } else if (itemEquip === "Armor") {
-      if (!character.armor) { // None equipped yet
-
-        let thisIndex;
+          const previousWeapon = character.weapon.pop();
+          await Item.findOneAndUpdate(previousWeapon._id, {equipped: false}, {new: true});
+          const invWeapon = character.inventory.splice(thisIndex, 1)
+          await Item.findOneAndUpdate(invWeapon[0]._id, {equipped: true}, {new: true});
+          character.inventory.splice(thisIndex, 0, previousWeapon);
+          character.weapon.push(invWeapon[0]);
+          await character.save();
+        }
+    } else if (itemType === "Armor") {
+      // FIND THE INDEX IN THE INVENTORY
+      let thisIndex;
       for (let i = 0; i < character.inventory.length; i++) {
         if (JSON.stringify(character.inventory[i]._id) === `"${req.params.itemId}"`) {
           thisIndex = i;
         }
       }
       if (!character.armor.length) { // None equipped yet
-        const invArmor = character.inventory.splice(thisIndex, 1);
-        await Armor.findByIdAndUpdate(itemId, {equipped: true}, {new: true});
-        character.armor.push(invArmor[0]);
-        await character.save();
+          const invArmor = character.inventory.splice(thisIndex, 1);
+          await Item.findByIdAndUpdate(itemId, {equipped: true}, {new: true});
+          character.armor.push(invArmor[0]);
+          await character.save();
       } else { // One equipped already
-        const previousArmor = character.armor.pop();
-        await Armor.findOneAndUpdate(previousArmor._id, {equipped: false}, {new: true});
-        const invArmor = character.inventory.splice(thisIndex, 1)
-        await Armor.findOneAndUpdate(invArmor[0]._id, {equipped: true}, {new: true});
-        character.inventory.splice(thisIndex, 0, previousArmor);
-        character.armor.push(invArmor[0]);
-        await character.save();
-      }
-
-      } else { // One equipped already
-
-      }
-    } else if (itemEquip === "Artefact") {
+          const previousArmor = character.armor.pop();
+          await Item.findOneAndUpdate(previousArmor._id, {equipped: false}, {new: true});
+          const invArmor = character.inventory.splice(thisIndex, 1)
+          await Item.findOneAndUpdate(invArmor[0]._id, {equipped: true}, {new: true});
+          character.inventory.splice(thisIndex, 0, previousArmor);
+          character.armor.push(invArmor[0]);
+          await character.save();
+        }
+    } else if (itemType === "Artefact") {
       if (!character.artefact) { // None equipped yet
 
       } else { // One equipped already
@@ -180,7 +173,7 @@ router.post("/equipItem/:charId/:equip/:itemId", async(req, res, next) => {
 
 
 // SELL ITEM
-router.post("/sellItem/:charId/:equip/:itemId", async (req, res, next) => {
+router.post("/sellItem/:charId/:type/:itemId", async (req, res, next) => {
   checkLogin(req.session.user);
   try {
     // Get Character
@@ -193,16 +186,16 @@ router.post("/sellItem/:charId/:equip/:itemId", async (req, res, next) => {
     }
     // Get Item type
     let item;
-    if (req.params.equip === "Weapon") item = await Weapon.findById(req.params.itemId); 
-    if (req.params.equip === "Armor") item =  await Armor.findById(req.params.itemId); 
-    if (req.params.equip === "Artefact") item =  await Artefact.findById(req.params.itemId); 
+    if (req.params.type === "Weapon") item = await Item.findById(req.params.itemId); 
+    if (req.params.type === "Armor") item =  await Item.findById(req.params.itemId); 
+    if (req.params.type === "Artefact") item =  await Item.findById(req.params.itemId); 
     const value = item.value;
     character.souls = parseInt(character.souls) + value;
     character.save();
     character.inventory.splice(thisIndex, 1);
-    if (req.params.equip === "Weapon") await Weapon.findByIdAndDelete(req.params.itemId); 
-    if (req.params.equip === "Armor")  await Armor.findByIdAndDelete(req.params.itemId); 
-    if (req.params.equip === "Artefact")  await Artefact.findByIdAndDelete(req.params.itemId); 
+    if (req.params.type === "Weapon") await Item.findByIdAndDelete(req.params.itemId); 
+    if (req.params.type === "Armor")  await Item.findByIdAndDelete(req.params.itemId); 
+    if (req.params.type === "Artefact")  await Item.findByIdAndDelete(req.params.itemId); 
     
 
     res.redirect("/user/characterProfile");
