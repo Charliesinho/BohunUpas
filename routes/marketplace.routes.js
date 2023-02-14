@@ -43,7 +43,8 @@ router.get("/marketplace/createOffer/", isLoggedIn, async (req, res, next) => {
     const sessionName = req.session.user.username;
     const user = await User.find({username: sessionName}).populate("character");
     const currentUser = getUserWithoutHash(user[0]);
-    const character = await Character.findById(currentUser.charId).populate("inventory").populate("weapon").populate("artefact").populate("armor");
+    const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
+    console.log("INVENTORY FROM MP ROUTE:" ,character.inventory);
     res.render("marketplace/create-offer", {session: loginCheck, sessionRace: [currentUser], character: character, errorMessage: ""})
 })
 

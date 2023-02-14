@@ -1,0 +1,21 @@
+<div id="inventoryArray">
+    <% character.inventory.forEach((item) => { %>
+    <div class="invItem">
+        <div><img class="invItemImage" src="../<%=item.image%>"></div> 
+
+        <div><%=item.name%></div>   
+        
+        <div class="invStats">
+            
+        </div>
+
+        <div class="invButtons">
+            <form action="/equipment/equipItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
+                <button class="buttonItem" type="submit">📥 +<%=item.modifier%></button>
+            </form>
+            <form action="/equipment/sellItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
+                <button class="buttonItem" type="submit">💵 <%=item.value%></button>
+            </form>    
+        </div>       
+    </div>
+    <% }) %>
