@@ -1,7 +1,10 @@
 <%- include("../../partials/nav-bar.ejs") %>
 
-<h1>Browse offers</h1>
-<div>Total: <%=item.length%></div>
+<h1 class="centerText">Browse offers</h1>
+<div class="centerText">Total Items: <%=item.length%></div>
+<form action="/marketplace", method="GET">
+    <button class="buttonItem btnWider" type="submit">Back</button>
+</form>
 
 <div id="marketAlign">
     <div id="marketplaceItems">
