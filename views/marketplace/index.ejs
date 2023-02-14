@@ -1,0 +1,14 @@
+<%- include("../../partials/nav-bar.ejs") %>
+
+<h1>Marketplace</h1>
+
+<% if (character) { %>
+    <div>
+        <h2>Welcome to the Marketplace, <%=sessionRace[0].username%> the <%=character.race %>!</h2>
+        <h3>What is your business here today?</h3>
+    </div>
+
+    <form action="/marketplace/createOffer/" method="GET">
+        <button type="submit">Create an offer</button>
+    </form>
+<% } %>

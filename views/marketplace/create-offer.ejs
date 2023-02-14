@@ -1,0 +1,12 @@
+<%- include("../../partials/nav-bar.ejs") %>
+
+<h1>Marketplace</h1>
+
+<h1>Create an offer</h1>
+<% if (character) { %>
+<form action="/marketplace/createOffer", method="POST">
+    <% character.inventory.forEach(item => { %>
+        <div></div>
+    <% }) %>
+</form>
+<% } %>
