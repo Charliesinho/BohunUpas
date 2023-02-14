@@ -270,14 +270,14 @@ h1 {
   margin-bottom: -20px;
 }
 
-#marketplaceItems {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 20px;
-  width: 1000px;
-}
+#marketplaceItems {   
+  align-items: center;  
+  display: flex;   
+  flex-wrap: wrap;   
+  justify-content: flex-start;   
+  gap: 20px;   
+  width: 1000px; 
+}  
 
 .btnWider {
   display: flex;
@@ -287,8 +287,8 @@ h1 {
   width: 120px;
 }
 
-#marketAlign {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+#marketAlign {   
+  display: flex;   
+  align-items: center;   
+  justify-content: center; 
 }

@@ -2,32 +2,34 @@
 
 <h1>Browse offers</h1>
 
-<div id="marketplaceItems">
-<% item.forEach(item => { %>
-    <div class="itemTable">       
-        <ul class="removeListStyle">
-            <!-- <li id="equipment">Equipment</li> -->
-            <ul class="removeListStyle allignList">
-                <div class="weaponStats">           
-                <li><%=item.item.name%></li>                         
-                    <div class="inlineStats">   
-                        <li>⚔️ <%=item.item.modifier%></li>
-                        <li>👻 <%=item.price%></li>
-                    </div>
-                </div> 
-                <li><img class="itemImage" src="../<%=item.item.image%>" width="130px"></li>
+<div id="marketAlign">
+    <div id="marketplaceItems">
+    <% item.forEach(item => { %>
+        <div class="itemTable">       
+            <ul class="removeListStyle">
+                <!-- <li id="equipment">Equipment</li> -->
+                <ul class="removeListStyle allignList">
+                    <div class="weaponStats">           
+                    <li><%=item.item.name%></li>                         
+                        <div class="inlineStats">   
+                            <li>⚔️ <%=item.item.modifier%></li>
+                            <li>👻 <%=item.price%></li>
+                        </div>
+                    </div> 
+                    <li><img class="itemImage" src="../<%=item.item.image%>" width="130px"></li>
+                </ul>
+                <% if (JSON.stringify(item.owner._id) === `"${sessionRace[0].charId}"`) {%>
+                    <form action="/marketplace/remove-offer">
+                        <button class="buttonItem btnWider" type="submit">Withdraw offer</button>
+                    </form>
+                    <div style="color: green;">Your Offer</div>
+                <% } else { %>
+                    <form action="/marketplace/remove-offer">
+                        <button class="buttonItem btnWider" type="submit">Buy item</button>
+                    </form>
+                <% }  %>
             </ul>
-            <% if (JSON.stringify(item.owner._id) === `"${sessionRace[0].charId}"`) {%>
-                <form action="/marketplace/remove-offer">
-                    <button class="buttonItem btnWider" type="submit">Withdraw offer</button>
-                </form>
-                <div style="color: green;">Your Offer</div>
-            <% } else { %>
-                <form action="/marketplace/remove-offer">
-                    <button class="buttonItem btnWider" type="submit">Buy item</button>
-                </form>
-            <% }  %>
-        </ul>
-    </div> 
-<% }) %>
+        </div> 
+    <% }) %>
+    </div>
 </div>
