@@ -86,7 +86,7 @@ if (sessionInProgress) {
   let screen7init = false;
   let screen8init = false;
 
-  let levelScreen = 6;
+  let levelScreen = 0;
 
   let animateId;
   let roomTransit = false;

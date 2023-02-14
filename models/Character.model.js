@@ -36,6 +36,16 @@ const characterSchema = new Schema(
     achievements: {
       type: Schema.Types.ObjectId, 
       ref: "Achievement",
+    }, 
+    level: {
+      type: Number,
+      required: true,
+      default: 0
+    }, 
+    experience: {
+      type: Number,
+      required: true,
+      default: 0
     }
   },
   {
