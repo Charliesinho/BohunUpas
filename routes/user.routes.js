@@ -108,7 +108,7 @@ router.post("/profile-update", isLoggedIn, async (req, res, next) => {
 router.get("/game", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user); 
 
-  const sessionName= req.session.user.username;
+  const sessionName = req.session.user.username;
   const sessionRace2 = await User.find({username: sessionName}).populate('character')
   const sessionRace = await User.find({username: sessionName})
   
