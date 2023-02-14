@@ -76,20 +76,31 @@
     <% if (profile.character[0].race === "Dino") { %>
         <iframe class="characterFrame" width="800" height="800" src="https://my.spline.design/untitled-4b790425ef4f04c074add4bb192060c1/"></iframe>     
     <% } %>
+
     <div id="inventory">
         <h1>Inventory</h1>
         <p>Souls: <%=profile.character[0].souls%></p> 
+    <div id="inventoryArray">
         <% character.inventory.forEach((item) => { %>
-            <div><%=item.name%></div>            
-            <div><%=item.modifier%></div>
-            <div><%=item.value%></div>
-            <form action="/equipment/equipItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
-                <button type="submit">Equip</button>
-            </form>
-            <form action="/equipment/sellItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
-                <button type="submit">Sell</button>
-            </form>
-            <br>
+        <div class="invItem">
+            <div><img class="invItemImage" src="<%=item.image%>"></div> 
+
+            <div><%=item.name%></div>   
+            
+            <div class="invStats">
+                
+            </div>
+
+            <div class="invButtons">
+                <form action="/equipment/equipItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
+                    <button class="buttonItem" type="submit">📥 +<%=item.modifier%></button>
+                </form>
+                <form action="/equipment/sellItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
+                    <button class="buttonItem" type="submit">💵 <%=item.value%></button>
+                </form>    
+            </div>       
+        </div>
         <% }) %>
+    </div>
     </div>
 </section>
