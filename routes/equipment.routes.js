@@ -18,6 +18,36 @@ function checkLogin(session) {
   }
 }
 
+//Generate bad quality Item
+function generateItemCommon() {
+      let randomNum = Math.floor(Math.random() * 100);
+      let namePosition = Math.floor(Math.random() * 6)
+      let randomName = ["Bad ", "Broken ", "Shady ", "Illegally obtained ", "Probably a ", "Weird "]
+
+      if (randomNum >= 0 && randomNum <= 99) {
+        const newItem = {
+          name: randomName[namePosition] + `Wooden wand`,
+          image: "../images/Weapons/woodenWand.png",
+          equip: "Weapon",
+          type: "Sword",
+          damage: Math.floor(Math.random() * (6 - 1) - 1),
+          race: "Dino",
+          value: 5,
+          equipped: false,
+        }
+        return newItem;
+      }
+      
+}
+
+              // name: `Awesome Weapon`,
+              // equip: "Weapon",
+              // type: "Wand",
+              // damage: 5,
+              // race: "Dino",
+              // value: 5,
+              // equipped: false,
+
 // BUY ITEM
 router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
@@ -32,15 +62,7 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
       if (price <= availableSouls) { // ENOUGH SOULS CHECK
           if (character.inventory.length < 20) { // INVENTORY CHECK
             // Check next free inventory slot  
-            const newWeapon = {
-              name: `Awesome Weapon`,
-              equip: "Weapon",
-              type: "Wand",
-              damage: 5,
-              race: "Dino",
-              value: 5,
-              equipped: false,
-            }
+            const newWeapon = generateItemCommon();
 
             const craftedWeapon = await Weapon.create(newWeapon);
             character.inventory.push(craftedWeapon);

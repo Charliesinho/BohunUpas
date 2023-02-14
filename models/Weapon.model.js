@@ -7,6 +7,10 @@ const weaponSchema = new Schema(
       type: String,
       required: true,
     },
+    image: {
+      type: String,
+      required: true
+    },
     equip: {
       type: String,
       default: "Weapon"
@@ -14,7 +18,7 @@ const weaponSchema = new Schema(
     type: {
       type: String,      
       required: true, 
-      enum: ["none", "Bow", "Gun", "Wand"],
+      enum: ["none", "Bow", "Gun", "Wand", "Sword"],
       default: "none"     
     },
     damage: {
@@ -34,11 +38,7 @@ const weaponSchema = new Schema(
     equipped: {
       type: Boolean,
       default: false
-    },
-    invIndex: {
-      type: Number,
-      default: 0
-    }
+    }    
   },
   {
     timestamps: true
