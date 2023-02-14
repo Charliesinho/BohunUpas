@@ -403,7 +403,7 @@ if (sessionInProgress) {
     shootDown() {
       if (this.canShoot) {
         this.canShoot = false;
-        projectileArr.push(new Projectile(this.x, this.y, 30, 30, "red", 0, 1, 1, this.damage, 2000, "enemy", "../images/Projectiles/weak.png"));
+        projectileArr.push(new Projectile(this.x, this.y, 30, 30, "red", 0, 1, 1, this.damage, 2000, "enemy", "../images/Projectiles/weakFire.png"));
         setTimeout(() => {
           this.canShoot = true;
         }, this.shootInterval);
@@ -885,7 +885,7 @@ if (sessionInProgress) {
     }
 
     function spawnProjectile(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan) {
-      const projectile = new Projectile(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan, "player");
+      const projectile = new Projectile(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan, "player", "../images/Projectiles/weak.png");
       projectileArr.push(projectile);
     }
 
