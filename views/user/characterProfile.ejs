@@ -43,9 +43,8 @@
                         <li><img class="itemImage" src="<%=character.armor[0].image%>" width="130px"></li>
                         <div class="weaponStats">                   
                         <li class="itemName"><%=character.armor[0].name%></li>
-                            <div class="inlineStats">
-                                <% console.log(character.armor[0]) %>                                
-                                <li>⚔️ <%=character.armor[0].modifier%></li>
+                            <div class="inlineStats">                                                              
+                                <li>🛡️ <%=character.armor[0].modifier%></li>
                                 <li>👻 <%=character.armor[0].value%></li>
                             </div>
                         </div> 
@@ -78,8 +77,8 @@
     <% } %>
 
     <div id="inventory">
-        <h1>Inventory</h1>
-        <p>Souls: <%=profile.character[0].souls%></p> 
+        <h1 id="inventoryTitle">Inventory</h1>
+        <p>👻 <%=profile.character[0].souls%></p> 
         <%- include("../../partials/inventory-display.ejs") %>
     </div>
     </div>
