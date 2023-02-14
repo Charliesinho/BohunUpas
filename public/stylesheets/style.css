@@ -276,3 +276,11 @@ h1 {
   justify-content: center;
   gap: 20px;
 }
+
+.btnWider {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  width: 120px;
+}
