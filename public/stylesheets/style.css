@@ -247,3 +247,10 @@ h1 {
   height: 40px;
   width: 60px;
 }
+
+#marketplaceItems {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}

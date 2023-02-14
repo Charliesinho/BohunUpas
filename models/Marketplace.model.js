@@ -4,7 +4,7 @@ const { Schema, model } = require("mongoose");
 const marketplaceSchema = new Schema(
   {
     item: {
-        type: [Schema.Types.ObjectId],
+        type: Schema.Types.ObjectId,
         ref: "Item",
         unique: true,
     },
@@ -13,7 +13,7 @@ const marketplaceSchema = new Schema(
         required: true
     },
     owner: {
-        type: [Schema.Types.ObjectId],
+        type: Schema.Types.ObjectId,
         ref: "Character",
     }
   },

@@ -53,9 +53,21 @@ if (sessionInProgress) {
   let experience = parseInt(document.querySelector("#experience").value)
 
   let gDamage, gDefense, gModifier
-  if (document.querySelector("#noWeapon").style.display === "block") gDamage = parseInt(document.querySelector("#damage").innerHTML);
-  if (document.querySelector("#noArmor").style.display === "block") gDefense = parseInt(document.querySelector("#defense").innerHTML);
-  if (document.querySelector("#noArtefact").style.display === "block") gModifier = parseInt(document.querySelector("#artefactmodifier").innerHTML);
+  if (document.querySelector("#noWeapon").style.display === "block") {
+    gDamage = parseInt(document.querySelector("#damage").innerHTML);
+  } else {
+    gDamage = 1;
+  }
+  if (document.querySelector("#noArmor").style.display === "block") {
+    gDefense = parseInt(document.querySelector("#defense").innerHTML);
+  } else {
+    gDefense = 1;
+  }
+  if (document.querySelector("#noArtefact").style.display === "block") {
+    gModifier = parseInt(document.querySelector("#artefactmodifier").innerHTML);
+  } else {
+    gModifier = 1;
+  }
 
 
   // Backgrounds
@@ -457,6 +469,7 @@ if (sessionInProgress) {
           this.takenDamage = false;
         }, this.iframes)
       }
+      console.log("HIT")
     }
 
     destroy() { // GRANT SOULS AND XP

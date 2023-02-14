@@ -31,6 +31,7 @@ function getUserWithoutHash(user) {
     }
 }
 
+// MARKETPLACE MAIN PAGE
 router.get("/marketplace", isLoggedIn, async (req, res, next) => {
     checkLogin(req.session.user);
     const sessionName = req.session.user.username;
@@ -40,6 +41,8 @@ router.get("/marketplace", isLoggedIn, async (req, res, next) => {
     res.render("marketplace", {session: loginCheck, sessionRace: [currentUser], character: character, errorMessage: ""})
 });
 
+
+// GENERATE OFFER ROUTES
 router.get("/marketplace/select-offer/", isLoggedIn, async (req, res, next) => {
     checkLogin(req.session.user);
     const sessionName = req.session.user.username;
@@ -63,19 +66,20 @@ router.get("/marketplace/create-offer/:itemId", isLoggedIn, async (req, res, nex
 
 router.post("/marketplace/create-offer/:itemId", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
+  // Variables
   const sessionName = req.session.user.username;
   const user = await User.find({username: sessionName}).populate("character");
   const currentUser = getUserWithoutHash(user[0]);
   const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
   const item = await Item.findById(req.params.itemId);
   
+  // Generate offer object
   const offer = {
     item: item,
     price: req.body.price,
     owner: character,
   }
-  
-  
+  // Look for item position in inventory and remove
   for (let i = 0; i < character.inventory.length; i++) {
     if (JSON.stringify(character.inventory[i]._id) === `"${req.params.itemId}"`) {
       character.inventory.splice(i, 1);
@@ -83,9 +87,26 @@ router.post("/marketplace/create-offer/:itemId", isLoggedIn, async (req, res, ne
       break;
     }
   }
-
+  // Create offer
   await Marketplace.create(offer);
   res.redirect("/marketplace/select-offer/");
+})
+
+
+// BROWSE OFFER ROUTES
+router.get("/marketplace/browse-offers/", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
+  // Variables
+  const sessionName = req.session.user.username;
+  const user = await User.find({username: sessionName}).populate("character");
+  const currentUser = getUserWithoutHash(user[0]);
+  const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
+  const rendering = "marketplace";
+
+  const item = await Marketplace.find().populate("item").populate("owner");
+
+  console.log("ALL ITEMS: ", item) 
+  res.render("marketplace/browse-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: item, errorMessage: ""})
 })
 
 
