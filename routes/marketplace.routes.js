@@ -4,6 +4,8 @@ const router = express.Router();
 const { isLoggedIn } = require('../middleware/route-guard');
 const User = require('../models/User.model');
 const Character = require('../models/Character.model');
+const Item = require('../models/Item.model');
+const Marketplace = require('../models/Marketplace.model');
 let loginCheck = false;
 
 function checkLogin(session) {
@@ -38,16 +40,53 @@ router.get("/marketplace", isLoggedIn, async (req, res, next) => {
     res.render("marketplace", {session: loginCheck, sessionRace: [currentUser], character: character, errorMessage: ""})
 });
 
-router.get("/marketplace/createOffer/", isLoggedIn, async (req, res, next) => {
+router.get("/marketplace/select-offer/", isLoggedIn, async (req, res, next) => {
     checkLogin(req.session.user);
     const sessionName = req.session.user.username;
     const user = await User.find({username: sessionName}).populate("character");
     const currentUser = getUserWithoutHash(user[0]);
     const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
-    console.log("INVENTORY FROM MP ROUTE:" ,character.inventory);
-    res.render("marketplace/create-offer", {session: loginCheck, sessionRace: [currentUser], character: character, errorMessage: ""})
+    const rendering = "marketplace";
+    res.render("marketplace/select-offer", {session: loginCheck, sessionRace: [currentUser], character: character, rendering: rendering, errorMessage: ""})
 })
 
-//router.post("/marketplace/createOffer/")
+router.get("/marketplace/create-offer/:itemId", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
+  const sessionName = req.session.user.username;
+  const user = await User.find({username: sessionName}).populate("character");
+  const currentUser = getUserWithoutHash(user[0]);
+  const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
+  const item = await Item.findById(req.params.itemId);
+  const rendering = "marketplace";
+  res.render("marketplace/create-offer", {session: loginCheck, sessionRace: [currentUser], character: character, item: item, rendering: rendering, errorMessage: ""})
+})
+
+router.post("/marketplace/create-offer/:itemId", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
+  const sessionName = req.session.user.username;
+  const user = await User.find({username: sessionName}).populate("character");
+  const currentUser = getUserWithoutHash(user[0]);
+  const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
+  const item = await Item.findById(req.params.itemId);
+  
+  const offer = {
+    item: item,
+    price: req.body.price,
+    owner: character,
+  }
+  
+  
+  for (let i = 0; i < character.inventory.length; i++) {
+    if (JSON.stringify(character.inventory[i]._id) === `"${req.params.itemId}"`) {
+      character.inventory.splice(i, 1);
+      await character.save();
+      break;
+    }
+  }
+
+  await Marketplace.create(offer);
+  res.redirect("/marketplace/select-offer/");
+})
+
 
 module.exports = router;

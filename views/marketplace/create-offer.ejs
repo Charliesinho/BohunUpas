@@ -3,7 +3,10 @@
 <h1>Marketplace</h1>
 
 <h1>Create an offer</h1>
-<%- include("../../partials/inventory-display.ejs") %>
-<% if (character) { %>
-
-<% } %>
+<%- include("../../partials/item-card.ejs") %>
+<div>
+    <form action="/marketplace/create-offer/<%=item._id%>" method="POST">
+        <label>Price: <input type="number", min="0" max="1000000" value="<%=item.value%>" name="price" /></label>
+        <button type="submit">Submit Offer</button>
+    </form>
+</div>

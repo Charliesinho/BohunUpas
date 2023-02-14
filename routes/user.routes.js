@@ -163,11 +163,12 @@ router.get("/characterProfile", isLoggedIn, async (req, res, next) => {
   const sessionName = req.session.user.username;
   const sessionRace = await User.find({username: sessionName});
   const character = await Character.findOne(profile.character[0]._id).populate("inventory").populate("weapon").populate("armor").populate("artefact")
-  console.log("CHARACTER PROFILE INVENTORY: ", character.inventory)
+  const rendering = "characterProfile";
+  
   if (!profile.character.length) {
     res.redirect("/user/createcharacter");
   } else {
-    res.render("user/characterProfile", {errorMessage: "", profile: profile, character: character, sessionRace: sessionRace[0].character, session: loginCheck});
+    res.render("user/characterProfile", {errorMessage: "", profile: profile, character: character, sessionRace: sessionRace[0].character, rendering: rendering, session: loginCheck});
   }
 });
 

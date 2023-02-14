@@ -77,7 +77,10 @@
         <iframe class="characterFrame" width="800" height="800" src="https://my.spline.design/untitled-4b790425ef4f04c074add4bb192060c1/"></iframe>     
     <% } %>
 
-    <%- include("../../partials/inventory-display.ejs") %>
+    <div id="inventory">
+        <h1>Inventory</h1>
+        <p>Souls: <%=profile.character[0].souls%></p> 
+        <%- include("../../partials/inventory-display.ejs") %>
     </div>
     </div>
 </section>
