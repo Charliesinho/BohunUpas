@@ -109,14 +109,14 @@ router.get("/game", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user); 
 
   const sessionName = req.session.user.username;
-  const sessionRace2 = await User.find({username: sessionName}).populate('character')
-  charId = JSON.stringify(sessionRace2.character)
-  const character = await Character.findById(sessionRace2[0].character._id).populate("weapon");
-  console.log(character);
+  const sessionRace2 = await User.find({username: sessionName}).populate('character');
+  charId = JSON.stringify(sessionRace2[0].character);
+  charId = charId.split(":")[1].split(",")[0].replace(`"`, "").replace(`"`, "");
+  const character = await Character.findById(charId).populate("weapon").populate("armor").populate("artefact");
+  console.log("CHARACTER: ", character);
   const sessionRace = await User.find({username: sessionName})
   
-
-  res.render("user/game", {sessionRace2: sessionRace2[0], sessionRace: sessionRace, session: loginCheck});
+  res.render("user/game", {sessionRace2: sessionRace2[0], sessionRace: sessionRace, session: loginCheck, character: character});
 });
 
 router.post("/:id/game", isLoggedIn, async (req, res, next) => {

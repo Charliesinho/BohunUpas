@@ -49,26 +49,14 @@ if (sessionInProgress) {
     race = "Human"
   }
 
-  let noArmor = document.querySelector("#noArmor")
-  let noArmorCheck = false;
-
-  if (noArmor.style.display === "block") {
-    noArmorCheck = true;
-    console.log("no armor")
-  }
-
-  let noWeapon = document.querySelector("#noWeapon")
-  let noWeaponCheck = false;
-
-  if (noWeapon.style.display === "block") {
-    noWeaponCheck = true;
-    console.log("no weapon")
-  }
-
   let souls = parseInt(document.querySelector("#souls").value)
   let experience = parseInt(document.querySelector("#experience").value)
 
-  console.log(document.querySelector("#playerweapon"))
+  let gDamage, gDefense, gModifier
+  if (document.querySelector("#noWeapon").style.display === "block") gDamage = parseInt(document.querySelector("#damage").innerHTML);
+  if (document.querySelector("#noArmor").style.display === "block") gDefense = parseInt(document.querySelector("#defense").innerHTML);
+  if (document.querySelector("#noArtefact").style.display === "block") gModifier = parseInt(document.querySelector("#artefactmodifier").innerHTML);
+
 
   // Backgrounds
   const backgroundArr = [];
@@ -168,7 +156,7 @@ if (sessionInProgress) {
       this.iframes = 500;
       this.alive = true;
       this.hp = 10;
-      this.armor = 0;
+      this.armor = gDefense;
     }
 
     initialize() {
@@ -897,21 +885,21 @@ if (sessionInProgress) {
         // Shooting
         if (player.canShoot) {
           if (player.shootLeft && player.shootUp) { // TOP LEFT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", -1, -1, 8, 50, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", -1, -1, 8, gDamage, player.weaponLifeSpan);
           } else if (player.shootUp && player.shootRight) { // TOP RIGHT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 1, -1, 8, 50, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 1, -1, 8, gDamage, player.weaponLifeSpan);
           } else if (player.shootRight && player.shootDown) { // BOTTOM RIGHT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 1, 1, 8, 50, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 1, 1, 8, gDamage, player.weaponLifeSpan);
           } else if (player.shootDown && player.shootLeft) { // BOTTOM LEFT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", -1, 1, 8, 50, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", -1, 1, 8, gDamage, player.weaponLifeSpan);
           } else if (player.shootRight) { // RIGHT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 1, 0, 8, 50, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 1, 0, 8, gDamage, player.weaponLifeSpan);
           } else if (player.shootLeft) { // LEFT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", -1, 0, 8, 50, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", -1, 0, 8, gDamage, player.weaponLifeSpan);
           } else if (player.shootDown) { // DOWN
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 0, 1, 8, 50, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 0, 1, 8, gDamage, player.weaponLifeSpan);
           } else if (player.shootUp) { // UP
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 0, -1, 8, 50, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 0, -1, 8, gDamage, player.weaponLifeSpan);
           }
           player.canShoot = false;
           setTimeout(() => {
