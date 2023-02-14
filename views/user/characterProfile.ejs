@@ -43,9 +43,8 @@
                         <li><img class="itemImage" src="<%=character.armor[0].image%>" width="130px"></li>
                         <div class="weaponStats">                   
                         <li class="itemName"><%=character.armor[0].name%></li>
-                            <div class="inlineStats">
-                                <% console.log(character.armor[0]) %>                                
-                                <li>⚔️ <%=character.armor[0].modifier%></li>
+                            <div class="inlineStats">                                                              
+                                <li>🛡️ <%=character.armor[0].modifier%></li>
                                 <li>👻 <%=character.armor[0].value%></li>
                             </div>
                         </div> 
@@ -77,7 +76,10 @@
         <iframe class="characterFrame" width="800" height="800" src="https://my.spline.design/untitled-4b790425ef4f04c074add4bb192060c1/"></iframe>     
     <% } %>
 
-    <%- include("../../partials/inventory-display.ejs") %>
+    <div id="inventory">
+        <h1 id="inventoryTitle">Inventory</h1>
+        <p>👻 <%=profile.character[0].souls%></p> 
+        <%- include("../../partials/inventory-display.ejs") %>
     </div>
     </div>
 </section>
