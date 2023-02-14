@@ -86,7 +86,7 @@ if (sessionInProgress) {
   let screen7init = false;
   let screen8init = false;
 
-  let levelScreen = 8;
+  let levelScreen = 6;
 
   let animateId;
   let roomTransit = false;
@@ -216,7 +216,7 @@ if (sessionInProgress) {
           this.bottom + ob >= arr[i].top) { 
             if (arr[i].getType() === "environment" || arr[i].getType() === "playerblock") {
               return true;
-            } else if (arr[i].getType() === "enemy") {
+            } else if (arr[i].getType() === "enemy" || (arr[i].getType() === "projectile" && arr[i].firedBy === "enemy")) {
               this.hit(arr[i].damage)
             } else if (arr[i].getType() === "roomtransit" && !roomTransit) {
               roomTransit = true;
@@ -303,6 +303,8 @@ if (sessionInProgress) {
       this.randomMoveTimer;
       this.moveSpeed;
       this.moveTo;
+      this.canShoot = false;
+      this.shootInterval;
     }
 
     initialize() {
@@ -326,6 +328,9 @@ if (sessionInProgress) {
         this.imageFrames = 4;
         this.xDir = -1;
         this.moveSpeed = 1;
+        this.canShoot = true;
+        this.shootInterval = this.getRandomShootInterval();
+        console.log(this.shootInterval);
         for (let i = 0; i < this.imageFrames; i++) {
           this.imgContainer.push("../images/Dungeon/Bat/bat"+i+".png");
         }
@@ -339,7 +344,7 @@ if (sessionInProgress) {
         this.randomMoveTimer = Math.floor(Math.random() * (400 - 200) + 200);
         this.xDir = -1;
         this.yDir = -1;
-        this.canSpawn = false;
+        this.canSpawn = true;
         for (let i = 0; i < this.imageFrames; i++) {
           this.imgContainer.push("../images/Meadow/SlimeBoss/slime"+i+".png");
         }
@@ -357,7 +362,7 @@ if (sessionInProgress) {
     }
 
     getRandomShootInterval() {
-
+      return Math.floor(Math.random() * (5000 - 3000) + 3000);
     }
 
     checkCollision(arr, ot, or, ob, ol) {
@@ -393,6 +398,16 @@ if (sessionInProgress) {
         this.xDir *= -1;
       }
       this.x += this.moveSpeed * this.xDir;
+    }
+
+    shootDown() {
+      if (this.canShoot) {
+        this.canShoot = false;
+        projectileArr.push(new Projectile(this.x, this.y, 30, 30, "red", 0, 1, 1, this.damage, 2000, "enemy", "../images/Projectiles/weak.png"));
+        setTimeout(() => {
+          this.canShoot = true;
+        }, this.shootInterval);
+      }
     }
 
     slimeBossMovement() {
@@ -451,7 +466,7 @@ if (sessionInProgress) {
 
   const projectileArr = [];
   class Projectile {
-    constructor(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan) {
+    constructor(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan, firedBy, src) {
       this.type = "projectile";
 
       this.x = x;
@@ -464,9 +479,11 @@ if (sessionInProgress) {
       this.speed = speed;
       this.damage = damage;
       this.lifeSpan = lifeSpan;
+      this.firedBy = firedBy;
+      this.src = src
 
       this.img = new Image();
-      this.img.src = "../images/Projectiles/weak.png"
+      this.img.src = this.src;
 
       // Collision
       this.left = this.x;
@@ -491,7 +508,7 @@ if (sessionInProgress) {
         this.y += this.speed / 1.4 * this.yDir;
       }
       // Draw
-      ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
+      ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
 
       // Destory if lifeSpan reached
       this.lifeSpan--;
@@ -507,7 +524,7 @@ if (sessionInProgress) {
           this.top - ot < arr[i].bottom &&
           this.bottom + ob >= arr[i].top) { 
             // Enemy Collision
-            if (arr[i].getType() === "enemy") {
+            if (arr[i].getType() === "enemy" && this.firedBy === "player") {
               const projectile = projectileArr.indexOf(this);
               if (!arr[i].takenDamage) arr[i].hit(projectileArr[projectile].damage);
               projectileArr[projectile].destroy();
@@ -833,7 +850,10 @@ if (sessionInProgress) {
         }
         // Normal enemies
         if (enemyArr[i].name === "slime") enemyArr[i].moveTowardsTarget(enemyArr[i].moveTo);
-        if (enemyArr[i].name === "bat") enemyArr[i].moveLeftRight();
+        if (enemyArr[i].name === "bat") {
+          enemyArr[i].moveLeftRight();
+          enemyArr[i].shootDown();
+        }
 
         // Bosses
         if (enemyArr[i].name === "slimeBoss") {
@@ -865,7 +885,7 @@ if (sessionInProgress) {
     }
 
     function spawnProjectile(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan) {
-      const projectile = new Projectile(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan);
+      const projectile = new Projectile(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan, "player", "../images/Projectiles/weak.png");
       projectileArr.push(projectile);
     }
 
@@ -1216,12 +1236,12 @@ if (sessionInProgress) {
       collisionObjectArr.push(new CollisionObject(60, myCanvas.height - 90, myCanvas.width / 2 - 170, 90, "environment", -1, "", false));
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, myCanvas.height - 90, myCanvas.width / 2 - 110, 90, "environment", -1, "", false));
       collisionObjectArr.push(new CollisionObject(myCanvas.width - 70, 90, 70, myCanvas.height - 90, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(240, myCanvas.height / 2 + 50, 760, 40, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(60, 200, 420, 60, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, myCanvas.height - 200, 360, 60, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 80, myCanvas.height / 2 - 100, 40, 100, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(240, myCanvas.height / 2 + 50, 760, 40, "playerblock", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(60, 200, 420, 60, "playerblock", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, myCanvas.height - 200, 360, 60, "playerblock", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 80, myCanvas.height / 2 - 100, 40, 100, "playerblock", -1, "", false));
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, 0, 560, 90, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 200, 180, 400, 90, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 200, 180, 400, 90, "playerblock", -1, "", false));
       
       // Transitions
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, 0, 130, 15, "roomtransit", 7, "down", false));
@@ -1267,14 +1287,14 @@ if (sessionInProgress) {
 
     function  loadScreen8() {
       // COLLISIONS
-      collisionObjectArr.push(new CollisionObject(0, 0, 240, myCanvas.height, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width - 250, 0, 250, myCanvas.height, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(0, 0, 600, 110, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 160, 0, 600, 110, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 190, 485, 190, "environment", -1, "", false));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, myCanvas.height - 190, 600, 190, "environment", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(0, 0, 240, myCanvas.height, "playerblock", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 250, 0, 250, myCanvas.height, "playerblock", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(0, 0, 600, 110, "playerblock", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 160, 0, 600, 110, "playerblock", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 190, 485, 190, "playerblock", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, myCanvas.height - 190, 600, 190, "playerblock", -1, "", false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 120, myCanvas.height / 2 - 90, 225, 70, "playerblock", -1, "", false));
       
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 120, myCanvas.height / 2 - 90, 225, 70, "environment", -1, "", false));
       // Transitions
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 20, 0, 130, 15, "roomtransit", 9, "down", false));
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height - 15, 130, 15, "roomtransit", 7, "up", false));
