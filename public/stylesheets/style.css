@@ -394,7 +394,7 @@ input:focus {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 100px 60px 0 60px;
+  padding: 100px 150px 0 60px;
 }
 
 
@@ -402,12 +402,15 @@ input:focus {
 .pack {
   border-width: 0;
   padding: 5px;
+  margin: 0px;
+ 
 }
 
 .cardPacks {
   display: flex;
   padding-top: 100px;
-  padding: 0 60px 0 60px;
+  padding: 0 0px 0 0px;
+  margin: 0 20px 0 20px;
 }
 
 .mpSortFilterCtn {

@@ -1,3 +1,46 @@
+// setTimeout(() => {  
+//   if (document.getElementById("mediumPack").style.display === "block") {
+//     document.getElementById("mediumPack").style.display = "none";
+//   }
+//   if (document.getElementById("legendaryPack").style.display === "block") {
+//     document.getElementById("legendaryPack").style.display = "none";
+//   }
+// }, 3000)
+  
+
+// function ShowBasic() {
+//   if (document.getElementById("basicPack").style.display === "block") {
+//   document.getElementById("basicPack").style.display = "none";
+// } else {
+//   document.getElementById("basicPack").style.display = "block";
+//   document.getElementById("mediumPack").style.display = "none";
+//   document.getElementById("legendaryPack").style.display = "none";
+// }
+// }
+
+// function ShowMedium() {
+//   if (document.getElementById("mediumPack").style.display === "block") {
+//   document.getElementById("mediumPack").style.display = "none";
+// } else {
+//   document.getElementById("mediumPack").style.display = "block";
+//   document.getElementById("legendaryPack").style.display = "none";
+//   document.getElementById("basicPack").style.display = "none";
+// }
+// }
+
+// function ShowLegendary() {
+//   if (document.getElementById("legendaryPack").style.display === "block") {
+//   document.getElementById("legendaryPack").style.display = "none";
+// } else {
+//   document.getElementById("legendaryPack").style.display = "block";
+//   document.getElementById("mediumPack").style.display = "none";
+//   document.getElementById("basicPack").style.display = "none";
+// }
+// }
+
+
+
+
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event
 document.addEventListener("DOMContentLoaded", () => {
   console.log("BohunUpas JS imported successfully!");
