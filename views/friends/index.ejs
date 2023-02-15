@@ -21,8 +21,7 @@
                 <% if (errorMessage !== "") { %>
                     <div class="display-error-message centralize"><%=errorMessage%></div>
                 <% } else { %>
-                    <% console.log("RESULT: ", searchResult, "CURRENT: ", currentUser) %>
-                    <% if (searchResult !== null && searchResult !== "" && searchResult.username !== currentUser.username) { %>
+                    <% if (searchResult !== null && searchResult !== "" && searchResult.username !== currentUser.username && !inFriendsList) { %>
                         <form action="/friends/addRequest/<%=searchResult._id%>" method="POST">
                             <div class="friends-card">
                                 <div>Result:</div>

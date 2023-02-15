@@ -41,7 +41,6 @@ router.get("/friends", isLoggedIn, async (req, res, next) => {
     const currentUser = getUserWithoutHash(user[0]);
     const character = await Character.findById(currentUser.charId).populate("inventory");
     const searchTerm = "";
-    console.log(user);
     
     res.render("friends", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, searchResult: "", searchTerm: searchTerm, errorMessage: ""});
 }); 
@@ -55,10 +54,22 @@ router.post("/friends/find", isLoggedIn, async (req, res, next) => {
   const character = await Character.findById(currentUser.charId).populate("inventory");
   const searchTerm = req.body.searchTerm;
   const searchResult = await User.findOne({username: searchTerm});
+
+  let inFriendsList = false;
+  // Check if user is already in friends list
+  if (searchResult !== null) {
+    for (let i = 0; i < user[0].friends.length; i++) {
+      if (JSON.stringify(currentUser.friends[i]._id) === `"${searchResult._id}"`) {
+        inFriendsList = true;
+        break;
+      }
+    }
+  }
+
   if (searchTerm !== "" || searchResult === null) {
-    res.render("friends", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, searchTerm: searchTerm, searchResult: searchResult, errorMessage: ""});
+    res.render("friends", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, searchTerm: searchTerm, searchResult: searchResult, inFriendsList: inFriendsList, errorMessage: ""});
   } else {
-    res.render("friends", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, searchTerm: searchTerm, searchResult: searchResult, errorMessage: "Please enter a username."});
+    res.render("friends", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, searchTerm: searchTerm, searchResult: searchResult, inFriendsList: inFriendsList, errorMessage: "Please enter a username."});
   }
 });
 
