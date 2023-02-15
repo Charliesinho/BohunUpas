@@ -509,3 +509,20 @@ input:focus {
   justify-content: center;
   align-items: center;
 }
+
+#friendsMessagesSite {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#friendsSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.friendAcceptRejectBtnCtn {
+  display: flex;
+  gap: 5px;
+}
