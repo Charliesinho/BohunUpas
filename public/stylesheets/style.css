@@ -407,4 +407,19 @@ input:focus {
 .cardPacks {
   display: flex;
   padding-top: 100px;
+  padding: 0 60px 0 60px;
+}
+
+.mpSortFilterCtn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.mpSortCtn {
+  display: flex;
+  gap: 20px;
+}
+.mpFilterCtn {
 }

@@ -8,37 +8,53 @@
 
 <!-- Filter -->
 
-<div>
-    <form action="/marketplace/browse-offers/" method="GET">
-        Show:
-        <% if (filter.Weapon) { %>
-            <label><input type="checkbox" name="Weapon" value="on" checked />Weapons</label>
-        <% } else { %>
-            <label><input type="checkbox" name="Weapon" value="off" />Weapons</label>
-        <% } %>
-        <% if (filter.Armor) { %>
-            <label><input type="checkbox" name="Armor" value="on" checked />Armor</label>
-        <% } else { %>
-            <label><input type="checkbox" name="Armor" value="off" />Armor</label>
-        <% } %>
-        <% if (filter.Artefacts) { %>
-            <label><input type="checkbox" name="Artefacts" value="on" checked />Artefacts</label>
-        <% } else { %>
-            <label><input type="checkbox" name="Artefacts" value="off" />Artefacts</label>
-        <% } %>
-        <% if (filter.OwnedByMe) { %>
-            <label><input type="checkbox" name="OwnedByMe" value="on" checked />Your Offers</label>
-        <% } else { %>
-            <label><input type="checkbox" name="OwnedByMe" value="off" />Your Offers</label>
-        <% } %>
-        <button type="submit">Filter</button>
-    </form>
+<div class="mpSortFilterCtn">
+    <div class="mpFilterCtn">
+        <form action="/marketplace/browse-offers/" method="GET">
+            Show:
+            <% if (filter.Weapon) { %>
+                <label><input type="checkbox" name="Weapon" value="on" checked />Weapons</label>
+            <% } else { %>
+                <label><input type="checkbox" name="Weapon" value="off" />Weapons</label>
+            <% } %>
+            <% if (filter.Armor) { %>
+                <label><input type="checkbox" name="Armor" value="on" checked />Armor</label>
+            <% } else { %>
+                <label><input type="checkbox" name="Armor" value="off" />Armor</label>
+            <% } %>
+            <% if (filter.Artefacts) { %>
+                <label><input type="checkbox" name="Artefacts" value="on" checked />Artefacts</label>
+            <% } else { %>
+                <label><input type="checkbox" name="Artefacts" value="off" />Artefacts</label>
+            <% } %>
+            <% if (filter.OwnedByMe) { %>
+                <label><input type="checkbox" name="OwnedByMe" value="on" checked />Your Offers</label>
+            <% } else { %>
+                <label><input type="checkbox" name="OwnedByMe" value="off" />Your Offers</label>
+            <% } %>
+            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                <button type="submit" class="buttonItem">Filter</button>
+            </div>
+        </form>
+    </div>
+    <div>
+        <div class="mpSortCtn">
+            <form action="/marketplace/browse-offers/", method="GET">
+                <input type="checkbox" name="SortPriceIncreasing" value="on" style="display: none;" checked/>
+                <button class="buttonItem btnWider" type="submit">Sort by price increasing</button>
+            </form>
+            <form action="/marketplace/browse-offers/", method="GET">
+                <input type="checkbox" name="SortPriceDecreasing" value="on" style="display: none;" checked/>
+                <button class="buttonItem btnWider" type="submit">Sort by price decreasing</button>
+            </form>
+        </div>
+    </div>
 </div>
-
+<hr style="width: 1200px;">
 <div id="marketAlign">
     <div id="marketplaceItems">
     <% item.forEach(item => { %>
-        <% if (filter.hasOwnProperty(item.item.type) || Object.keys(filter).length === 0 || ((JSON.stringify(item.owner._id) === `"${sessionRace[0].charId}"`) && filter.hasOwnProperty("OwnedByMe"))) { %>
+        <% if (Object.keys(filter).includes("SortPriceIncreasing") || Object.keys(filter).includes("SortPriceDecreasing")) { %>
             <div class="itemTable">       
                 <ul class="removeListStyle">
                     <!-- <li id="equipment">Equipment</li> -->
@@ -50,7 +66,7 @@
                                 <li>👻 <%=item.price%></li>
                             </div>
                         </div> 
-                        <li><img class="itemImage" src="../<%=item.item.image%>" width="130px"></li>
+                        <li><img class="itemImage" src="../../<%=item.item.image%>" width="130px"></li>
                     </ul>
                     <% if (JSON.stringify(item.owner._id) === `"${sessionRace[0].charId}"`) { %>
                         <form action="/marketplace/remove-offer/<%=item._id%>/<%=item.item._id%>" method="POST">
@@ -65,6 +81,33 @@
                 </ul>
             </div> 
         <% } %>
+        <% if (filter.hasOwnProperty(item.item.type) || Object.keys(filter).length === 0 || ((JSON.stringify(item.owner._id) === `"${sessionRace[0].charId}"`) && filter.hasOwnProperty("OwnedByMe"))) { %>
+            <div class="itemTable">       
+                <ul class="removeListStyle">
+                    <!-- <li id="equipment">Equipment</li> -->
+                    <ul class="removeListStyle allignList">
+                        <div class="weaponStats">           
+                        <li><%=item.item.name%></li>                         
+                            <div class="inlineStats">   
+                                <li>⚔️ <%=item.item.modifier%></li>
+                                <li>👻 <%=item.price%></li>
+                            </div>
+                        </div> 
+                        <li><img class="itemImage" src="../../<%=item.item.image%>" width="130px"></li>
+                    </ul>
+                    <% if (JSON.stringify(item.owner._id) === `"${sessionRace[0].charId}"`) { %>
+                        <form action="/marketplace/remove-offer/<%=item._id%>/<%=item.item._id%>" method="POST">
+                            <button class="buttonItem btnWider" type="submit">Withdraw offer</button>
+                        </form>
+                        <div style="color: green;">Your Offer</div>
+                    <% } else { %>
+                        <form action="/marketplace/buy-item/<%=item._id%>/<%=item.item._id%>/<%=item.owner._id%>" method="POST">
+                            <button class="buttonItem btnWider" type="submit">Buy item</button>
+                        </form>
+                    <% }  %>
+                </ul>
+            </div> 
+        <% } %> 
     <% }) %>
     </div>
 </div>

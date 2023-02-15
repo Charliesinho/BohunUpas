@@ -102,14 +102,22 @@ router.get("/marketplace/browse-offers/", isLoggedIn, async (req, res, next) => 
   const currentUser = getUserWithoutHash(user[0]);
   const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
   const filter = req.query;
-  const item = await Marketplace.find().populate("item").populate("owner");
+  // Get items and sort
+  let item;
+  if (JSON.stringify(filter).includes("SortPriceIncreasing")) {
+    item = await Marketplace.find().populate("item").populate("owner").sort({price: 1});
+  } else if (JSON.stringify(filter).includes("SortPriceDecreasing")) {
+    item = await Marketplace.find().populate("item").populate("owner").sort({price: -1});
+  } else {
+    item = await Marketplace.find().populate("item").populate("owner");
+  }
 
+  // Filter browse items
   let filterResults = 0;
   for (let i = 0; i < item.length; i++) {
     if (filter.hasOwnProperty(item[i] .item.type)) filterResults++;
   }
   if (filterResults === 0) filterResults = item.length; 
-  console.log(filter);
   
   res.render("marketplace/browse-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: item, filter: filter, filterResults: filterResults, errorMessage: ""})
 })
@@ -133,7 +141,6 @@ router.get("/marketplace/browse-offers/err", isLoggedIn, async (req, res, next) 
     }
   } catch(error) {
     console.log("Error: ", error);
-
   }
 })
 
