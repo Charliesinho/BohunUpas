@@ -3,19 +3,32 @@ const { Schema, model } = require("mongoose");
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
 const messageSchema = new Schema(
   {
-    friend: {
-        type: Schema.Types.ObjectId,
-        ref: "Character",
-        unique: true,
+    recipient: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    price: {
-        type: Number,
-        required: true
+    sender: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    owner: {
-        type: Schema.Types.ObjectId,
-        ref: "Character",
+    subject: {
+      type: String,
+      required: true,
     },
+    textBody: {
+      type: String,
+      required: true,
+    },
+    attachment: {
+      type: Schema.Types.ObjectId,
+      ref: "Item",
+    },
+    messageType: {
+      type: String,
+      enum: ["friendrequest", "message"]
+    }
   },
   {
     timestamps: true
