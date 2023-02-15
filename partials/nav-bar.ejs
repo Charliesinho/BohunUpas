@@ -18,8 +18,7 @@
 
         <% if (session) { %>  
           
-        <%if (sessionRace.length === 1) { %>
-
+        <% if (sessionRace.length === 1) { %>
         <li>
           <p>
             <a style="text-decoration: none" href="/user/createcharacter">
@@ -35,6 +34,7 @@
               style="text-decoration: none"
               href="/user/soulkeeper/<%=sessionRace[0]._id%>"
             >
+            <%console.log("SESSIONRACEID: ", sessionRace)%>
               <div class="navImg">
                 <img src="/images/Icons/Stone.png" height="60px" />
               </div>

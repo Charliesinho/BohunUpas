@@ -27,7 +27,8 @@ function getUserWithoutHash(user) {
         charId: charId,
         username: user.username,
         email: user.email,
-        character: user.character
+        character: user.character,
+        _id: charId
     }
 }
 
@@ -156,7 +157,7 @@ router.get("/marketplace/browse-offers/", isLoggedIn, async (req, res, next) => 
 })
 
 
-router.get("/marketplace/browse-offers/err", isLoggedIn, async (req, res, next) => {
+router.get("/marketplace/browse-offers/:offerId/err", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
   // Variables
   const sessionName = req.session.user.username;
@@ -165,12 +166,19 @@ router.get("/marketplace/browse-offers/err", isLoggedIn, async (req, res, next) 
   const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
   const filter = req.query;
   const offerList = await Marketplace.find().populate("item").populate("owner");
+  const offer = await Marketplace.findById(req.params.offerId);
+
+  let filterResults = 0;
+  for (let i = 0; i < offerList.length; i++) {
+    if (filter.hasOwnProperty(offerList[i] .item.type)) filterResults++;
+  }
+  if (filterResults === 0) filterResults = offerList.length; 
 
   try {
     if (character.inventory.length > 5) {
-      res.render("marketplace/browse-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: offerList, filter: filter, errorMessage: "Your inventory is full!"})
-    } else if (parseInt(character.souls) < parseInt(10)) {
-      res.render("marketplace/browse-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: offerList, filter: filter, errorMessage: "You can't afford this item!"})
+      res.render("marketplace/browse-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: offerList, filter: filter, filterResults: filterResults, errorMessage: "Your inventory is full!"})
+    } else if (parseInt(character.souls) < parseInt(offer.price)) {
+      res.render("marketplace/browse-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: offerList, filter: filter, filterResults: filterResults, errorMessage: "You can't afford this item!"})
     }
   } catch(error) {
     console.log("Error: ", error);
@@ -189,6 +197,13 @@ router.post("/marketplace/buy-item/:offerId/:itemId/:ownerId", isLoggedIn, async
   const offer = await Marketplace.findById(req.params.offerId).populate("item").populate("owner")
   const offerList = await Marketplace.find().populate("item").populate("owner");
   const filter = req.query;
+
+  let filterResults = 0;
+  for (let i = 0; i < offerList.length; i++) {
+    if (filter.hasOwnProperty(offerList[i] .item.type)) filterResults++;
+  }
+  if (filterResults === 0) filterResults = offerList.length; 
+
   try {
     // Inventory check
     if (character.inventory.length < 6) {
@@ -209,15 +224,14 @@ router.post("/marketplace/buy-item/:offerId/:itemId/:ownerId", isLoggedIn, async
         await Marketplace.findByIdAndDelete(req.params.offerId);
         res.redirect("/marketplace/browse-offers");
       } else {      
-        res.redirect("/marketplace/browse-offers/err");
-
+        res.redirect("/marketplace/browse-offers/" + req.params.offerId + "/err");
       }
     } else {
-      res.redirect("/marketplace/browse-offers/err");
+      res.redirect("/marketplace/browse-offers/" + req.params.offerId + "/err");
     }
   } catch (error) {
     console.log("Error: ", error);
-    res.render("marketplace/browse-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: offerList, filter: filter, errorMessage: "Error buying the item, please try again!"})
+    res.render("marketplace/browse-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: offerList, filter: filter, filterResults: filterResults, errorMessage: "Error buying the item, please try again!"})
   }
 })
 
