@@ -296,3 +296,9 @@ h1 {
 .centerText {
   text-align: center;
 }
+
+.mpIndexBtnCtn {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
