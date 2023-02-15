@@ -71,6 +71,14 @@ h1 {
   background-color: black;
 }
 
+#canvas {
+  border-radius: 20px;
+  border-color:  rgb(73, 48, 43);
+  box-shadow: 0 20px rgb(21, 13, 11);
+  border-width: 2px;
+  border-style: solid;
+}
+
 #characterProfile {
   display: flex;
   justify-content: center;
