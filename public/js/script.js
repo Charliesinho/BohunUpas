@@ -341,6 +341,10 @@ if (sessionInProgress) {
       this.yDir;
       this.canSpawn;
       this.spawnInterval;
+      this.state;
+      this.ecrolState = true;
+      this.movementArr;
+      this.ecrolTimeout = 3000;
 
       // Gameplay values
       this.initialized = false;
@@ -408,6 +412,21 @@ if (sessionInProgress) {
         this.canSpawn = false;
         for (let i = 0; i < this.imageFrames; i++) {
           this.imgContainer.push("../images/Meadow/SlimeBoss/slime"+i+".png");
+        }
+      }
+      if (this.name === "ecrol") {
+        this.souls = 500;
+        this.experience = 1000;
+        this.hp = 100;
+        this.damage = 1000;
+        this.imageFrames = 4;
+        this.moveSpeed = 10;
+        this.movementArr = this.ecrolPatterns();
+        this.x = this.movementArr[0].x;
+        this.y = this.movementArr[0].y;
+        if (this.ecrolState) this.state = 0;
+        for (let i = 0; i < this.imageFrames; i++) {
+          this.imgContainer.push("../images/Ecrol/ecrol"+i+".png");
         }
       }
     } 
@@ -489,8 +508,127 @@ if (sessionInProgress) {
       this.y += (this.moveSpeed / this.hp) * this.yDir;
     }
 
-    ecrolBossMovement() {
+    ecrolPositionPicker() {
+      this.state = Math.floor(Math.random() * 5)
+    }
 
+    ecrolBossMovement() {
+      if (this.ecrolState) {
+        switch (this.state) {
+          case 0:
+            this.ecrolState = false;
+            this.img.src = this.imgContainer[1];
+            this.x = this.movementArr[this.state].x
+            this.y = this.movementArr[this.state].y
+            setTimeout(() => {
+              this.ecrolState = true;
+              this.ecrolPositionPicker();
+            }, this.ecrolTimeout)
+            break;
+          case 1:
+            this.ecrolState = false;
+            this.img.src = this.imgContainer[3];
+            this.x = this.movementArr[this.state].x
+            this.y = this.movementArr[this.state].y
+            setTimeout(() => {
+              this.ecrolState = true;
+              this.ecrolPositionPicker();
+            }, this.ecrolTimeout)
+            break;
+          case 2:
+            this.ecrolState = false;
+            this.img.src = this.imgContainer[2];
+            this.x = this.movementArr[this.state].x
+            this.y = this.movementArr[this.state].y
+            setTimeout(() => {
+              this.ecrolState = true;
+              this.ecrolPositionPicker();
+            }, this.ecrolTimeout)
+            break;
+          case 3:
+            this.ecrolState = false;
+            this.img.src = this.imgContainer[2];
+            this.x = this.movementArr[this.state].x
+            this.y = this.movementArr[this.state].y
+            setTimeout(() => {
+              this.ecrolState = true;
+              this.ecrolPositionPicker();
+            }, this.ecrolTimeout)
+            break;
+          case 4:
+            this.ecrolState = false;
+            this.img.src = this.imgContainer[0];
+            this.x = this.movementArr[this.state].x
+            this.y = this.movementArr[this.state].y
+            setTimeout(() => {
+              this.ecrolState = true;
+              this.ecrolPositionPicker();
+            }, this.ecrolTimeout)
+            break;
+        }
+      }
+      if (this.state < 2) {
+        this.width = 531
+        this.height = 150
+        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+      } else {
+        this.width = 150
+        this.height = 531
+        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+      }
+      this.ecrolMove();
+    }
+
+    ecrolMove() {
+      switch (this.state) {
+        case 0:
+          this.x += this.moveSpeed;
+          break;
+        case 1:
+          this.x -= this.moveSpeed;
+          break;
+        case 2:
+          this.y += this.moveSpeed
+          break;
+        case 3:
+          this.y += this.moveSpeed
+          break;
+        case 4:
+          this.y -= this.moveSpeed
+          break;
+      }
+    }
+
+    ecrolPatterns() {
+      const arr = [
+        // LEFT -> RIGHT 0
+        {
+          x: -myCanvas.width,
+          y: 100,
+        },
+        // RIGHT -> LEFT 1
+        {
+          x: myCanvas.width * 2,
+          y: 350,
+        },
+        // TOP -> BOTTOM (middle) 2
+        {
+          x: 300,
+          y: -myCanvas.height,
+        },
+        // TOP -> BOTTOM (offset) 3
+        {
+          x: 550,
+          y: -myCanvas.height,
+        },
+        // BOTTOM -> TOP () 4
+        {
+          x: myCanvas.width / 2 + 150,
+          y: myCanvas.height * 2,
+        },
+      ]
+      
+      return arr;
     }
 
     updateCollision() {
@@ -678,6 +816,14 @@ if (sessionInProgress) {
       }
     }
 
+    selfDestruct() {
+      if (this.triggerDestroy) {
+        setTimeout(() => {
+          this.destroy();
+        }, 5000)
+      }
+    }
+
     initiatieEnemySpawn() {
       if (!this.spawnInit) {
         enemySpawnInProgress = true;
@@ -780,27 +926,10 @@ if (sessionInProgress) {
         //Enemies
         updateEnemies();
         if (enemySpawnInProgress) {
+          enemySpawnInProgress = false;
           initiateSpawn()
         }
 
-        if (inBattle && levelScreen === 3 && enemyArr.length < 12) {
-          enemySpawnInProgress = false;
-          console.log("ENDING")
-          endEnemySpawn();
-          setTimeout(() => {
-            console.log("BATTLE WON")
-            inBattle = false;
-          }, 2000)
-        } 
-        if (inBattle && levelScreen === 7 && enemyArr.length < 10) {
-          enemySpawnInProgress = false;
-          console.log("ENDING")
-          endEnemySpawn();
-          setTimeout(() => {
-            console.log("BATTLE WON")
-            inBattle = false;
-          }, 2000)
-        }
         // Collisions
         updateCollisionObjects();
         document.querySelector("#souls").value = souls;
@@ -1008,8 +1137,14 @@ if (sessionInProgress) {
           }
         }
 
+        // ECROL
+        if (enemyArr[i].name === "ecrol") {
+          enemyArr[i].ecrolBossMovement();
+        }
+
+
         enemyArr[i].updateCollision();
-        if (enemyArr[i]) animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
+        if (enemyArr[i] && enemyArr[i].name !== "ecrol") animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
       }
     }
 
@@ -1053,9 +1188,13 @@ if (sessionInProgress) {
     function initiateSpawn() {
       console.log("FIRED")
       // Spawn boundaries
-      collisionObjectArr.push(new CollisionObject(0, 0, 45, myCanvas.height, "environment", -1, "", true, true));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width - 45, 0, 45, myCanvas.height, "environment", -1, "", true, true));
-      collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 45, myCanvas.width, 45, "environment", -1, "", true, true));
+      collisionObjectArr.push(new CollisionObject(0, 0, 45, myCanvas.height, "environment", -1, "", false, true));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 45, 0, 45, myCanvas.height, "environment", -1, "", false, true));
+      collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 45, myCanvas.width, 45, "environment", -1, "", false, true));
+      for (let i = collisionObjectArr.length - 1; i >= 0; i--) {
+        collisionObjectArr[i].selfDestruct();
+      }
+      
       // Remove any enemies
       for (let i = 0; i < enemyArr.length; i++) {
         enemyArr[i].remove(); 
@@ -1111,11 +1250,6 @@ if (sessionInProgress) {
       inBattle = true;
     }
 
-    function endEnemySpawn() {
-      for (let i = 0; i < collisionObjectArr.length; i++) {
-        if (collisionObjectArr[i].triggerDestroy) collisionObjectArr[i].destroy();
-      }
-    }
     
     // Controls
     document.addEventListener("keydown", (e) => {
@@ -1488,7 +1622,7 @@ if (sessionInProgress) {
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height-15, 130, 15, "roomtransit", 6, "up", false, false));
 
       // Enemy Spawner
-      collisionObjectArr.push(new CollisionObject(0, 0, myCanvas.width, 45, "environment", -1, "", true, true));
+      collisionObjectArr.push(new CollisionObject(0, 0, myCanvas.width, 45, "environment", -1, "", false, true));
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 64, myCanvas.height / 2 - 64, 64, 64, "spawntrigger", -1, "", true, false));
 
       screen7init = true;
@@ -1507,6 +1641,14 @@ if (sessionInProgress) {
       // Transitions
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 20, 0, 130, 15, "roomtransit", 9, "down", false, false));
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height - 15, 130, 15, "roomtransit", 7, "up", false, false));
+
+      // BOSS
+      setTimeout(() => {
+        enemyArr.push(new Enemy("ecrol", -myCanvas.width, 0, 531, 150));
+        for (let i = 0; i < enemyArr.length; i++) {
+          enemyArr[i].initialize();
+        }
+      }, 1000)
       screen8init = true;
     }
   }
