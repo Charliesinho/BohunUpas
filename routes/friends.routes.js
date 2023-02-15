@@ -33,6 +33,19 @@ function getUserWithoutHash(user) {
     }
 }
 
+function generateFriendRequestMessage(recipient, sender) {
+  const subject = `Friend Request From ${sender.username}`;
+  const textBody = `Hi there, ${recipient.username}! ${sender.username} wants to add you to their friends list. Do you accept?`;
+  const messageType = "friendrequest";
+  return {
+    recipient: recipient._id,
+    sender: sender.id,
+    subject: subject,
+    textBody: textBody,
+    messageType: messageType
+  }
+}
+
 // MAIN PAGE
 router.get("/friends", isLoggedIn, async (req, res, next) => {
     checkLogin(req.session.user);
@@ -72,19 +85,6 @@ router.post("/friends/find", isLoggedIn, async (req, res, next) => {
     res.render("friends", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, searchTerm: searchTerm, searchResult: searchResult, inFriendsList: inFriendsList, errorMessage: "Please enter a username."});
   }
 });
-
-function generateFriendRequestMessage(recipient, sender) {
-  const subject = `Friend Request From ${sender.username}`;
-  const textBody = `Hi there, ${recipient.username}! ${sender.username} wants to add you to their friends list. Do you accept?`;
-  const messageType = "friendrequest";
-  return {
-    recipient: recipient._id,
-    sender: sender.id,
-    subject: subject,
-    textBody: textBody,
-    messageType: messageType
-  }
-}
 
 router.post("/friends/addRequest/:userId", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
@@ -149,16 +149,16 @@ router.post("/friends/acceptRequest/:messageId/:senderId", isLoggedIn, async (re
 
     res.redirect("/friends");
   } catch (error) {
-    console.log("Error sending friends request: ", error)
-    res.redirect("/friends")
+    console.log("Error sending friends request: ", error);
+    res.redirect("/friends");
   }
 }); 
 
 
 // REJECT
 
-router.post("/friends/acceptRequest/:messageId/:userId/:senderId", isLoggedIn, async (req, res, next) => {
-/*   checkLogin(req.session.user);
+router.post("/friends/rejectRequest/:messageId", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
   const sessionName = req.session.user.username;
   const user = await User.find({username: sessionName}).populate("character").populate("friends");
   const currentUser = getUserWithoutHash(user[0]);
@@ -166,17 +166,25 @@ router.post("/friends/acceptRequest/:messageId/:userId/:senderId", isLoggedIn, a
   const searchTerm = "";
 
   try {
-    // Send friend request
-    const recipient = await User.findById(req.params.userId);
-    const friendRequest = generateFriendRequestMessage(recipient, currentUser);
-    const newFriendRequest = await Message.create(friendRequest);
-    recipient.messages.unshift(newFriendRequest);
-    await recipient.save();
-    res.render("friends", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, searchResult: searchResult, searchTerm: searchTerm, errorMessage: ""});
+    // Find friend request message index
+    let msgIndex = 0;
+    const friendRequest = await Message.findById(req.params.messageId);
+    for (let i = 0; i < user[0].messages.length; i++) {
+      if (JSON.stringify(friendRequest._id) === `"${req.params.messageId}"`) {
+        msgIndex = i;
+        break;
+      }
+    }
+    user[0].messages.splice(msgIndex, 1);
+    await user[0].save();
+    // Delete message
+    await Message.findByIdAndDelete(req.params.messageId);
+    
+    res.redirect("/friends");
   } catch (error) {
-    console.log("Error sending friends request: ", error)
-    res.redirect("/friends")
-  } */
+    console.log("Error rejecting request: ", error);
+    res.redirect("/friends");
+  }
 }); 
 
 module.exports = router;
