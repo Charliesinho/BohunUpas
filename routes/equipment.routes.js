@@ -134,7 +134,7 @@ function generateItemLegendary() {
   let randomNum = Math.floor(Math.random() * 100);
   console.log(randomNum)
   let namePosition = Math.floor(Math.random() * 4)
-  let randomName1 = ["Bad ", "Broken ", "Shady ", "Illegal ", "Probably ", "Weird "]
+  let randomName1 = ["Bad ", "Broken ", "Shady ", "Illegal ", "Pnpmrobably ", "Weird "]
   let randomName2 = ["Cool ", "Chill ", "Nice ", "Charming "]
   let randomName3 = ["Insane ", "Awesome ", "Brutal ", "Scary "]
 

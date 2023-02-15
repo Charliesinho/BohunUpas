@@ -1,71 +1,122 @@
 <nav id="generalNav">
   <div id="nav">
     <div class="navImg">
-      <img  src="/images/Icons/Leaf.png" height="80px">
+      <img src="/images/Icons/Leaf.png" height="80px" />
     </div>
 
     <div>
       <ul id="navList">
-        <li><p><a style="text-decoration: none" href="/">
+        <li>
+          <p>
+            <a style="text-decoration: none" href="/">
+              <div class="navImg">
+                <img src="/images/Icons/Scroll.png" height="60px" />
+              </div>
+            </a>
+          </p>
+        </li>
+
+        <% if (session) { %>  
+          
+        <%if (sessionRace.length === 1) { %>
+
+        <li>
+          <p>
+            <a style="text-decoration: none" href="/user/createcharacter">
+              <div class="navImg">
+                <img src="/images/Icons/Bag.png" height="60px" />
+              </div>
+            </a>
+          </p>
+        </li>
+        <li>
+          <p>
+            <a
+              style="text-decoration: none"
+              href="/user/soulkeeper/<%=sessionRace[0]._id%>"
+            >
+              <div class="navImg">
+                <img src="/images/Icons/Stone.png" height="60px" />
+              </div>
+            </a>
+          </p>
+        </li>        
+        <li>
           <div class="navImg">
-          <img  src="/images/Icons/Scroll.png" height="60px">
-        </div>
-        </a></p></li>
-
-        <% if (session) { %>          
-          <% console.log("session Race:", sessionRace) %>
-          <% if (sessionRace.length === 1) { %>
-            
-            <li><p><a style="text-decoration: none" href="/user/createcharacter">
-              <div class="navImg">
-              <img  src="/images/Icons/Bag.png" height="60px">
-            </div>
-            </a></p></li>                
-            <li><p><a style="text-decoration: none" href="/user/soulkeeper/<%=sessionRace[0]._id%>">
-              <div class="navImg">
-              <img src="/images/Icons/Stone.png" height="60px">
-            </div>
-            </a></p></li>
-            <% } %>     
-
-            <% if (sessionRace.length === 0) { %>              
-           <li><p><a style="text-decoration: none" href="/user/characterProfile">
-            <div class="navImg">
-              <img src="/images/Icons/Bag.png" height="60px">
-            </div>
-          </a></p></li>            
-          <% } %>
-          <!-- <li>Collections</li> -->
+            <p>
+              <a href="/marketplace  "
+                ><img src="/images/Icons/Coin.png" height="60px"
+              /></a>
+            </p>
+          </div>
+        </li>
+        <% } else { %>         
           <li>
-            <div class="navImg">
-              <p><a href="/marketplace  "><img src="/images/Icons/Coin.png" height="60px"></a></p>
-            </div>
-          </li>
-          <!-- <li>Trading</li> -->
-          <li>
-            <div class="navImg">
-              <p><a><img src="/images/Icons/Book.png" height="60px"></a></p>
-            </div>
-          </li>
-          <li><p><a style="text-decoration: none" href="/user/profile">
-            <div class="navImg"><img  src="/images/Icons/Gear.png" height="60px"></div>
-          </a></p></li>
+          <p>
+            <a style="text-decoration: none" href="/user/createCharacter">
+              <div class="navImg">
+                <img src="/images/Icons/Bag.png" height="60px" />
+              </div>
+            </a>
+          </p>
+        </li>
+        <% } %>
+        
+        <!-- <li>Trading</li> -->
+        <li>
+          <div class="navImg">
+            <p>
+              <a><img src="/images/Icons/Book.png" height="60px" /></a>
+            </p>
+          </div>
+        </li>
+        <li>
+          <p>
+            <a style="text-decoration: none" href="/user/profile">
+              <div class="navImg">
+                <img src="/images/Icons/Gear.png" height="60px" />
+              </div>
+            </a>
+          </p>
+        </li>
         <% } %>
       </ul>
     </div>
 
     <div id="navRight">
-    <% if (session) { %>
-      <% if (sessionRace.length === 0) { %> 
-        <p><a id="btn-playnow" style="text-decoration: none" href="/user/createCharacter"> Play Now </a></p>
-        <% } else { %>
-        <p><a id="btn-playnow" style="text-decoration: none" href="/user/game"> Play Now </a></p>
-        <% } %>
-        <p><a id="btn-logout" style="text-decoration: none" href="/auth/logout"> Logout </a></p>
-    <% } else { %>
-        <p><a id="btn-playnow" style="text-decoration: none" href="/auth/accountcheck"> Play Now </a></p>
-    <% } %>
+      <% if (session) { %> <% if (sessionRace.length === 0) { %>
+      <p>
+        <a
+          id="btn-playnow"
+          style="text-decoration: none"
+          href="/user/createCharacter"
+        >
+          Play Now
+        </a>
+      </p>
+      <% } else { %>
+      <p>
+        <a id="btn-playnow" style="text-decoration: none" href="/user/game">
+          Play Now
+        </a>
+      </p>
+      <% } %>
+      <p>
+        <a id="btn-logout" style="text-decoration: none" href="/auth/logout">
+          Logout
+        </a>
+      </p>
+      <% } else { %>
+      <p>
+        <a
+          id="btn-playnow"
+          style="text-decoration: none"
+          href="/auth/accountcheck"
+        >
+          Play Now
+        </a>
+      </p>
+      <% } %>
     </div>
   </div>
-
 </nav>
