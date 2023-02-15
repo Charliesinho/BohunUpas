@@ -11,38 +11,33 @@
 
         <div>
             <div>
-                <h2>Soulkeeper is hard at work ...</h2>
-                <div>Do you wish to spend your souls for rewards?</div>
-                <!-- <input type="number" name="availableSouls" value="<%=character.souls%>" style="display: none" /> -->
-            </div>
-
-            <!-- <div>
-                <input type="button" name="answer" onclick="ShowBasic()"  value="❤️" />
-                <input type="button" name="answer" onclick="ShowMedium()" value="❤️"/>
-                <input type="button" name="answer" onclick="ShowLegendary()" value="❤️"/>
-            </div> -->
+                <!-- <h2>Soulkeeper is hard at work ...</h2>
+                <div>Do you wish to spend your souls for rewards?</div> -->
+                <!-- <input type="number" name="availableSouls" value="<%=character.souls%>" style="display: none" /> -->                
+            </div>            
 
             <div class="cardPacks">
 
-        <div id="basicPack" style="display: block;">
-            <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
-                <iframe  class="pack" width="400" height="400" src="https://my.spline.design/untitled-ab609558c464037e73ca314f2bec3a44/"></iframe>   
+                <div id="basicPack" style="display: block;">
+                <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
+                    <iframe  class="pack packQuery" src="https://my.spline.design/untitled-ab609558c464037e73ca314f2bec3a44/"></iframe>   
+               
                 <input type="text" name="name" value="Standard Pack" readonly />
                 <button class="buttonItem widerButton" type="submit" class="purchaseButton"><input type="number" name="price" value="1" readonly/></button>                
             </form>
         </div>
 
         <div id="mediumPack" style="display: block;">
-            <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">                
-                <iframe  class="pack" width="400" height="400" src="https://my.spline.design/basicpackcopy-256eb5e9758011142a1b22958c1ec751/"></iframe>
+        <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">               
+            <iframe  class="pack packQuery" src="https://my.spline.design/basicpackcopy-256eb5e9758011142a1b22958c1ec751/"></iframe>
                 <input type="text" name="name" value="Medium Pack" readonly />
                 <button class="buttonItem widerButton" type="submit"><input type="number" name="price" value="5" readonly/></button>                
             </form>
         </div>
 
         <div id="legendaryPack" style="display: block;">
-            <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">                
-                <iframe  class="pack" width="400" height="400" src="https://my.spline.design/basicpackcopy-d1e17c843ca542f6588e4e5b60a12aac/"></iframe>
+        <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">                      
+            <iframe  class="pack packQuery" src="https://my.spline.design/basicpackcopy-d1e17c843ca542f6588e4e5b60a12aac/"></iframe>
                 <input type="text" name="name" value="Legendary Pack" readonly />
                 <button class="buttonItem widerButton" type="submit"><input type="number" name="price" value="5000" readonly/></button>                
             </form>
@@ -54,5 +49,11 @@
             <% if (errorMessage !== "") { %>
                 <div class="display-error-message centralize"><%=errorMessage%></div>
             <% } %>
+            </div>
+
+            <div>
+                <input type="button" name="answer" onclick="ShowBasic()"  value="❤️" />
+                <input type="button" name="answer" onclick="ShowMedium()" value="❤️"/>
+                <input type="button" name="answer" onclick="ShowLegendary()" value="❤️"/>
             </div>
 </section>

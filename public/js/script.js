@@ -1,42 +1,42 @@
-// setTimeout(() => {  
-//   if (document.getElementById("mediumPack").style.display === "block") {
-//     document.getElementById("mediumPack").style.display = "none";
-//   }
-//   if (document.getElementById("legendaryPack").style.display === "block") {
-//     document.getElementById("legendaryPack").style.display = "none";
-//   }
-// }, 3000)
+setTimeout(() => {  
+  if (document.getElementById("mediumPack").style.display === "block") {
+    document.getElementById("mediumPack").style.display = "none";
+  }
+  if (document.getElementById("legendaryPack").style.display === "block") {
+    document.getElementById("legendaryPack").style.display = "none";
+  }
+}, 3000)
   
 
-// function ShowBasic() {
-//   if (document.getElementById("basicPack").style.display === "block") {
-//   document.getElementById("basicPack").style.display = "none";
-// } else {
-//   document.getElementById("basicPack").style.display = "block";
-//   document.getElementById("mediumPack").style.display = "none";
-//   document.getElementById("legendaryPack").style.display = "none";
-// }
-// }
+function ShowBasic() {
+  if (document.getElementById("basicPack").style.display === "block") {
+  document.getElementById("basicPack").style.display = "none";
+} else {
+  document.getElementById("basicPack").style.display = "block";
+  document.getElementById("mediumPack").style.display = "none";
+  document.getElementById("legendaryPack").style.display = "none";
+}
+}
 
-// function ShowMedium() {
-//   if (document.getElementById("mediumPack").style.display === "block") {
-//   document.getElementById("mediumPack").style.display = "none";
-// } else {
-//   document.getElementById("mediumPack").style.display = "block";
-//   document.getElementById("legendaryPack").style.display = "none";
-//   document.getElementById("basicPack").style.display = "none";
-// }
-// }
+function ShowMedium() {
+  if (document.getElementById("mediumPack").style.display === "block") {
+  document.getElementById("mediumPack").style.display = "none";
+} else {
+  document.getElementById("mediumPack").style.display = "block";
+  document.getElementById("legendaryPack").style.display = "none";
+  document.getElementById("basicPack").style.display = "none";
+}
+}
 
-// function ShowLegendary() {
-//   if (document.getElementById("legendaryPack").style.display === "block") {
-//   document.getElementById("legendaryPack").style.display = "none";
-// } else {
-//   document.getElementById("legendaryPack").style.display = "block";
-//   document.getElementById("mediumPack").style.display = "none";
-//   document.getElementById("basicPack").style.display = "none";
-// }
-// }
+function ShowLegendary() {
+  if (document.getElementById("legendaryPack").style.display === "block") {
+  document.getElementById("legendaryPack").style.display = "none";
+} else {
+  document.getElementById("legendaryPack").style.display = "block";
+  document.getElementById("mediumPack").style.display = "none";
+  document.getElementById("basicPack").style.display = "none";
+}
+}
 
 
 
@@ -129,7 +129,7 @@ if (sessionInProgress) {
   let screen7init = false;
   let screen8init = false;
 
-  let levelScreen = 8;
+  let levelScreen = 0;
 
   let animateId;
   let roomTransit = false;
@@ -410,21 +410,6 @@ if (sessionInProgress) {
           this.imgContainer.push("../images/Meadow/SlimeBoss/slime"+i+".png");
         }
       }
-      if (this.name === "ecrol") {
-        this.souls = 500;
-        this.experience = 1000;
-        this.hp = 100;
-        this.damage = 1000;
-        this.imageFrames = 1;
-        this.moveSpeed = 100;
-        const array = this.ecrolPatterns();
-        this.x = array[1].x;
-        this.y = array[1].y;
-        for (let i = 0; i < this.imageFrames; i++) {
-          
-        }
-        this.imgContainer.push("../images/Ecrol/ecrol.png");
-      }
     } 
 
     getRandomCoordinates() {
@@ -508,21 +493,6 @@ if (sessionInProgress) {
 
     }
 
-    ecrolPatterns() {
-      const arr = [
-        {
-          x: myCanvas.width / 2 - this.width / 2,
-          y: -myCanvas.height / 2,
-        },
-        {
-          x: 0,
-          y: 0
-        },
-      ]
-      
-      return arr;
-    }
-
     updateCollision() {
       if (this.name === "enemyprojectile" && this.y > myCanvas.height - this.height) this.destroy();
       this.left = this.x;
@@ -542,6 +512,7 @@ if (sessionInProgress) {
           this.takenDamage = false;
         }, this.iframes)
       }
+      console.log("HIT")
     }
 
     destroy() { // GRANT SOULS AND XP
@@ -814,15 +785,19 @@ if (sessionInProgress) {
 
         if (inBattle && levelScreen === 3 && enemyArr.length < 12) {
           enemySpawnInProgress = false;
+          console.log("ENDING")
           endEnemySpawn();
           setTimeout(() => {
+            console.log("BATTLE WON")
             inBattle = false;
           }, 2000)
         } 
         if (inBattle && levelScreen === 7 && enemyArr.length < 10) {
           enemySpawnInProgress = false;
+          console.log("ENDING")
           endEnemySpawn();
           setTimeout(() => {
+            console.log("BATTLE WON")
             inBattle = false;
           }, 2000)
         }
@@ -1009,11 +984,10 @@ if (sessionInProgress) {
 
 
         // Bosses
-
-        // SLIMEBOSS
         if (enemyArr[i].name === "slimeBoss") {
           enemyArr[i].slimeBossMovement();
           if (!enemyArr[i].canSpawn) {
+            console.log("TIMEOUT")
             enemyArr[i].canSpawn = true;
             enemyArr[i].spawnInterval = setInterval(() => {
               const newEnemy = new Enemy("slime", myCanvas.width / 2 - 90, myCanvas.height / 2 - 80, 90, 80);
@@ -1033,12 +1007,6 @@ if (sessionInProgress) {
             }, 6500)
           }
         }
-
-        // ECROL
-        if (enemyArr[i].name === "ecrol") {
-
-        }
-
 
         enemyArr[i].updateCollision();
         if (enemyArr[i]) animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
@@ -1083,10 +1051,11 @@ if (sessionInProgress) {
     }
 
     function initiateSpawn() {
+      console.log("FIRED")
       // Spawn boundaries
-      collisionObjectArr.push(new CollisionObject(0, 0, 45, myCanvas.height, "environment", -1, "", true, false));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width - 45, 0, 45, myCanvas.height, "environment", -1, "", true, false));
-      collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 45, myCanvas.width, 45, "environment", -1, "", true, false));
+      collisionObjectArr.push(new CollisionObject(0, 0, 45, myCanvas.height, "environment", -1, "", true, true));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width - 45, 0, 45, myCanvas.height, "environment", -1, "", true, true));
+      collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 45, myCanvas.width, 45, "environment", -1, "", true, true));
       // Remove any enemies
       for (let i = 0; i < enemyArr.length; i++) {
         enemyArr[i].remove(); 
@@ -1136,6 +1105,7 @@ if (sessionInProgress) {
       }
       for (let i = 0; i < enemyArr.length; i++) {
         enemyArr[i].initialize();
+        console.log("INIT")
       }
       enemySpawnInProgress = false;
       inBattle = true;
@@ -1518,7 +1488,7 @@ if (sessionInProgress) {
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height-15, 130, 15, "roomtransit", 6, "up", false, false));
 
       // Enemy Spawner
-      collisionObjectArr.push(new CollisionObject(0, 0, myCanvas.width, 45, "environment", -1, "", true, false));
+      collisionObjectArr.push(new CollisionObject(0, 0, myCanvas.width, 45, "environment", -1, "", true, true));
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 64, myCanvas.height / 2 - 64, 64, 64, "spawntrigger", -1, "", true, false));
 
       screen7init = true;
@@ -1537,15 +1507,6 @@ if (sessionInProgress) {
       // Transitions
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 20, 0, 130, 15, "roomtransit", 9, "down", false, false));
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height - 15, 130, 15, "roomtransit", 7, "up", false, false));
-
-      // BOSS
-      setTimeout(() => {
-        enemyArr.push(new Enemy("ecrol", 100, 100, 531, 150));
-        for (let i = 0; i < enemyArr.length; i++) {
-          enemyArr[i].initialize();
-        }
-        console.log("SPAWNED: ", enemyArr)
-      }, 1000)
       screen8init = true;
     }
   }
