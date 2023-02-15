@@ -1129,10 +1129,10 @@ if (sessionInProgress) {
               // TO DUNGEON
               collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 380, 0, 680, 15, "roomtransit", 5, "down", false, false));
               // GET DESTROYED
-              collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, 0, 120, 50, "environment", -1, "", false, false));
+              collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, 0, 120, 50, "environment", -1, "", false, true));
             }, 1500)
             setTimeout(() => {
-              collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 50, myCanvas.width, 50, "environment", -1, "", false, false));
+              collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 50, myCanvas.width, 50, "environment", -1, "", false, true));
             }, 6500)
           }
         }
