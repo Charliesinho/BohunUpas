@@ -420,6 +420,9 @@ if (sessionInProgress) {
         const array = this.ecrolPatterns();
         this.x = array[1].x;
         this.y = array[1].y;
+        for (let i = 0; i < this.imageFrames; i++) {
+          
+        }
         this.imgContainer.push("../images/Ecrol/ecrol.png");
       }
     } 
@@ -1537,7 +1540,7 @@ if (sessionInProgress) {
 
       // BOSS
       setTimeout(() => {
-        enemyArr.push(new Enemy("ecrol", 100, 100, 1946 / 3.5, 550 / 3.5));
+        enemyArr.push(new Enemy("ecrol", 100, 100, 531, 150));
         for (let i = 0; i < enemyArr.length; i++) {
           enemyArr[i].initialize();
         }
