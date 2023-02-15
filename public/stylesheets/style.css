@@ -292,3 +292,26 @@ h1 {
   align-items: center;   
   justify-content: center; 
 }
+
+.backgroundFrame {
+width: 100vw;
+height: 950px;
+padding-bottom: -500px;
+padding-top: -40px;
+border-width: 0;
+margin-top: -100px;
+margin-bottom: -850px;
+box-shadow: 0 0 30px 20px #0C0C11;
+/* background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)); */
+}
+
+#loginScreen {
+  height: 300px; 
+  width: 100vw;  
+  /* background: rgb(27,156,204);
+  background: linear-gradient(0deg, rgba(27,156,204,1) 0%, rgba(31,20,17,1) 0%, rgba(1,1,1,1) 0%, rgba(0,0,0,0) 100%); */
+}
+
+#firstScreenPad {
+  padding-bottom: 500px;
+}
