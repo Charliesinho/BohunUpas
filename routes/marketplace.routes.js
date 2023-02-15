@@ -190,6 +190,12 @@ router.post("/marketplace/remove-offer/:offerId/:itemId", isLoggedIn, async (req
   const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
   const offerList = await Marketplace.find().populate("item").populate("owner");
   const filter = req.query;
+
+  let filterResults = 0;
+  for (let i = 0; i < offerList.length; i++) {
+    if (filter.hasOwnProperty(offerList[i] .item.type)) filterResults++;
+  }
+  if (filterResults === 0) filterResults = offerList.length; 
   // Inventory check
   if (character.inventory.length < 6) {
     // Retrieve item
@@ -204,7 +210,7 @@ router.post("/marketplace/remove-offer/:offerId/:itemId", isLoggedIn, async (req
       res.redirect("/marketplace/browse-offers");
     }
   } else {
-    res.render("marketplace/browse-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: offerList, filter: filter, errorMessage: "Your inventory is full!"})
+    res.render("marketplace/browse-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: offerList, filter: filter, filterResults: filterResults, errorMessage: "Your inventory is full!"})
   }
 })
 

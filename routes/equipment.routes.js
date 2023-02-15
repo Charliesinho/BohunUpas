@@ -319,9 +319,8 @@ router.post("/equipItem/:charId/:type/:itemId", async(req, res, next) => {
 router.post("/sellItem/:charId/:type/:itemId", async (req, res, next) => {
   checkLogin(req.session.user);
   try {
-    // Get Character
-    const rendering = "soulkeeper";
-    const sessionRace = await User.findOne({username: req.session.user.username}).populate("character");
+    // Get Character    
+    console.log("TRYING TO SELL")
     const character = await Character.findById(req.params.charId).populate("inventory").populate("weapon").populate("armor").populate("artefact");
     let thisIndex;
     for (let i = 0; i < character.inventory.length; i++) {
@@ -343,7 +342,7 @@ router.post("/sellItem/:charId/:type/:itemId", async (req, res, next) => {
     if (req.params.type === "Artefact")  await Item.findByIdAndDelete(req.params.itemId); 
     
 
-    res.render("user/soulkeeper", {character: character, inventory: character.inventory, errorMessage: "", sessionRace: sessionRace.character, rendering: rendering, session: loginCheck});
+    res.redirect(`/user/soulkeeper/${req.params.charId}/sold`);
   } catch (error) {
     console.log("Error selling item: ", error);
   }

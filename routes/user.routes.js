@@ -15,6 +15,22 @@ function checkLogin(session) {
   }
 }
 
+function getUserWithoutHash(user) {
+  let userId, charId
+  userId = JSON.stringify(user)
+  userId = userId.split(":")[1].split(",")[0].replace(`"`, "").replace(`"`, "");
+  charId = JSON.stringify(user.character[0]);
+  charId = charId.split(":")[1].split(",")[0].replace(`"`, "").replace(`"`, "");
+  return {
+      id: userId,
+      charId: charId,
+      username: user.username,
+      email: user.email,
+      character: user.character
+  }
+}
+
+
 /* GET home page */
 router.get("/profile", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
@@ -180,5 +196,27 @@ router.get("/soulkeeper/:charId", isLoggedIn, async (req, res, next) => {
   const character = await Character.findById(req.params.charId).populate("inventory");
   res.render("user/soulkeeper", {character: character, inventory: character.inventory, errorMessage: "", sessionRace: sessionRace.character, rendering: rendering, session: loginCheck});
 });
+
+router.get("/soulkeeper/:charId/sold", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
+  console.log("I GOT HEREEEE")
+  // Variables
+  const rendering = "soulkeeper";
+  const profile = await User.findOne({username: req.session.user.username}).populate('character');
+  const sessionRace = await User.findOne({username: req.session.user.username}).populate("character");    
+  const sessionName = req.session.user.username;
+  const user = await User.find({username: sessionName}).populate("character");
+  const currentUser = getUserWithoutHash(user[0]);
+  const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
+  
+  try {
+    
+    res.render("user/soulkeeper", {character: character, inventory: character.inventory, errorMessage: "", sessionRace: sessionRace.character, rendering: rendering, session: loginCheck});
+    
+  } catch(error) {
+    console.log("Error: ", error);
+
+  }
+})
 
 module.exports = router;
