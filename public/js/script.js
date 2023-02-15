@@ -1,42 +1,42 @@
-// setTimeout(() => {  
-//   if (document.getElementById("mediumPack").style.display === "block") {
-//     document.getElementById("mediumPack").style.display = "none";
-//   }
-//   if (document.getElementById("legendaryPack").style.display === "block") {
-//     document.getElementById("legendaryPack").style.display = "none";
-//   }
-// }, 3000)
+setTimeout(() => {  
+  if (document.getElementById("mediumPack").style.display === "block") {
+    document.getElementById("mediumPack").style.display = "none";
+  }
+  if (document.getElementById("legendaryPack").style.display === "block") {
+    document.getElementById("legendaryPack").style.display = "none";
+  }
+}, 3000)
   
 
-// function ShowBasic() {
-//   if (document.getElementById("basicPack").style.display === "block") {
-//   document.getElementById("basicPack").style.display = "none";
-// } else {
-//   document.getElementById("basicPack").style.display = "block";
-//   document.getElementById("mediumPack").style.display = "none";
-//   document.getElementById("legendaryPack").style.display = "none";
-// }
-// }
+function ShowBasic() {
+  if (document.getElementById("basicPack").style.display === "block") {
+  document.getElementById("basicPack").style.display = "none";
+} else {
+  document.getElementById("basicPack").style.display = "block";
+  document.getElementById("mediumPack").style.display = "none";
+  document.getElementById("legendaryPack").style.display = "none";
+}
+}
 
-// function ShowMedium() {
-//   if (document.getElementById("mediumPack").style.display === "block") {
-//   document.getElementById("mediumPack").style.display = "none";
-// } else {
-//   document.getElementById("mediumPack").style.display = "block";
-//   document.getElementById("legendaryPack").style.display = "none";
-//   document.getElementById("basicPack").style.display = "none";
-// }
-// }
+function ShowMedium() {
+  if (document.getElementById("mediumPack").style.display === "block") {
+  document.getElementById("mediumPack").style.display = "none";
+} else {
+  document.getElementById("mediumPack").style.display = "block";
+  document.getElementById("legendaryPack").style.display = "none";
+  document.getElementById("basicPack").style.display = "none";
+}
+}
 
-// function ShowLegendary() {
-//   if (document.getElementById("legendaryPack").style.display === "block") {
-//   document.getElementById("legendaryPack").style.display = "none";
-// } else {
-//   document.getElementById("legendaryPack").style.display = "block";
-//   document.getElementById("mediumPack").style.display = "none";
-//   document.getElementById("basicPack").style.display = "none";
-// }
-// }
+function ShowLegendary() {
+  if (document.getElementById("legendaryPack").style.display === "block") {
+  document.getElementById("legendaryPack").style.display = "none";
+} else {
+  document.getElementById("legendaryPack").style.display = "block";
+  document.getElementById("mediumPack").style.display = "none";
+  document.getElementById("basicPack").style.display = "none";
+}
+}
 
 
 
@@ -650,6 +650,7 @@ if (sessionInProgress) {
           this.takenDamage = false;
         }, this.iframes)
       }
+      console.log("HIT")
     }
 
     destroy() { // GRANT SOULS AND XP
@@ -1112,11 +1113,10 @@ if (sessionInProgress) {
 
 
         // Bosses
-
-        // SLIMEBOSS
         if (enemyArr[i].name === "slimeBoss") {
           enemyArr[i].slimeBossMovement();
           if (!enemyArr[i].canSpawn) {
+            console.log("TIMEOUT")
             enemyArr[i].canSpawn = true;
             enemyArr[i].spawnInterval = setInterval(() => {
               const newEnemy = new Enemy("slime", myCanvas.width / 2 - 90, myCanvas.height / 2 - 80, 90, 80);
@@ -1186,6 +1186,7 @@ if (sessionInProgress) {
     }
 
     function initiateSpawn() {
+      console.log("FIRED")
       // Spawn boundaries
       collisionObjectArr.push(new CollisionObject(0, 0, 45, myCanvas.height, "environment", -1, "", false, true));
       collisionObjectArr.push(new CollisionObject(myCanvas.width - 45, 0, 45, myCanvas.height, "environment", -1, "", false, true));
@@ -1243,6 +1244,7 @@ if (sessionInProgress) {
       }
       for (let i = 0; i < enemyArr.length; i++) {
         enemyArr[i].initialize();
+        console.log("INIT")
       }
       enemySpawnInProgress = false;
       inBattle = true;

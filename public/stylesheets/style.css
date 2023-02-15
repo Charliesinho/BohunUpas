@@ -423,7 +423,8 @@ input:focus {
 #shopGeneral {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 10px;
   padding: 100px 150px 0 60px;
 }
 
@@ -441,6 +442,10 @@ input:focus {
   padding-top: 100px;
   padding: 0 0px 0 0px;
   margin: 0 20px 0 20px;
+  /* background: radial-gradient(circle, rgba(27,156,204,1) 0%, rgba(31,20,17,1) 0%, rgba(0,0,0,1) 100%); */
+  margin: -100px;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .mpSortFilterCtn {
@@ -453,4 +458,10 @@ input:focus {
 .mpSortCtn {
   display: flex;
   gap: 20px;
+}
+
+.packQuery {
+  width: 800px;
+  height: 800px;
+  margin-bottom: -100px;
 }
