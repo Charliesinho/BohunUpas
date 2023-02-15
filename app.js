@@ -38,6 +38,9 @@ app.use('/equipment', equipmentRoutes)
 const marketplaceRoutes = require('./routes/marketplace.routes')
 app.use('/', marketplaceRoutes)
 
+const friendRoutes = require('./routes/friends.routes')
+app.use('/', friendRoutes)
+
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require('./error-handling')(app)
 

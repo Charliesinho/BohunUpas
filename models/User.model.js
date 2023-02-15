@@ -23,6 +23,14 @@ const userSchema = new Schema(
     character: {
       type: [Schema.Types.ObjectId], 
       ref: "Character",       
+    },
+    friends: {
+      type: [Schema.Types.ObjectId], 
+      ref: "User"
+    },
+    messages: {
+      type: [Schema.Types.ObjectId], 
+      ref: "Message"
     }
   },
   {

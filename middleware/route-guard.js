@@ -12,16 +12,7 @@ const isLoggedOut = (req, res, next) => {
     next();
 }
 
-const sessionCheck = (req, res, next) => {
-    if (req.session.user) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 module.exports = {
     isLoggedIn,
-    isLoggedOut,
-    sessionCheck
+    isLoggedOut
 };
