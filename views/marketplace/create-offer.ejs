@@ -1,12 +1,18 @@
 <%- include("../../partials/nav-bar.ejs") %>
 
 <h1>Marketplace</h1>
-
-<h1>Create an offer</h1>
-<%- include("../../partials/item-card.ejs") %>
-<div>
-    <form action="/marketplace/create-offer/<%=item._id%>" method="POST">
-        <label>Price: <input type="number", min="0" max="1000000" value="<%=item.value%>" name="price" /></label>
-        <button type="submit">Submit Offer</button>
-    </form>
+<form action="/marketplace/select-offer", method="GET">
+    <button class="buttonItem btnWider" type="submit">Back</button>
+</form>
+<h1 class="centerText">Create an offer</h1>
+<div id="marketAlign">
+    <div id="marketplaceItems">
+        <%- include("../../partials/item-card.ejs") %>
+        <div>
+            <form action="/marketplace/create-offer/<%=item._id%>" method="POST">
+                <label>Price: <input type="number", min="0" max="1000000" value="<%=item.value%>" name="price" /></label>
+                <button class="buttonItem btnWider" type="submit">Submit Offer</button>
+            </form>
+        </div>
+    </div>
 </div>

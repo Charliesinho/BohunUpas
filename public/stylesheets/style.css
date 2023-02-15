@@ -315,3 +315,7 @@ box-shadow: 0 0 30px 20px #0C0C11;
 #firstScreenPad {
   padding-bottom: 500px;
 }
+
+.centerText {
+  text-align: center;
+}

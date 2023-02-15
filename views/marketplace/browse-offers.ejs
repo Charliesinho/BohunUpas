@@ -1,6 +1,10 @@
 <%- include("../../partials/nav-bar.ejs") %>
 
-<h1>Browse offers</h1>
+<h1 class="centerText">Browse offers</h1>
+<div class="centerText">Total Items: <%=item.length%></div>
+<form action="/marketplace", method="GET">
+    <button class="buttonItem btnWider" type="submit">Back</button>
+</form>
 
 <div id="marketAlign">
     <div id="marketplaceItems">
@@ -16,15 +20,15 @@
                             <li>👻 <%=item.price%></li>
                         </div>
                     </div> 
-                    <li><img class="itemImage" src="../<%=item.item.image%>" width="130px"></li>
+                    <li><img class="itemImage" src="../../<%=item.item.image%>" width="130px"></li>
                 </ul>
                 <% if (JSON.stringify(item.owner._id) === `"${sessionRace[0].charId}"`) {%>
-                    <form action="/marketplace/remove-offer">
+                    <form action="/marketplace/remove-offer/<%=item._id%>/<%=item.item._id%>" method="POST">
                         <button class="buttonItem btnWider" type="submit">Withdraw offer</button>
                     </form>
                     <div style="color: green;">Your Offer</div>
                 <% } else { %>
-                    <form action="/marketplace/remove-offer">
+                    <form action="/marketplace/buy-item/<%=item._id%>/<%=item.item._id%>/<%=item.owner._id%>" method="POST">
                         <button class="buttonItem btnWider" type="submit">Buy item</button>
                     </form>
                 <% }  %>
@@ -33,3 +37,6 @@
     <% }) %>
     </div>
 </div>
+<% if (errorMessage !== "") { %>
+    <div class="display-error-message centralize"><%=errorMessage%></div>
+<% } %>
