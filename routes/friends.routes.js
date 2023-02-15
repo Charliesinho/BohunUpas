@@ -39,9 +39,7 @@ router.get("/friends", isLoggedIn, async (req, res, next) => {
     const currentUser = getUserWithoutHash(user[0]);
     const character = await Character.findById(currentUser.charId).populate("inventory");
 
-    console.log(currentUser);
-
-    res.render("friends", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, errorMessage: ""});
+    res.render("friends", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, searchResult: "", errorMessage: ""});
 });
 
 // FIND
@@ -52,9 +50,9 @@ router.post("/friends/find", isLoggedIn, async (req, res, next) => {
   const currentUser = getUserWithoutHash(user[0]);
   const character = await Character.findById(currentUser.charId).populate("inventory");
 
-  const searchTerm = await User.findOne({username: searchTerm}) 
-
-  res.render("friends", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, errorMessage: ""});
+  const searchTerm = req.body.searchTerm;
+  const searchResult = await User.findOne({username: searchTerm}) 
+  res.render("friends", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, searchResult: searchResult, errorMessage: ""});
 });
 
 module.exports = router;
