@@ -102,9 +102,16 @@ router.get("/marketplace/browse-offers/", isLoggedIn, async (req, res, next) => 
   const currentUser = getUserWithoutHash(user[0]);
   const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
   const filter = req.query;
-  
   const item = await Marketplace.find().populate("item").populate("owner");
-  res.render("marketplace/browse-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: item, filter: filter, errorMessage: ""})
+
+  let filterResults = 0;
+  for (let i = 0; i < item.length; i++) {
+    if (filter.hasOwnProperty(item[i] .item.type)) filterResults++;
+  }
+  if (filterResults === 0) filterResults = item.length; 
+  console.log(filter);
+  
+  res.render("marketplace/browse-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: item, filter: filter, filterResults: filterResults, errorMessage: ""})
 })
 
 
@@ -117,7 +124,6 @@ router.get("/marketplace/browse-offers/err", isLoggedIn, async (req, res, next) 
   const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
   const filter = req.query;
   const offerList = await Marketplace.find().populate("item").populate("owner");
-
 
   try {
     if (character.inventory.length > 5) {
