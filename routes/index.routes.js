@@ -12,6 +12,8 @@ function checkLogin(session) {
     loginCheck = false;
   }
 }
+
+
 /* GET home page */
 router.get("/", async (req, res, next) => {
   checkLogin(req.session.user);

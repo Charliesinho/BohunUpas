@@ -6,11 +6,12 @@
 </form>
 <h1 class="centerText">Create an offer</h1>
 <div id="marketAlign">
-    <div id="marketplaceItems">
+    <div class="createOffer">
         <%- include("../../partials/item-card.ejs") %>
         <div>
-            <form action="/marketplace/create-offer/<%=item._id%>" method="POST">
-                <label>Price: <input type="number", min="0" max="1000000" value="<%=item.value%>" name="price" /></label>
+            <form action="/marketplace/create-offer/<%=item._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
+                <label><input class="cleanInput" type="number", min="0" max="1000000" value="<%=item.value%>" name="price" /></label>
+                <div class="centerText">👻</div>
                 <button class="buttonItem btnWider" type="submit">Submit Offer</button>
             </form>
         </div>

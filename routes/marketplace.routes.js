@@ -93,6 +93,39 @@ router.post("/marketplace/create-offer/:itemId", isLoggedIn, async (req, res, ne
 })
 
 
+// VIEW OWN OFFERS
+router.get("/marketplace/view-own-offers/", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
+  // Variables
+  const sessionName = req.session.user.username;
+  const user = await User.find({username: sessionName}).populate("character");
+  const currentUser = getUserWithoutHash(user[0]);
+  const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
+
+  
+  const rendering = "marketplace-view-own-offers";
+  const filter = req.query;
+  // Get items and sort
+  let item;
+  if (JSON.stringify(filter).includes("SortPriceIncreasing")) {
+    item = await Marketplace.find().populate("item").populate("owner").sort({price: 1});
+  } else if (JSON.stringify(filter).includes("SortPriceDecreasing")) {
+    item = await Marketplace.find().populate("item").populate("owner").sort({price: -1});
+  } else {
+    item = await Marketplace.find().populate("item").populate("owner");
+  }
+
+  // Filter browse items
+  let filterResults = 0;
+  for (let i = 0; i < item.length; i++) {
+    if (filter.hasOwnProperty(item[i] .item.type)) filterResults++;
+  }
+  if (filterResults === 0) filterResults = item.length; 
+  console.log("YOU ARE HERE")
+  res.render("marketplace/view-own-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: item, filter: filter, filterResults: filterResults, errorMessage: ""})
+})
+
+
 // BROWSE / BUY OFFER ROUTES
 router.get("/marketplace/browse-offers/", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
@@ -118,7 +151,7 @@ router.get("/marketplace/browse-offers/", isLoggedIn, async (req, res, next) => 
     if (filter.hasOwnProperty(item[i] .item.type)) filterResults++;
   }
   if (filterResults === 0) filterResults = item.length; 
-  
+
   res.render("marketplace/browse-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: item, filter: filter, filterResults: filterResults, errorMessage: ""})
 })
 
@@ -197,6 +230,7 @@ router.post("/marketplace/remove-offer/:offerId/:itemId", isLoggedIn, async (req
   const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
   const offerList = await Marketplace.find().populate("item").populate("owner");
   const filter = req.query;
+  console.log(req.params);
 
   let filterResults = 0;
   for (let i = 0; i < offerList.length; i++) {
