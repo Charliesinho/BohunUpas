@@ -10,27 +10,34 @@
         </div>
 
         <div>
-            <h2>Soulkeeper is hard at work ...</h2>
-            <div>Do you wish to spend your souls for rewards?</div>
+            <div>
+                <h2>Soulkeeper is hard at work ...</h2>
+                <div>Do you wish to spend your souls for rewards?</div>
+            </div>
 
+            <div class="cardPacks">
             <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
                 <input type="number" name="availableSouls" value="<%=character.souls%>" style="display: none" />
+                <iframe  class="pack" width="300" height="300" src="https://my.spline.design/untitled-ab609558c464037e73ca314f2bec3a44/"></iframe>   
                 <input type="text" name="name" value="Standard Pack" readonly />
-                <input type="number" name="price" value="1" readonly/>
-                <button type="submit">Purchase!</button>
+                <button class="buttonItem widerButton" type="submit" class="purchaseButton"><input type="number" name="price" value="1" readonly/></button>
+                
             </form>
             <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
                 <input type="number" name="availableSouls" value="<%=character.souls%>" style="display: none" />
+                <iframe  class="pack" width="300" height="300" src="https://my.spline.design/untitled-ab609558c464037e73ca314f2bec3a44/"></iframe>
                 <input type="text" name="name" value="Medium Pack" readonly />
-                <input type="number" name="price" value="5" readonly/>
-                <button type="submit">Purchase!</button>
+                <button class="buttonItem widerButton" type="submit"><input type="number" name="price" value="5" readonly/></button>
+                
             </form>
             <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
                 <input type="number" name="availableSouls" value="<%=character.souls%>" style="display: none" />
+                <iframe  class="pack" width="300" height="300" src="https://my.spline.design/untitled-ab609558c464037e73ca314f2bec3a44/"></iframe>
                 <input type="text" name="name" value="Legendary Pack" readonly />
-                <input type="number" name="price" value="5000" readonly/>
-                <button type="submit">Purchase!</button>
+                <button class="buttonItem widerButton" type="submit"><input type="number" name="price" value="5000" readonly/></button>
+                
             </form>
+            </div>
 
             
             <% if (errorMessage !== "") { %>
