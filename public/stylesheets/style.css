@@ -294,13 +294,14 @@ h1 {
 }
 
 .backgroundFrame {
-width: 100vw;
-height: 950px;
+  height: 100vh; 
+  width: 100vw;  
 padding-bottom: -500px;
-padding-top: -40px;
+padding-top: 00px;
 border-width: 0;
 margin-top: -100px;
 margin-bottom: -850px;
+padding-top: 100px;
 box-shadow: 0 0 30px 20px #0C0C11;
 /* background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)); */
 }
@@ -308,14 +309,57 @@ box-shadow: 0 0 30px 20px #0C0C11;
 #loginScreen {
   height: 300px; 
   width: 100vw;  
+  margin-Top:100px;
+  box-shadow: 0 50px 40px black;
   /* background: rgb(27,156,204);
   background: linear-gradient(0deg, rgba(27,156,204,1) 0%, rgba(31,20,17,1) 0%, rgba(1,1,1,1) 0%, rgba(0,0,0,0) 100%); */
 }
 
 #firstScreenPad {
-  padding-bottom: 500px;
+  padding-bottom: 50px;
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: center;
 }
 
 .centerText {
+  text-align: center;
+}
+
+.alignLogin {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding-top: 100px;
+gap:20px;
+font-size: 50px;
+}
+
+.cleanInput {
+  border-width: 0;
+  border-style: none;
+  border-radius: 6px;
+  height: 30px;
+  background-color: rgb(73, 60, 56);
+  border-width: 0;
+  border-style: none;
+  font-size: 20px;
+  font-family: 'ICA Rubrik', sans-serif;
+  color: white;
+}
+
+.widerButton {
+  width: 100px;
+}
+
+input:focus {
+  background-color: rgb(73, 60, 56);
+  border-width: 0;
+  border-style: none;
+  font-size: 20px;
+  font-family: 'ICA Rubrik', sans-serif;
+  color: white;
   text-align: center;
 }

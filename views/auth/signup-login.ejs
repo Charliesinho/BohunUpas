@@ -1,15 +1,15 @@
 <section id="firstScreenPad">
   <iframe class="backgroundFrame"  src="https://my.spline.design/untitled-deab33bcbc864260051c7119d9485f01/"></iframe> 
-  <%- include("../../partials/nav-bar.ejs") %>
+  <!-- <%- include("../../partials/nav-bar.ejs") %> -->
   
-    <form method="POST" action="/auth/accountcheck">      
+    <form class="alignLogin" method="POST" action="/auth/accountcheck">      
   
-      <label for="">
-        Enter Username:
-        <input type="text" name="username" required autofocus />
+      <label class="alignLogin" for="">
+        Enter Username<br>
+        <input class="cleanInput" type="text" name="username" required autofocus />
       </label>
+      <button class="buttonItem widerButton" type="submit">Continue</button>
   
-      <button type="submit">Continue</button>
     </form>
   
     <% if (errorMessage !== "") { %>
