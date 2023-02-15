@@ -6,6 +6,17 @@
     <button class="buttonItem btnWider" type="submit">Back</button>
 </form>
 
+<!-- Filter -->
+
+<div>
+    <form action="/marketplace/browse-offers/" method="GET">
+ 
+        <label><input type="checkbox" name="hello">Hello</label>
+        <label><input type="checkbox" name="hello2">Hello</label>
+        <button type="submit">Filter</button>
+    </form>
+</div>
+
 <div id="marketAlign">
     <div id="marketplaceItems">
     <% item.forEach(item => { %>
@@ -20,7 +31,7 @@
                             <li>👻 <%=item.price%></li>
                         </div>
                     </div> 
-                    <li><img class="itemImage" src="../../<%=item.item.image%>" width="130px"></li>
+                    <li><img class="itemImage" src="../<%=item.item.image%>" width="130px"></li>
                 </ul>
                 <% if (JSON.stringify(item.owner._id) === `"${sessionRace[0].charId}"`) {%>
                     <form action="/marketplace/remove-offer/<%=item._id%>/<%=item.item._id%>" method="POST">

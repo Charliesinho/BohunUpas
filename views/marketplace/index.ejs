@@ -1,17 +1,18 @@
 <%- include("../../partials/nav-bar.ejs") %>
 
-<h1>Marketplace</h1>
+<h1 class="centerText">Marketplace</h1>
 
 <% if (character) { %>
-    <div>
+    <div class="centerText">
         <h2>Welcome to the Marketplace, <%=sessionRace[0].username%> the <%=character.race %>!</h2>
         <h3>What is your business here today?</h3>
     </div>
-
-    <form action="/marketplace/select-offer/" method="GET">
-        <button type="submit">Create an offer</button>
-    </form>
-    <form action="/marketplace/browse-offers/" method="GET">
-        <button type="submit">Browse offers</button>
-    </form>
+    <div class="mpIndexBtnCtn">
+        <form action="/marketplace/select-offer/" method="GET">
+            <button class="buttonItem btnWider" type="submit">Create an offer</button>
+        </form>
+        <form action="/marketplace/browse-offers/" method="GET">
+            <button class="buttonItem btnWider" type="submit">Browse offers</button>
+        </form>
+    </div>
 <% } %>
