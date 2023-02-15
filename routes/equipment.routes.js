@@ -197,6 +197,7 @@ function generateItemLegendary() {
 router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
   try {
+      const rendering = "soulkeeper"
       const profile = await User.findOne({username: req.session.user.username}).populate('character');
       const sessionName= req.session.user.username;
       const sessionRace = await User.find({username: sessionName});
@@ -227,13 +228,13 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
             // Deduct souls and save
             character.souls = parseInt(character.souls) - price;
             character.save();
-            res.render("user/soulkeeper", {session: loginCheck, profile: profile, sessionRace: sessionRace[0].character, character: character, session: loginCheck, errorMessage: ""});
+            res.render("user/soulkeeper", {session: loginCheck, profile: profile, sessionRace: sessionRace[0].character, character: character,  rendering: rendering, session: loginCheck, errorMessage: ""});
           } else { // INVENTORY FULL
-            res.render("user/soulkeeper", {session: loginCheck, profile: profile, sessionRace: sessionRace[0].character, character: character, session: loginCheck, errorMessage: "Your inventory is full!"});
+            res.render("user/soulkeeper", {session: loginCheck, profile: profile, sessionRace: sessionRace[0].character, character: character, session: loginCheck,  rendering: rendering, errorMessage: "Your inventory is full!"});
           }
       } else { // CAN'T AFFORD
         console.log("TOO EXPENSIVE!")
-        res.render("user/soulkeeper", {session: loginCheck, profile: profile, sessionRace: sessionRace[0].character, character: character, session: loginCheck, errorMessage: "You cannot afford this pack!"});
+        res.render("user/soulkeeper", {session: loginCheck, profile: profile, sessionRace: sessionRace[0].character, character: character,  rendering: rendering, session: loginCheck, errorMessage: "You cannot afford this pack!"});
       }
   } catch (err) {
       console.log("Something went wrong: ", err)
@@ -319,6 +320,8 @@ router.post("/sellItem/:charId/:type/:itemId", async (req, res, next) => {
   checkLogin(req.session.user);
   try {
     // Get Character
+    const rendering = "soulkeeper";
+    const sessionRace = await User.findOne({username: req.session.user.username}).populate("character");
     const character = await Character.findById(req.params.charId).populate("inventory").populate("weapon").populate("armor").populate("artefact");
     let thisIndex;
     for (let i = 0; i < character.inventory.length; i++) {
@@ -340,11 +343,12 @@ router.post("/sellItem/:charId/:type/:itemId", async (req, res, next) => {
     if (req.params.type === "Artefact")  await Item.findByIdAndDelete(req.params.itemId); 
     
 
-    res.redirect("/user/characterProfile");
+    res.render("user/soulkeeper", {character: character, inventory: character.inventory, errorMessage: "", sessionRace: sessionRace.character, rendering: rendering, session: loginCheck});
   } catch (error) {
     console.log("Error selling item: ", error);
   }
 });
+
 
 
 module.exports = router;

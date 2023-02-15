@@ -1,36 +1,40 @@
 <%- include("../../partials/nav-bar.ejs") %>
-<h1>Soulkeeper</h1> 
 
-<div>
-    <div>Amount of souls: <%=character.souls%></div>
-    <div>Items in inventory: <%=character.inventory.length%> / 20</div>
-</div>
+<section id="shopGeneral">    
+        <div>
+            <h1>Soulkeeper</h1> 
+            <div>Amount of souls: <%=character.souls%></div>
+            <div>Items in inventory: <%=character.inventory.length%> / 20</div>
+            <%- include("../../partials/inventory-display.ejs") %>
+        </div>
+        </div>
 
-<div>
-    <h2>Soulkeeper is hard at work ...</h2>
-    <div>Do you wish to spend your souls for rewards?</div>
+        <div>
+            <h2>Soulkeeper is hard at work ...</h2>
+            <div>Do you wish to spend your souls for rewards?</div>
 
-    <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
-        <input type="number" name="availableSouls" value="<%=character.souls%>" style="display: none" />
-        <input type="text" name="name" value="Standard Pack" readonly />
-        <input type="number" name="price" value="1" readonly/>
-        <button type="submit">Purchase!</button>
-    </form>
-    <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
-        <input type="number" name="availableSouls" value="<%=character.souls%>" style="display: none" />
-        <input type="text" name="name" value="Medium Pack" readonly />
-        <input type="number" name="price" value="5" readonly/>
-        <button type="submit">Purchase!</button>
-    </form>
-    <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
-        <input type="number" name="availableSouls" value="<%=character.souls%>" style="display: none" />
-        <input type="text" name="name" value="Legendary Pack" readonly />
-        <input type="number" name="price" value="5000" readonly/>
-        <button type="submit">Purchase!</button>
-    </form>
+            <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
+                <input type="number" name="availableSouls" value="<%=character.souls%>" style="display: none" />
+                <input type="text" name="name" value="Standard Pack" readonly />
+                <input type="number" name="price" value="1" readonly/>
+                <button type="submit">Purchase!</button>
+            </form>
+            <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
+                <input type="number" name="availableSouls" value="<%=character.souls%>" style="display: none" />
+                <input type="text" name="name" value="Medium Pack" readonly />
+                <input type="number" name="price" value="5" readonly/>
+                <button type="submit">Purchase!</button>
+            </form>
+            <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
+                <input type="number" name="availableSouls" value="<%=character.souls%>" style="display: none" />
+                <input type="text" name="name" value="Legendary Pack" readonly />
+                <input type="number" name="price" value="5000" readonly/>
+                <button type="submit">Purchase!</button>
+            </form>
 
-    </form>
-    <% if (errorMessage !== "") { %>
-        <div class="display-error-message centralize"><%=errorMessage%></div>
-      <% } %>
-</div>
+            
+            <% if (errorMessage !== "") { %>
+                <div class="display-error-message centralize"><%=errorMessage%></div>
+            <% } %>
+            </div>
+</section>

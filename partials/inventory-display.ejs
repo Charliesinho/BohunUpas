@@ -13,10 +13,7 @@
         <div class="invButtons">
             <form action="/equipment/equipItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
                 <button class="buttonItem" type="submit">📥 +<%=item.modifier%></button>
-            </form>
-            <form action="/equipment/sellItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
-                <button class="buttonItem" type="submit">👻 <%=item.value%></button>
-            </form>    
+            </form>               
         </div>     
         <% } else if (rendering === "marketplace") { %>
         <div class="invButtons">
@@ -24,6 +21,12 @@
                 <button class="buttonItem" type="submit">Select</button>
             </form>    
         </div>      
-        <% } %>
+        <% } else if (rendering === "soulkeeper") { %>
+            <div class="invButtons">
+                <form action="/equipment/sellItem/<%=character._id%>/<%=item.type%>/<%=item._id%>" method="POST">
+                    <button class="buttonItem" type="submit">👻 <%=item.value%></button>
+                </form>    
+            </div>      
+            <% } %>
     </div>
     <% }) %>

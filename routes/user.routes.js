@@ -175,10 +175,10 @@ router.get("/characterProfile", isLoggedIn, async (req, res, next) => {
 
 router.get("/soulkeeper/:charId", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
-
+  const rendering = "soulkeeper";
   const sessionRace = await User.findOne({username: req.session.user.username}).populate("character");
   const character = await Character.findById(req.params.charId).populate("inventory");
-  res.render("user/soulkeeper", {character: character, inventory: character.inventory, errorMessage: "", sessionRace: sessionRace.character, session: loginCheck});
+  res.render("user/soulkeeper", {character: character, inventory: character.inventory, errorMessage: "", sessionRace: sessionRace.character, rendering: rendering, session: loginCheck});
 });
 
 module.exports = router;

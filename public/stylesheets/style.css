@@ -348,6 +348,8 @@ font-size: 50px;
   font-size: 20px;
   font-family: 'ICA Rubrik', sans-serif;
   color: white;
+  text-align: center;
+
 }
 
 .widerButton {
@@ -368,4 +370,29 @@ input:focus {
   display: flex;
   justify-content: center;
   gap: 20px;
+}
+
+.usernameLogin {
+  padding-top: 0;
+}
+
+.loginTitle {
+  padding: 0;
+  margin: 0;
+  margin-bottom: -90px;
+  padding-top: 20px;
+}
+
+.loginTable {
+  width: 400px;
+  padding-top: 60px;
+  margin-top: 100px;
+  box-shadow: 0 -20px 60px 20px rgba(0, 0, 0, 0.404);
+}
+
+#shopGeneral {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 60px 0 60px;
 }
