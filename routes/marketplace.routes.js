@@ -200,44 +200,13 @@ router.post("/marketplace/buy-item/:offerId/:itemId/:ownerId", isLoggedIn, async
         character.souls = newPlayerSouls;
         character.inventory.push(item);
         await character.save();
-        // Update Offer
-        await Marketplace.findOneAndUpdate(req.params.offerId, {sold: true})
-        res.redirect("/marketplace/browse-offers");
-      } else {      
-        res.redirect("/marketplace/browse-offers/err");
-
-      }
-    } else {
-      res.redirect("/marketplace/browse-offers/err");
-    }
-  } catch (error) {
-    console.log("Error: ", error);
-    res.render("marketplace/browse-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: offerList, filter: filter, errorMessage: "Error buying the item, please try again!"})
-  }
-})
-
-router.post("/marketplace/claim-souls/:offerId/:ownerId", isLoggedIn, async (req, res, next) => {
-  checkLogin(req.session.user);
-  // Variables
-  const sessionName = req.session.user.username;
-  const user = await User.find({username: sessionName}).populate("character");
-  const currentUser = getUserWithoutHash(user[0]);
-  const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
-  const offer = await Marketplace.findById(req.params.offerId).populate("item").populate("owner")
-  const offerList = await Marketplace.find().populate("item").populate("owner");
-  const filter = req.query;
-  try {
-    // Inventory check
-    if (character.inventory.length < 6) {
-      // Souls check
-      if (parseInt(character.souls) >= parseInt(offer.price)) {
         // Update Seller
         const seller = await Character.findById(req.params.ownerId);
         const newSellerSouls = parseInt(seller.souls) + parseInt(offer.price);
         seller.souls = newSellerSouls;
-        await seller.save(); 
-        // Delete Offer
-        await Marketplace.findOneAndDelete(req.params.offerId)
+        await seller.save();
+        // Remove Offer
+        await Marketplace.findByIdAndDelete(req.params.offerId);
         res.redirect("/marketplace/browse-offers");
       } else {      
         res.redirect("/marketplace/browse-offers/err");
@@ -251,8 +220,6 @@ router.post("/marketplace/claim-souls/:offerId/:ownerId", isLoggedIn, async (req
     res.render("marketplace/browse-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: offerList, filter: filter, errorMessage: "Error buying the item, please try again!"})
   }
 })
-
-
 
 router.post("/marketplace/remove-offer/:offerId/:itemId", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);

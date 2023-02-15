@@ -16,10 +16,6 @@ const marketplaceSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: "Character",
     },
-    sold: {
-        type: Boolean,
-        default: false,
-    }
   },
   {
     timestamps: true
