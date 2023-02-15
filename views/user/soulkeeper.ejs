@@ -3,8 +3,10 @@
 <section id="shopGeneral">    
         <div>
             <h1>Soulkeeper</h1> 
-            <div>Amount of souls: <%=character.souls%></div>
-            <div>Items in inventory: <%=character.inventory.length%> / 20</div>
+            <br>
+            <div>👻 <%=character.souls%></div>            
+            <div class="soulsDisplay">Capacity <%=character.inventory.length%> / 6</div>
+            <br>
             <%- include("../../partials/inventory-display.ejs") %>
         </div>
         </div>
@@ -20,26 +22,39 @@
 
                 <div id="basicPack" style="display: block;">
                 <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">
-                    <iframe  class="pack packQuery" src="https://my.spline.design/untitled-ab609558c464037e73ca314f2bec3a44/"></iframe>   
-               
-                <input type="text" name="name" value="Standard Pack" readonly />
-                <button class="buttonItem widerButton" type="submit" class="purchaseButton"><input type="number" name="price" value="1" readonly/></button>                
+                    <iframe  class="pack packQuery" src="https://my.spline.design/untitled-ab609558c464037e73ca314f2bec3a44/"></iframe>  
+
+            <div class="soulkeeperPack">
+                <input class="buttonItem widerButton" type="text" name="name" value="Standard Pack" readonly />
+                <button type="submit" class="purchaseButton buttonUnformat"><input class="buttonItem widerButton cardPrice buyPack" type="number" name="price" value="10" readonly/>👻    </button>   
+                <input class="buttonItem widerButton cardPrice" type="button" name="answer" onclick="ShowMedium()" value=">"/>    
+            </div>    
+                
             </form>
         </div>
 
         <div id="mediumPack" style="display: block;">
         <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">               
             <iframe  class="pack packQuery" src="https://my.spline.design/basicpackcopy-256eb5e9758011142a1b22958c1ec751/"></iframe>
-                <input type="text" name="name" value="Medium Pack" readonly />
-                <button class="buttonItem widerButton" type="submit"><input type="number" name="price" value="5" readonly/></button>                
+
+        <div class="soulkeeperPack">
+                <input class="buttonItem widerButton" type="text" name="name" value="Medium Pack" readonly />
+                <button class="purchaseButton buttonUnformat" type="submit"><input class="buttonItem widerButton cardPrice buyPack" type="number" name="price" value="50" readonly/>👻    </button>   
+                <input class="buttonItem widerButton cardPrice" type="button" name="answer" onclick="ShowBasic()"  value="<" />   
+                <input class="buttonItem widerButton cardPrice" type="button" name="answer" onclick="ShowLegendary()" value=">"/> 
+        </div>         
             </form>
         </div>
 
         <div id="legendaryPack" style="display: block;">
         <form action="/equipment/generateWeapon/<%=character._id%>" method="POST" style="display: flex; flex-direction: column; align-items: center;">                      
             <iframe  class="pack packQuery" src="https://my.spline.design/basicpackcopy-d1e17c843ca542f6588e4e5b60a12aac/"></iframe>
-                <input type="text" name="name" value="Legendary Pack" readonly />
-                <button class="buttonItem widerButton" type="submit"><input type="number" name="price" value="5000" readonly/></button>                
+
+            <div class="soulkeeperPack">
+                <input class="buttonItem widerButton" type="text" name="name" value="Legendary Pack" readonly />
+                <button class="purchaseButton buttonUnformat type="submit"><input class="buttonItem widerButton cardPrice buyPack" type="number" name="price" value="500" readonly/>👻    </button>    
+                <input class="buttonItem widerButton cardPrice" type="button" name="answer" onclick="ShowMedium()" value="<"/>    
+            </div>        
             </form>
         </div>
 
@@ -51,9 +66,9 @@
             <% } %>
             </div>
 
-            <div>
+            <!-- <div>
                 <input type="button" name="answer" onclick="ShowBasic()"  value="❤️" />
                 <input type="button" name="answer" onclick="ShowMedium()" value="❤️"/>
                 <input type="button" name="answer" onclick="ShowLegendary()" value="❤️"/>
-            </div>
+            </div> -->
 </section>

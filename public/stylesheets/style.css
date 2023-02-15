@@ -255,7 +255,7 @@ h1 {
   border-radius: 8px;
   border-style: solid;
   height: 40px;
-  width: 60px;
+  width: 70px;
   border-color: rgba(61, 36, 33, 0.644);
   background-color: rgb(36, 27, 25); 
   border-width: 2px;
@@ -384,6 +384,7 @@ input::-webkit-outer-spin-button {
 
 .widerButton {
   width: 100px;
+  text-align: center;
 }
 
 input:focus {
@@ -464,6 +465,27 @@ input:focus {
   width: 800px;
   height: 800px;
   margin-bottom: -100px;
+}
+
+.buttonUnformat {
+  background-color: transparent;
+  border-width: 0;
+}
+
+.cardPrice {
+  width: 40px;
+  text-align: center;
+  margin-right: 5px;
+  font-size: 13px;
+}
+
+.soulsDisplay {
+  color: rgb(247, 247, 97);
+}
+
+.buyPack {
+  background-color: rgb(97, 207, 97);
+  color: #0C0C11;
 }
 
 #friendsMessagesSite {
