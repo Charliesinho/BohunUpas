@@ -68,7 +68,9 @@ h1 {
 }
 
 #gameSection {
-  background-color: black;
+  display: flex;
+  justify-content: center;
+  padding-top: 100px;
 }
 
 #canvas {
@@ -486,4 +488,24 @@ input:focus {
 .buyPack {
   background-color: rgb(97, 207, 97);
   color: #0C0C11;
+}
+
+.mapFrame {
+  border-width: 0;
+  padding-top: 0px;
+  padding-left: 30px;
+  width: 600px;
+  margin-left: 0px;
+}
+
+.mapTitle {
+  font-size: 50px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.509);
+}
+
+.mapCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
