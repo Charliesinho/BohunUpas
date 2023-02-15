@@ -202,7 +202,7 @@ router.post("/generateWeapon/:charId", isLoggedIn, async (req, res, next) => {
       const sessionName= req.session.user.username;
       const sessionRace = await User.find({username: sessionName});
       const character = await Character.findById(req.params.charId).populate("inventory");
-      const availableSouls = parseInt(req.body.availableSouls);
+      const availableSouls = parseInt(character.souls);
       const price = parseInt(req.body.price)
 
       if (price <= availableSouls) { // ENOUGH SOULS CHECK
