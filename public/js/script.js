@@ -421,9 +421,8 @@ if (sessionInProgress) {
         this.x = array[1].x;
         this.y = array[1].y;
         for (let i = 0; i < this.imageFrames; i++) {
-          
+          this.imgContainer.push("../images/Ecrol/ecrol"+i+".png");
         }
-        this.imgContainer.push("../images/Ecrol/ecrol.png");
       }
     } 
 
