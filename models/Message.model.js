@@ -1,11 +1,11 @@
 const { Schema, model } = require("mongoose");
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
-const marketplaceSchema = new Schema(
+const messageSchema = new Schema(
   {
-    item: {
+    friend: {
         type: Schema.Types.ObjectId,
-        ref: "Item",
+        ref: "Character",
         unique: true,
     },
     price: {
@@ -22,6 +22,6 @@ const marketplaceSchema = new Schema(
   }
 );
 
-const Marketplace = model("Marketplace", marketplaceSchema);
+const Message = model("Message", messageSchema);
 
-module.exports = Marketplace;
+module.exports = Message;

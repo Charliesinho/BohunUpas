@@ -276,8 +276,26 @@ h1 {
   flex-wrap: wrap;   
   justify-content: flex-start;   
   gap: 20px;   
-  width: 1000px; 
+  width: 900px; 
 }  
+
+.selectOffer {
+  align-items: center;  
+  display: flex;   
+  flex-wrap: wrap;   
+  justify-content: center;   
+  gap: 20px;   
+  width: 900px; 
+}
+.createOffer {
+  align-items: center;  
+  display: flex;   
+  flex-wrap: wrap;   
+  flex-direction: column;
+  justify-content: center;   
+  gap: 20px;   
+  width: 900px; 
+}
 
 .btnWider {
   display: flex;
@@ -349,7 +367,11 @@ font-size: 50px;
   font-family: 'ICA Rubrik', sans-serif;
   color: white;
   text-align: center;
+}
 
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  display: none;
 }
 
 .widerButton {
@@ -423,6 +445,4 @@ input:focus {
 .mpSortCtn {
   display: flex;
   gap: 20px;
-}
-.mpFilterCtn {
 }

@@ -1,0 +1,29 @@
+<%- include("../../partials/nav-bar.ejs") %>
+
+<h1 class="centerText">Friends</h1>
+
+<% if (currentUser) { %>
+    <div class="centerText">
+        <h2>Hello, <%=currentUser.username%> the <%=currentUser.character[0].race %>!</h2>
+        <h3>What is your business here today?</h3>
+    </div>
+    <div>
+        <form action="/friends/find" method="POST" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div>Search friends</div>
+            <input style="margin-bottom: 5px;" class="cleanInput" name="searchTerm" placeholder="username"/>
+            <button class="buttonItem widerButton">Search Friends</button>
+        </form>
+    </div>
+    <% if (!currentUser.friends.length) { %>
+        <div class="centerText">You have no friends</div>
+    <% } else { %>
+        <% currentUser.friends.forEach(friend => { %>
+        <ul>
+            <li><%=friend.username%></li>
+            <li><%=friend.character[0].race%></li>
+            <li>Level: <%=friend.character[0].level%></li>
+            <li>Souls: <%=friend.character[0].souls%></li>
+        </ul>
+        <% }) %>
+    <% } %>
+<% } %>

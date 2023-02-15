@@ -1,0 +1,47 @@
+<%- include("../../partials/nav-bar.ejs") %>
+
+<h1 class="centerText">Marketplace</h1>
+<h2 class="centerText">Your offers</h2>
+<form action="/marketplace", method="GET">
+    <button class="buttonItem btnWider" type="submit">Back</button>
+</form>
+
+<% if (errorMessage !== "") { %>
+    <div class="display-error-message centralize"><%=errorMessage%></div>
+<% } %>
+
+<div id="marketAlign">
+    <div id="marketplaceItems">
+    <% item.forEach(item => { %>
+        <% if (JSON.stringify(item.owner._id) === `"${sessionRace[0].charId}"`) { %>
+            <div class="itemTable">       
+                <ul class="removeListStyle">
+                    <!-- <li id="equipment">Equipment</li> -->
+                    <ul class="removeListStyle allignList">
+                        <div class="weaponStats">           
+                        <li><%=item.item.name%></li>                         
+                            <div class="inlineStats">   
+                                <li>⚔️ <%=item.item.modifier%></li>
+                                <li>👻 <%=item.price%></li>
+                            </div>
+                        </div> 
+                        <li><img class="itemImage" src="../../<%=item.item.image%>" width="130px"></li>
+                    </ul>
+                    <% if (!item.sold) { %>
+                    <form action="/marketplace/remove-offer/<%=item._id%>/<%=item.item._id%>" method="POST">
+                        <button class="buttonItem btnWider" type="submit">Withdraw offer</button>
+                    </form>
+                    <% } else { %>
+                    <form action="/marketplace/claim-souls/<%=item._id%>/<%=item.owner._id%>" method="POST">
+                        <button class="buttonItem btnWider" type="submit">👻x<%=item.price%><br>Claim</button>
+                    </form>
+                    <% } %>
+                    <div style="color: green;">Your Offer</div>
+                </ul>
+            </div> 
+        <% } %> 
+    <% }) %>
+    </div>
+</div>
+
+</div>
