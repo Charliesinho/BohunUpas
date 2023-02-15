@@ -10,9 +10,22 @@
 
 <div>
     <form action="/marketplace/browse-offers/" method="GET">
- 
-        <label><input type="checkbox" name="hello">Hello</label>
-        <label><input type="checkbox" name="hello2">Hello</label>
+        Show:
+        <% if (filter.weapons) { %>
+            <label><input type="checkbox" name="weapons" checked />Weapons</label>
+        <% } else { %>
+            <label><input type="checkbox" name="weapons" />Weapons</label>
+        <% } %>
+        <% if (filter.armor) { %>
+            <label><input type="checkbox" name="armor" checked />Armor</label>
+        <% } else { %>
+            <label><input type="checkbox" name="armor" />Armor</label>
+        <% } %>
+        <% if (filter.artefacts) { %>
+            <label><input type="checkbox" name="artefacts" checked />Artefacts</label>
+        <% } else { %>
+            <label><input type="checkbox" name="artefacts" />Artefacts</label>
+        <% } %>
         <button type="submit">Filter</button>
     </form>
 </div>
