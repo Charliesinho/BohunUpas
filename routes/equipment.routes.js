@@ -99,7 +99,7 @@ function generateItemRare() {
       image: "../images/Weapons/Lancer.png",
       type: "Weapon",
       subtype: "Sword",
-      modifier: Math.floor(Math.random() * (10 - 2) + 2),
+      modifier: Math.floor(Math.random() * (20 - 2) + 2),
       value: 12,
       equipped: false,
     }
