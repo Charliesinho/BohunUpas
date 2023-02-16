@@ -26,6 +26,12 @@
                     <button class="buttonItem" type="submit">👻 <%=item.value%></button>
                 </form>    
             </div>      
-            <% } %>
+        <% } else if (rendering === "newmessage") { %>
+        <div class="invButtons">
+            <form action="/friends/newMessage/<%=friend._id%>/att/" method="POST">
+                <button class="buttonItem" type="submit" name="attachItemBtn" value="<%=item._id%>">Attach</button>
+            </form>    
+        </div>      
+        <% } %>
     </div>
     <% }) %>

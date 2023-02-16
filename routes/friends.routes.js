@@ -1,6 +1,7 @@
 const express = require('express');
 const { isLoggedIn } = require('../middleware/route-guard');
 const Character = require('../models/Character.model');
+const Item = require('../models/Item.model');
 const Message = require('../models/Message.model');
 const router = express.Router();
 const User = require('../models/User.model');
@@ -190,7 +191,7 @@ router.post("/friends/rejectRequest/:messageId", isLoggedIn, async (req, res, ne
 }); 
 
 
-// SEND NEW MESSAGE - WIP
+// SEND NEW MESSAGE
 router.get("/friends/newMessage/:friendId", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
   const sessionName = req.session.user.username;
@@ -198,14 +199,76 @@ router.get("/friends/newMessage/:friendId", isLoggedIn, async (req, res, next) =
   const currentUser = getUserWithoutHash(user[0]);
   const character = await Character.findById(currentUser.charId).populate("inventory");
   const friend = await User.findById(req.params.friendId);
-  const searchTerm = "";
+  const att = false;
+  const content = {
+    subject: req.body.subject,
+    body: req.body.textBody,
+  }
+  const rendering = "newmessage";
 
   try { 
-    res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, searchTerm: searchTerm, errorMessage: ""});
+    res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, item: null, attachment: att, rendering: rendering, errorMessage: ""});
   } catch (error) {
     console.log("Error creating new message: ", error);
     res.redirect("/friends");
   }
 }); 
+
+// SEND NEW MESSAGE ATTACHMENT
+router.post("/friends/newMessage/:friendId/att/", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
+  console.log("CONTENT AFTER HIT: ", req.body);
+  const sessionName = req.session.user.username;
+  const user = await User.find({username: sessionName}).populate("character").populate("friends");
+  const currentUser = getUserWithoutHash(user[0]);
+  const character = await Character.findById(currentUser.charId).populate("inventory");
+  const friend = await User.findById(req.params.friendId);
+  const content = {
+    subject: req.body.subject,
+    body: req.body.textBody,
+  }
+  const rendering = "newmessage";
+
+  if (Object.keys(req.body).includes("attachmentBtn")) {
+    res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, item: null, attachment: true, rendering: rendering, errorMessage: ""});
+  }
+  // ATTACH ITEM
+  let itemId = "";
+  if (Object.keys(req.body).includes("attachItemBtn")) {
+    itemId = req.body.attachItemBtn;
+    attachedItem = await Item.findById(itemId);
+    res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachment: true, item: attachedItem, rendering: rendering, errorMessage: ""});
+  }
+  // REMOVE ATTACHMENT
+  if (Object.keys(req.body).includes("removeAttachedItemBtn")) {
+    attachedItem = null;
+    res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachment: true, item: attachedItem, rendering: rendering, errorMessage: ""});
+  }
+  // SEND MESSAGE
+  if (Object.keys(req.body).includes("sendBtn")) {
+    const recipient = await User.findById(req.params.friendId);
+    const message = generateNewMessage(recipient, currentUser, attachedItem);
+    console.log("MESSAGE: ", message);
+    
+  }
+
+/*   try { 
+    res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachment: att, searchTerm: searchTerm, errorMessage: ""});
+  } catch (error) {
+    console.log("Error creating new message: ", error);
+    res.redirect("/friends");
+  } */
+}); 
+
+function generateNewMessage(recipient, sender, subject, body, attachment) {
+  return {
+    recipient: recipient._id,
+    sender: sender.id,
+    subject: subject,
+    textBody: body,
+    attachment: attachment,
+    messageType: "message",
+  }
+}
 
 module.exports = router;
