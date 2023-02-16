@@ -84,7 +84,6 @@ router.get("/friends", isLoggedIn, async (req, res, next) => {
         model: "Character"
       }
     });
-    console.log("FRIEND: ", user)
 
     const currentUser = getUserWithoutHash(user[0]);
     const character = await Character.findById(currentUser.charId).populate("inventory");
@@ -243,7 +242,6 @@ router.get("/friends/newMessage/:friendId", isLoggedIn, async (req, res, next) =
 // SEND NEW MESSAGE ATTACHMENT
 router.post("/friends/newMessage/:friendId/att/", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
-  console.log("CONTENT AFTER HIT: ", req.body);
   const sessionName = req.session.user.username;
   const user = await User.find({username: sessionName}).populate("character").populate("friends");
   const currentUser = getUserWithoutHash(user[0]);
@@ -258,7 +256,6 @@ router.post("/friends/newMessage/:friendId/att/", isLoggedIn, async (req, res, n
   try {
     let attachedItem;
     if (Object.keys(req.body).includes("attachmentBtn")) {
-      console.log("ARRIVED HERE 1");
       attachedItem = null;
       res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachedItem: null, attachment: true, item: attachedItem, rendering: rendering, errorMessage: ""});
     }
@@ -266,20 +263,17 @@ router.post("/friends/newMessage/:friendId/att/", isLoggedIn, async (req, res, n
     let itemId = "";
 
     if (Object.keys(req.body).includes("attachItemBtn")) {
-      console.log("ARRIVED HERE 2", req.body);
       itemId = req.body.attachItemBtn;
       attachedItem = await Item.findById(itemId);
       res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachment: true, item: attachedItem, rendering: rendering, errorMessage: ""});
     }
     // REMOVE ATTACHMENT
     if (Object.keys(req.body).includes("removeAttachedItemBtn")) {
-      console.log("ARRIVED HERE 3", req.body);
       attachedItem = null;
       res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachment: true, item: attachedItem, rendering: rendering, errorMessage: ""});
     }
     // SEND MESSAGE
     if (Object.keys(req.body).includes("sendBtn")) {
-      console.log("ARRIVED HERE 4", req.body.attachedItem);
       const friend = await User.findById(req.params.friendId);
       // Remove item if attachment
       if (Object.keys(req.body).includes("attachmentcheck")) { // WITH ATTACHMENT PATH

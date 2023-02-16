@@ -1541,10 +1541,10 @@ if (sessionInProgress) {
       collisionObjectArr.push(new CollisionObject(0, 150, 15, 440, "roomtransit", 0, "left", false, false));
       // ENEMIES
       enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
-      enemyArr.push(new Enemy("slime", 200, 200, 90, 80));
+      enemyArr.push(new Enemy("slime", 500, 200, 90, 80));
       enemyArr.push(new Enemy("slime", 300, 600, 90, 80));
       enemyArr.push(new Enemy("slime", 500, 600, 90, 80));
-      enemyArr.push(new Enemy("slime", 200, 500, 90, 80));
+      enemyArr.push(new Enemy("slime", 300, 500, 90, 80));
       enemyArr.push(new Enemy("slime", 800, 600, 90, 80));
       
       // Initialize enemies
@@ -1589,7 +1589,7 @@ if (sessionInProgress) {
       enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
       enemyArr.push(new Enemy("slime", 200, 200, 90, 80));
       enemyArr.push(new Enemy("slime", 300, 600, 90, 80));
-      enemyArr.push(new Enemy("slime", 500, 600, 90, 80));
+      enemyArr.push(new Enemy("slime", 500, 200, 90, 80));
       enemyArr.push(new Enemy("slime", 200, 500, 90, 80));
       enemyArr.push(new Enemy("slime", 800, 600, 90, 80));
       
