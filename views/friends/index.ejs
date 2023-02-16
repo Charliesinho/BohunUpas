@@ -79,6 +79,13 @@
                                                 <button class="buttonItem" type="submit">Reject</button>
                                             </form>
                                         </div>
+                                    <% } else if (message.messageType === "message") { %>
+                                        <% if (message.attachment !== null) { %>
+                                            <div>Attachment:<%- include("../../partials/item-card.ejs", {item: message.attachment}) %></div>
+                                            <form action="/friends/claim-attachment" method="POST">
+                                                <button type="submit"></button>
+                                            </form>
+                                        <% } %>
                                     <% } %>
                                 </ul>
                             <% }) %>

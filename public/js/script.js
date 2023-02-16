@@ -132,8 +132,9 @@ if (sessionInProgress) {
   // Stats
   let souls = parseInt(document.querySelector("#souls").value)
   let experience = parseInt(document.querySelector("#experience").value)
-  let gLevel = parseInt(document.querySelector("#level").value)  
+  let gLevel = parseInt(document.querySelector("#level").innerHTML)  
 
+  console.log(gLevel, " ", gDamage)
   // Backgrounds
   const backgroundArr = [];
   let background = new Image();
@@ -480,10 +481,10 @@ if (sessionInProgress) {
       if (this.name === "slimeBoss") {
         this.souls = 100;
         this.experience = 50;
-        this.hp = 100;
+        this.hp = 500;
         this.damage = 10;
         this.imageFrames = 6;
-        this.moveSpeed = 100;
+        this.moveSpeed = 500;
         this.randomMoveTimer = Math.floor(Math.random() * (400 - 200) + 200);
         this.xDir = -1;
         this.yDir = -1;
@@ -495,7 +496,7 @@ if (sessionInProgress) {
       if (this.name === "ecrol") {
         this.souls = 500;
         this.experience = 1000;
-        this.hp = 100;
+        this.hp = 1000;
         this.damage = 1000;
         this.imageFrames = 4;
         this.moveSpeed = 10;

@@ -51,7 +51,14 @@ function generateFriendRequestMessage(recipient, sender) {
 router.get("/friends", isLoggedIn, async (req, res, next) => {
     checkLogin(req.session.user);
     const sessionName = req.session.user.username;
-    const user = await User.find({username: sessionName}).populate("character").populate("messages")
+    const user = await User.find({username: sessionName}).populate("character")
+    .populate({
+      path: "messages",
+      populate: {
+        path: "attachment",
+        model: "Item"
+      }
+    })
     .populate({
       path: "friends",
       populate: {
@@ -246,18 +253,28 @@ router.post("/friends/newMessage/:friendId/att/", isLoggedIn, async (req, res, n
   }
   // SEND MESSAGE
   if (Object.keys(req.body).includes("sendBtn")) {
-    const recipient = await User.findById(req.params.friendId);
-    const message = generateNewMessage(recipient, currentUser, attachedItem);
-    console.log("MESSAGE: ", message);
-    
-  }
-
-/*   try { 
-    res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachment: att, searchTerm: searchTerm, errorMessage: ""});
-  } catch (error) {
-    console.log("Error creating new message: ", error);
+    const friend = await User.findById(req.params.friendId);
+    const message = generateNewMessage(friend, currentUser, req.body.subject, req.body.textBody, attachedItem);
+    // Send message
+    const newMessage = await Message.create(message);
+    friend.messages.push(newMessage._id);
+    await friend.save();
+    // Remove item if attachment
+    if (attachedItem !== null) {
+      // Find Item in inventory
+      let itemIndex = 0;
+      for (let i = 0; i < character.inventory.length; i++) {
+        if (JSON.stringify(character.inventory[i]._id) === `"${attachedItem._id}"`) {
+          itemIndex = i;
+          break;
+        }
+      }
+      // Remove item from inventory
+      character.inventory.splice(itemIndex, 1);
+      await character.save();
+    }
     res.redirect("/friends");
-  } */
+  }
 }); 
 
 function generateNewMessage(recipient, sender, subject, body, attachment) {
