@@ -143,7 +143,7 @@ router.post("/:id/game", isLoggedIn, async (req, res, next) => {
   res.redirect("/user/characterProfile");
 });
 
-router.get("/createcharacter", isLoggedIn, async (req, res, next) => {
+router.get("/createCharacter", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
   const profile = await User.findOne({username: req.session.user.username})
 
@@ -153,11 +153,11 @@ router.get("/createcharacter", isLoggedIn, async (req, res, next) => {
   if (profile.character.length) {
     res.redirect("/user/characterProfile")
   } else {
-    res.render("user/createcharacter", {errorMessage: "", sessionRace: sessionRace[0].character, session: loginCheck});
+    res.render("user/createCharacter", {errorMessage: "", sessionRace: sessionRace[0].character, session: loginCheck});
   }
 });
 
-router.post("/createcharacter", isLoggedIn, async (req, res) => {  
+router.post("/createCharacter", isLoggedIn, async (req, res) => {  
 
   const sessionName= req.session.user.username;
   const sessionRace = await User.find({username: sessionName})
@@ -168,7 +168,7 @@ router.post("/createcharacter", isLoggedIn, async (req, res) => {
     res.redirect("/user/characterProfile")
   } catch (error) {
     console.log("Error creating the Character, please try again: ", error);
-    res.render("user/createcharacter", {errorMessage: "Error creating the Character, please try again", sessionRace: sessionRace[0].character, session: loginCheck})
+    res.render("user/createCharacter", {errorMessage: "Error creating the Character, please try again", sessionRace: sessionRace[0].character, session: loginCheck})
   }
   
 });
@@ -182,7 +182,7 @@ router.get("/characterProfile", isLoggedIn, async (req, res, next) => {
   const rendering = "characterProfile";
   
   if (!profile.character.length) {
-    res.redirect("/user/createcharacter");
+    res.redirect("/user/createCharacter");
   } else {
     res.render("user/characterProfile", {errorMessage: "", profile: profile, character: character, sessionRace: sessionRace[0].character, rendering: rendering, session: loginCheck});
   }

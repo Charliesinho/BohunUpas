@@ -56,7 +56,7 @@ router.get("/accountcheck", isLoggedOut, async (req, res, next) => {
         username: body.username,
         email: body.email,
       };
-      res.redirect("/user/createcharacter");
+      res.redirect("/user/createCharacter");
     }
     catch (error) {
       console.log("Error creating user: ", error);
