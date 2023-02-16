@@ -247,43 +247,55 @@ router.post("/friends/newMessage/:friendId/att/", isLoggedIn, async (req, res, n
   }
   const rendering = "newmessage";
 
+  let attachedItem;
   if (Object.keys(req.body).includes("attachmentBtn")) {
-    res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, item: null, attachment: true, rendering: rendering, errorMessage: ""});
+    console.log("ARRIVED HERE 1");
+    attachedItem = null;
+    res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachedItem: null, attachment: true, item: attachedItem, rendering: rendering, errorMessage: ""});
   }
   // ATTACH ITEM
   let itemId = "";
-  
+
   if (Object.keys(req.body).includes("attachItemBtn")) {
+    console.log("ARRIVED HERE 2", req.body);
     itemId = req.body.attachItemBtn;
     attachedItem = await Item.findById(itemId);
     res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachment: true, item: attachedItem, rendering: rendering, errorMessage: ""});
   }
   // REMOVE ATTACHMENT
   if (Object.keys(req.body).includes("removeAttachedItemBtn")) {
+    console.log("ARRIVED HERE 3", req.body);
     attachedItem = null;
     res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachment: true, item: attachedItem, rendering: rendering, errorMessage: ""});
   }
   // SEND MESSAGE
   if (Object.keys(req.body).includes("sendBtn")) {
+    console.log("ARRIVED HERE 4", req.body.attachedItem);
     const friend = await User.findById(req.params.friendId);
-    const message = generateNewMessage(friend, currentUser, req.body.subject, req.body.textBody, attachedItem);
-    // Send message
-    const newMessage = await Message.create(message);
-    friend.messages.push(newMessage._id);
-    await friend.save();
     // Remove item if attachment
-    if (attachedItem !== null) {
+    if (Object.keys(req.body).includes("attachmentcheck")) { // WITH ATTACHMENT PATH
       // Find Item in inventory
       let itemIndex = 0;
       for (let i = 0; i < character.inventory.length; i++) {
-        if (JSON.stringify(character.inventory[i]._id) === `"${attachedItem._id}"`) {
+        if (JSON.stringify(character.inventory[i]._id) === `"${req.body.attachedItem._id}"`) {
           itemIndex = i;
+          console.log("ITEM WAS FOUND CORRECTLY YAY")
           break;
         }
       }
       // Remove item from inventory
       character.inventory.splice(itemIndex, 1);
       await character.save();
+      // Send message
+      const message = generateNewMessage(friend, currentUser, req.body.subject, req.body.textBody, req.body.attachedItem);
+      const newMessage = await Message.create(message);
+      friend.messages.unshift(newMessage._id);
+      await friend.save();
+    } else { // WITHOUT ATTACHMENT PATH
+      const message = generateNewMessage(friend, currentUser, req.body.subject, req.body.textBody);
+      const newMessage = await Message.create(message);
+      friend.messages.unshift(newMessage._id);
+      await friend.save();
     }
     res.redirect("/friends");
   }
@@ -306,18 +318,14 @@ router.post("/friends/claim-attachment/:messageId", isLoggedIn, async (req, res,
     const item = await Item.findById(message.attachment._id);
     // Inventory check
     if (character.inventory.length < 6) {
-      const attachment = message.attachment;
-      //character.inventory.push(attachment._id);
-      message.attachment = null;
-      console.log(message)
-      //await message.save();
-      //await character.save();
+      const attachment = message.attachment.pop();
+      character.inventory.push(attachment._id);
+      await message.save();
+      await character.save();
+      res.redirect("/friends");
     } else {
       res.render("friends", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, searchResult: "", searchTerm: searchTerm, errorMessage: "Not enough space in your inventory!"});
     }
-
-    console.log("SO FAR SO GOOD?", message, item)
-
     //res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, item: null, attachment: att, rendering: rendering, errorMessage: ""});
   } catch (error) {
     console.log("Error creating new message: ", error);

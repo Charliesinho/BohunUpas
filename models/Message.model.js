@@ -22,7 +22,7 @@ const messageSchema = new Schema(
       required: true,
     },
     attachment: {
-      type: Schema.Types.ObjectId,
+      type: [Schema.Types.ObjectId],
       ref: "Item",
     },
     messageType: {
