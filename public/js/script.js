@@ -177,7 +177,7 @@ if (sessionInProgress) {
       this.img.src = this.source;
     }
   }
-
+  
   class Player {
     constructor(race, x, y, width, height, xSpeed, ySpeed, xFacing, yFacing) {
       this.type = "player";
@@ -221,6 +221,10 @@ if (sessionInProgress) {
       this.iframes = 500;
       this.alive = true;
       this.hp = 10;
+      this.health = document.querySelector("#health")
+      this.health.max = this.hp
+      this.health.value = this.hp
+      
 
       // Equipment
       this.weapon;
@@ -382,8 +386,10 @@ if (sessionInProgress) {
         // Receive Damage
         if (damage - this.getDefense() > 0) {
           this.hp -= damage - this.getDefense();
+          this.health.value -= damage - this.getDefense();
         } else {
           this.hp -= 1;
+          this.health.value -= damage - this.getDefense();
         }
         console.log("HIT - ", this.hp)
         // Kill player

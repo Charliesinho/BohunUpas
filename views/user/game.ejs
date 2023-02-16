@@ -11,8 +11,9 @@
     <div id="sessionInProgress" style="display: none;"></div>
 <% } %>
 
-<div id="game-board" style="display: flex; align-items: center; justify-content: center;">
+<div id="game-board" style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
     <canvas id="canvas" width="1200" height="700"></canvas>
+    <progress id="health" value="100" max="100"></progress>
 </div>  
 
 
@@ -100,4 +101,5 @@
         </div>
 
     </div>
+
 </section>
