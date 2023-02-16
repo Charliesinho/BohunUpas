@@ -249,7 +249,7 @@ if (sessionInProgress) {
 
     initialize() {
       // Projectile array images
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 6; i++) {
         projectileImgArr.push("../images/Projectiles/pro"+i+".png");
         console.log(projectileImgArr[i])
       }
@@ -281,6 +281,11 @@ if (sessionInProgress) {
         this.weaponShootInterval = 1;
         this.weaponLifeSpan = 1000;
         this.weaponProjectileSpeed = Math.floor(Math.random() * (21 - 1) + 1);
+      } else if (this.weapon.includes("Swampy")) {
+        this.weaponProjectile = projectileImgArr[5];
+        this.weaponShootInterval = 1000;
+        this.weaponLifeSpan = 5000;
+        this.weaponProjectileSpeed = .2;
       } else {
         this.weaponProjectile = projectileImgArr[4];
         this.weaponShootInterval = 600;
@@ -431,7 +436,7 @@ if (sessionInProgress) {
       this.state;
       this.ecrolState = true;
       this.movementArr;
-      this.ecrolTimeout = 3000;
+      this.ecrolTimeout = 5000;
 
       // Gameplay values
       this.initialized = false;
@@ -507,7 +512,7 @@ if (sessionInProgress) {
         this.hp = 1000;
         this.damage = 1000;
         this.imageFrames = 4;
-        this.moveSpeed = 10;
+        this.moveSpeed = 12;
         this.movementArr = this.ecrolPatterns();
         this.x = this.movementArr[0].x;
         this.y = this.movementArr[0].y;
