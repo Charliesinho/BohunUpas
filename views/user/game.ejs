@@ -44,7 +44,6 @@
         <% if (session && character.weapon.length) { %>
             <div id="noWeapon" style="display: block;"></div>
             <div id="weaponname" ><%=character.weapon[0].name%></div>
-            <% console.log(character.weapon[0].name) %>
             <div id="damage"><%=character.weapon[0].modifier%></div>
         <% } else { %>
             <div id="noWeapon" style="display: none;"></div>
@@ -72,6 +71,7 @@
         <form method="POST" action="/user/<%=sessionRace2.character[0]._id%>/game">
             <% if (session) { %>       
             <label>Souls: <input id="souls" style="display: block;" name="souls" type="number" value="<%=sessionRace2.character[0].souls%>" readonly></input></label>
+            <label>Level: <input id="level" style="display: block;" name="level" type="number" value="<%=sessionRace2.character[0].level%>" readonly></input></label> 
             <label>XP: <input id="experience" style="display: block;" name="experience" type="number" value="<%=sessionRace2.character[0].experience%>" readonly></input></label> 
             <% } %></p>
             <button type="submit">Save</button>

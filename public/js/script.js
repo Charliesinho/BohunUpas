@@ -49,19 +49,20 @@ document.addEventListener("DOMContentLoaded", () => {
 let session = document.querySelector("#sessionInProgress");
 let sessionInProgress = false;
 
+// Run if logged in
 if (session) {
   if (session.style.display === "block") {
     sessionInProgress = true;
   }
 }
 
+// All code execution only if session
 if (sessionInProgress) {
+  // Get races
   let dinoSelect = document.querySelector("#dinoSelect")
   let dinoCheck = false;
-
   let undeadSelect = document.querySelector("#undeadSelect")
   let undeadCheck = false;
-
   let humanSelect = document.querySelector("#humanSelect")
   let humanCheck = false;
 
@@ -71,30 +72,19 @@ if (sessionInProgress) {
     dinoCheck = true;
     console.log("dino")
   }
-
   if (undeadSelect.style.display === "block") {
     undeadCheck = true;
     console.log("undead")
   }
-
   if (humanSelect.style.display === "block") {
     humanCheck = true;
     console.log("human")
   }
-
-  if (dinoCheck) {
-    race = "Dino"
-  }
-  if (undeadCheck) {
-    race = "Undead"
-  }
-  if (humanCheck) {
-    race = "Human"
-  }
-
-  let souls = parseInt(document.querySelector("#souls").value)
-  let experience = parseInt(document.querySelector("#experience").value)
-
+  if (dinoCheck) race = "Dino";
+  if (undeadCheck) race = "Undead";
+  if (humanCheck) race = "Human";
+  
+  // Equipment based stats
   let gDamage, gDefense, gModifier
   if (document.querySelector("#noWeapon").style.display === "block") {
     gDamage = parseInt(document.querySelector("#damage").innerHTML);
@@ -106,13 +96,13 @@ if (sessionInProgress) {
   } else {
     gDefense = 1;
   }
-/*   if (document.querySelector("#artefactname").style.display === "block") {
+  if (document.querySelector("#noArtefact").style.display === "block") {
     gModifier = parseInt(document.querySelector("#artefactmodifier").innerHTML);
   } else {
     gModifier = 1;
-  } */
+  }
 
-
+  // Equipment fetch
   const projectileImgArr = [];
   let gWeapon, gArmor, gArtefact;
   if (document.querySelector("#noWeapon").style.display === "block") {
@@ -125,11 +115,16 @@ if (sessionInProgress) {
   } else {
     gArmor = "";
   }
-/*   if (document.querySelector("#noArtefact").style.display === "block") {
+  if (document.querySelector("#noArtefact").style.display === "block") {
     gArtefact = document.querySelector("#artefactname").innerHTML;
   } else {
     gArtefact = "";
-  } */
+  }
+
+  // Stats
+  let souls = parseInt(document.querySelector("#souls").value)
+  let experience = parseInt(document.querySelector("#experience").value)
+  let gLevel = parseInt(document.querySelector("#level").value)  
 
   // Backgrounds
   const backgroundArr = [];
@@ -154,7 +149,6 @@ if (sessionInProgress) {
   let transitSpeed = 5;
   let transitDir = "";
   let enemySpawnInProgress = false;
-  let inBattle = false;
   const myCanvas = document.querySelector("canvas");
   const ctx = myCanvas.getContext("2d");
 
@@ -176,6 +170,8 @@ if (sessionInProgress) {
       this.type = "player";
       this.race = race;
       this.experience = experience;
+      this.level = gLevel;
+
       
       // Pass in vars
       this.x = x;
@@ -206,12 +202,23 @@ if (sessionInProgress) {
       this.spriteSpeed = 12;
       this.currentFrame = 0;
 
+      // Gameplay values
+      this.damage;
+      this.takenDamage = false;
+      this.iframes = 500;
+      this.alive = true;
+      this.hp = 10;
+
       // Equipment
       this.weapon;
       this.weaponProjectile;
       this.weaponShootInterval;
       this.weaponProjectileSpeed;
       this.weaponLifeSpan;
+      
+      this.armor;
+
+      this.artefact;
 
       // Shoot
       this.shootRight = false;
@@ -226,16 +233,51 @@ if (sessionInProgress) {
       this.right = this.x + this.width;
       this.top = this.y;
       this.bottom = this.y + this.height;
-
-      // Gameplay values
-      this.takenDamage = false;
-      this.iframes = 500;
-      this.alive = true;
-      this.hp = 10;
-      this.armor = gDefense;
     }
 
     initialize() {
+      // Projectile array images
+      for (let i = 0; i < 5; i++) {
+        projectileImgArr.push("../images/Projectiles/pro"+i+".png");
+        console.log(projectileImgArr[i])
+      }
+      // Configure Weapon values
+      this.weapon = gWeapon;
+      this.damage = gDamage;
+      if (this.weapon.includes("Wooden Wand")) {
+        this.weaponProjectile = projectileImgArr[4];
+        this.weaponShootInterval = 500;
+        this.weaponLifeSpan = 30;
+        this.weaponProjectileSpeed = 8;
+      } else if (this.weapon.includes("Rusty Sword")) {
+        this.weaponProjectile = projectileImgArr[0];
+        this.weaponShootInterval = 500;
+        this.weaponLifeSpan = 40;
+        this.weaponProjectileSpeed = 8;
+      } else if (this.weapon.includes("Lancer")) {
+        this.weaponProjectile = projectileImgArr[2];
+        this.weaponShootInterval = 1000;
+        this.weaponLifeSpan = 50;
+        this.weaponProjectileSpeed = 20;
+      } else if (this.weapon.includes("Heavy Sword")) {
+        this.weaponProjectile = projectileImgArr[1];
+        this.weaponShootInterval = 400;
+        this.weaponLifeSpan = 1000;
+        this.weaponProjectileSpeed = .5;
+      } else if (this.weapon.includes("Moonlair")) {
+        this.weaponProjectile = projectileImgArr[3];
+        this.weaponShootInterval = 1;
+        this.weaponLifeSpan = 1000;
+        this.weaponProjectileSpeed = Math.floor(Math.random() * (21 - 1) + 1);
+      }
+      // Configure Armor values
+      this.armor = gArmor;
+      this.defense = gDefense;
+      
+      // Configure Artefact values
+      this.artefact = gArtefact;
+
+      // Load player sprites
       if (this.race === "Dino") {      
         for (let i = 0; i < 6; i++) {
           this.imgContainerRight.push("../images/Races/Dino/RunRight/dino"+i+".png");
@@ -266,38 +308,6 @@ if (sessionInProgress) {
           this.imgContainerIdleRight.push("../images/Races/Human/IdleLeft/IdleRight/human"+i+".png");
         }
       } 
-      // Projectile array images
-      for (let i = 0; i < 5; i++) {
-        projectileImgArr.push("../images/Projectiles/pro"+i+".png");
-        console.log(projectileImgArr[i])
-      }
-      this.weapon = gWeapon;
-      if (this.weapon.includes("Wooden Wand")) {
-        this.weaponProjectile = projectileImgArr[4];
-        this.weaponShootInterval = 500;
-        this.weaponLifeSpan = 30;
-        this.weaponProjectileSpeed = 8;
-      } else if (this.weapon.includes("Rusty Sword")) {
-        this.weaponProjectile = projectileImgArr[0];
-        this.weaponShootInterval = 500;
-        this.weaponLifeSpan = 40;
-        this.weaponProjectileSpeed = 8;
-      } else if (this.weapon.includes("Lancer")) {
-        this.weaponProjectile = projectileImgArr[2];
-        this.weaponShootInterval = 1000;
-        this.weaponLifeSpan = 50;
-        this.weaponProjectileSpeed = 20;
-      } else if (this.weapon.includes("Heavy Sword")) {
-        this.weaponProjectile = projectileImgArr[1];
-        this.weaponShootInterval = 400;
-        this.weaponLifeSpan = 1000;
-        this.weaponProjectileSpeed = .5;
-      } else if (this.weapon.includes("Moonlair")) {
-        this.weaponProjectile = projectileImgArr[3];
-        this.weaponShootInterval = 1;
-        this.weaponLifeSpan = 1000;
-        this.weaponProjectileSpeed = Math.floor(Math.random() * (21 - 1) + 1);
-      }
     } 
 
     updateCollision() {
@@ -335,13 +345,20 @@ if (sessionInProgress) {
       this.y = 300
     }
 
+    getDamage() {
+      return this.damage + this.level;
+    }
+    getDefense() {
+      return this.defense;
+    }
+
     hit(damage) {
       // Check iframes
       if (!this.takenDamage) {
         this.takenDamage = true;
         // Receive Damage
-        if (damage - this.armor > 0) {
-          this.hp -= damage - this.armor;
+        if (damage - this.getDefense() > 0) {
+          this.hp -= damage - this.getDefense();
         } else {
           this.hp -= 1;
         }
@@ -1122,21 +1139,21 @@ if (sessionInProgress) {
         // Shooting
         if (player.canShoot) {
           if (player.shootLeft && player.shootUp) { // TOP LEFT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, -1, -1, player.weaponProjectileSpeed, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, -1, -1, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
           } else if (player.shootUp && player.shootRight) { // TOP RIGHT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 1, -1, player.weaponProjectileSpeed, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 1, -1, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
           } else if (player.shootRight && player.shootDown) { // BOTTOM RIGHT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 1, 1, player.weaponProjectileSpeed, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 1, 1, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
           } else if (player.shootDown && player.shootLeft) { // BOTTOM LEFT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, -1, 1, player.weaponProjectileSpeed, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, -1, 1, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
           } else if (player.shootRight) { // RIGHT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 1, 0, player.weaponProjectileSpeed, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 1, 0, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
           } else if (player.shootLeft) { // LEFT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, -1, 0, player.weaponProjectileSpeed, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, -1, 0, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
           } else if (player.shootDown) { // DOWN
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 0, 1, player.weaponProjectileSpeed, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 0, 1, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
           } else if (player.shootUp) { // UP
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 0, -1, player.weaponProjectileSpeed, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 0, -1, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
           }
           player.canShoot = false;
           setTimeout(() => {
