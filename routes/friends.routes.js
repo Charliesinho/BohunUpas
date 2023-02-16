@@ -191,45 +191,21 @@ router.post("/friends/rejectRequest/:messageId", isLoggedIn, async (req, res, ne
 
 
 // SEND NEW MESSAGE - WIP
-router.post("/friends/acceptRequest/:messageId/:senderId", isLoggedIn, async (req, res, next) => {
-/*   checkLogin(req.session.user);
+router.get("/friends/newMessage/:friendId", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
   const sessionName = req.session.user.username;
   const user = await User.find({username: sessionName}).populate("character").populate("friends");
   const currentUser = getUserWithoutHash(user[0]);
   const character = await Character.findById(currentUser.charId).populate("inventory");
+  const friend = await User.findById(req.params.friendId);
   const searchTerm = "";
 
   try { 
-    // Accept request
-    const friendRequest = await Message.findById(req.params.messageId);
-    const newFriend = await User.findById(req.params.senderId);
-
-    // Update friends lists
-    newFriend.friends.push(user[0]._id);
-    user[0].friends.push(newFriend._id);
-
-    // Find friend request message index
-    let msgIndex = 0;
-    for (let i = 0; i < user[0].messages.length; i++) {
-      if (JSON.stringify(friendRequest._id) === `"${req.params.messageId}"`) {
-        msgIndex = i;
-        break;
-      }
-    }
-    
-    // Remove friend request from array
-    user[0].messages.splice(msgIndex, 1);
-
-    // Save 
-    await newFriend.save();
-    await user[0].save();
-    await Message.findByIdAndDelete(req.params.messageId);
-
-    res.render("/friends/newMessage/:friendId");
+    res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, searchTerm: searchTerm, errorMessage: ""});
   } catch (error) {
-    console.log("Error sending friends request: ", error);
+    console.log("Error creating new message: ", error);
     res.redirect("/friends");
-  } */
+  }
 }); 
 
 module.exports = router;

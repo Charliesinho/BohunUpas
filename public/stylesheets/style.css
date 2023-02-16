@@ -540,3 +540,24 @@ input:focus {
 .inGameStats {
   display: flex;
 }
+
+.newMessageCtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.messageInputs {
+  text-align: left;
+}
+
+.messageInputs:focus {
+  text-align: left;
+}
+
+.messageTextBody {
+  width: 400px;
+  height: 200px;
+  text-align: left;
+}

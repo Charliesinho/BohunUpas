@@ -1,0 +1,16 @@
+<%- include("../../partials/nav-bar.ejs") %>
+
+<% if (currentUser) { %>
+    <section>
+        <div class="newMessageCtn">
+            <h1>New Message</h1>
+            <form class="newMessage">
+                <div>From:</div> <input class="cleanInput messageInputs" name="fromField" value="<%=currentUser.username%>" readonly/>
+                <div>To:</div> <input class="cleanInput messageInputs" name="toField" value="<%=friend.username%>" readonly/>
+                <div>Subject:</div> <input class="cleanInput messageInputs" type="text" name="subject" placeholder="Subject" minlength="4"/>
+                <div>Message:</div> <input class="cleanInput messageTextBody messageInputs" type="textarea" name="textBody" placeholder="Message" minlength="4" maxlength="5000" rows="10" cols="10"/>
+                <div class="centerText"><button class="buttonItem" type="submit">Send message</button></div>
+            </form>
+        </div>
+    </section>
+<% } %>
