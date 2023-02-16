@@ -50,7 +50,15 @@ function generateFriendRequestMessage(recipient, sender) {
 router.get("/friends", isLoggedIn, async (req, res, next) => {
     checkLogin(req.session.user);
     const sessionName = req.session.user.username;
-    const user = await User.find({username: sessionName}).populate("character").populate("friends").populate("messages");
+    const user = await User.find({username: sessionName}).populate("character").populate("messages")
+    .populate({
+      path: "friends",
+      populate: {
+        path: "character",
+        model: "Character"
+      }
+    });
+
     const currentUser = getUserWithoutHash(user[0]);
     const character = await Character.findById(currentUser.charId).populate("inventory");
     const searchTerm = "";
@@ -179,7 +187,7 @@ router.post("/friends/rejectRequest/:messageId", isLoggedIn, async (req, res, ne
     await user[0].save();
     // Delete message
     await Message.findByIdAndDelete(req.params.messageId);
-    
+
     res.redirect("/friends");
   } catch (error) {
     console.log("Error rejecting request: ", error);
