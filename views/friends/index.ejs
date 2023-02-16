@@ -49,7 +49,11 @@
                     <li><%=friend.username%></li>
                     <li><%=friend.character[0].race%></li>
                     <li>Level: <%=friend.character[0].level%></li>
-                    <li>Weapon: <%=friend.character[0].weapon[0].name%></li>
+                    <li>
+                        <form action="/friends/newMessage/<%=friend._id%>" method="GET">
+                            <button class="buttonItem" type="submit">Send Message</button>
+                        </form>
+                    </li>
                 </ul>
                 <% }) %>
             <% } %>
