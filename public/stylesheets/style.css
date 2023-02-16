@@ -601,3 +601,23 @@ justify-items: center;
   font-size: 17px;
   margin-left: -25px;
 }
+.newMessageCtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.messageInputs {
+  text-align: left;
+}
+
+.messageInputs:focus {
+  text-align: left;
+}
+
+.messageTextBody {
+  width: 400px;
+  height: 200px;
+  text-align: left;
+}
