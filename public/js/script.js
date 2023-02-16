@@ -153,7 +153,7 @@ if (sessionInProgress) {
   let screen8init = false;
   let screen9init = false;
 
-  let levelScreen = 4;
+  let levelScreen = 0;
 
   let animateId;
   let roomTransit = false;
@@ -1074,10 +1074,10 @@ if (sessionInProgress) {
         }
 
         if (level4Spawn && levelScreen === 4) {
-          ctx.drawImage(spawnImg, myCanvas.width / 2, myCanvas.height / 2, 200, 200)
+          ctx.drawImage(spawnImg, myCanvas.width / 2 - 72, myCanvas.height / 2  - 72, 72, 72)
         }
         if (level8Spawn && levelScreen === 8) {
-          ctx.drawImage(spawnImg, myCanvas.width / 2, myCanvas.height / 2, 300, 300)
+          ctx.drawImage(spawnImg, myCanvas.width / 2 - 72, myCanvas.height / 2  - 72, 72, 72)
         }
 
         // Collisions
@@ -1666,7 +1666,7 @@ if (sessionInProgress) {
 
       // Enemy Spawner
       collisionObjectArr.push(new CollisionObject(0, 0, myCanvas.width, 45, "environment", -1, "", false, true));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 64, myCanvas.height / 2 - 64, 64, 64, "spawntrigger", -1, "", true, false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 64, myCanvas.height / 2 - 64, 64, 64, "spawntrigger", -1, "", false, false));
 
       // ENEMIES
       enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
@@ -1789,7 +1789,7 @@ if (sessionInProgress) {
 
       // Enemy Spawner
       collisionObjectArr.push(new CollisionObject(0, 0, myCanvas.width, 45, "environment", -1, "", false, true));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 64, myCanvas.height / 2 - 64, 64, 64, "spawntrigger", -1, "", true, false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 64, myCanvas.height / 2 - 64, 64, 64, "spawntrigger", -1, "", false, false));
 
       screen8init = true;
     }
