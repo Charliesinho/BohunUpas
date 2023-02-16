@@ -6,6 +6,9 @@
 <form action="/marketplace", method="GET">
     <button class="buttonItem btnWider" type="submit">Back</button>
 </form>
+<% if (!character.inventory.length) { %>
+    <div class="centerText">You have no items in your inventory!</div>
+<% } %>
 <div id="marketAlign">
     <div class="selectOffer">
 <%- include("../../partials/inventory-display.ejs") %>

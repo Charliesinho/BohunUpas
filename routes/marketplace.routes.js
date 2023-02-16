@@ -102,8 +102,6 @@ router.get("/marketplace/view-own-offers/", isLoggedIn, async (req, res, next) =
   const user = await User.find({username: sessionName}).populate("character");
   const currentUser = getUserWithoutHash(user[0]);
   const character = await Character.findOne({_id: currentUser.charId}).populate("inventory").populate("weapon").populate("artefact").populate("armor");
-
-  
   const rendering = "marketplace-view-own-offers";
   const filter = req.query;
   // Get items and sort
@@ -116,6 +114,14 @@ router.get("/marketplace/view-own-offers/", isLoggedIn, async (req, res, next) =
     item = await Marketplace.find().populate("item").populate("owner");
   }
 
+  let itemCounter = 0;
+  if (item.length) {
+    for (let i = 0; i < item.length; i++) {
+      if (JSON.stringify(item[i].owner._id) === `"${currentUser.charId}"`) {
+        itemCounter++;
+      }
+    }
+  }
   // Filter browse items
   let filterResults = 0;
   for (let i = 0; i < item.length; i++) {
@@ -123,7 +129,7 @@ router.get("/marketplace/view-own-offers/", isLoggedIn, async (req, res, next) =
   }
   if (filterResults === 0) filterResults = item.length; 
   console.log("YOU ARE HERE")
-  res.render("marketplace/view-own-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: item, filter: filter, filterResults: filterResults, errorMessage: ""})
+  res.render("marketplace/view-own-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: item, filter: filter, itemCounter: itemCounter, filterResults: filterResults, errorMessage: ""})
 })
 
 
@@ -262,7 +268,7 @@ router.post("/marketplace/remove-offer/:offerId/:itemId", isLoggedIn, async (req
       await Marketplace.findByIdAndDelete(req.params.offerId);
       character.inventory.push(item);
       await character.save();
-      res.redirect("/marketplace/browse-offers");
+      res.redirect("/marketplace/view-own-offers");
     }
   } else {
     res.render("marketplace/view-own-offers", {session: loginCheck, sessionRace: [currentUser], character: character, item: offerList, filter: filter, filterResults: filterResults, errorMessage: "Your inventory is full!"})

@@ -511,7 +511,7 @@ if (sessionInProgress) {
         this.yDir = -1;
         this.canSpawn = false;
         for (let i = 0; i < this.imageFrames; i++) {
-          this.imgContainer.push("../images/Meadow/SlimeBoss/slime"+i+".png");
+          this.imgContainer.push("../images/Meadow/SlimeBoss/slime0.png");
         }
       }
       if (this.name === "ecrol") {

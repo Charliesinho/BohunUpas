@@ -9,6 +9,9 @@
 <% if (errorMessage !== "") { %>
     <div class="display-error-message centralize"><%=errorMessage%></div>
 <% } %>
+<% if (itemCounter === 0) { %>
+    <div class="centerText">You currently have no offers!</div>    
+<% } %>
 
 <div id="marketAlign">
     <div id="marketplaceItems">
