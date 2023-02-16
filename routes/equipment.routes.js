@@ -88,7 +88,7 @@ function generateItemRare() {
       image: "../images/Weapons/heavySword.png",
       type: "Weapon",
       subtype: "Sword",
-      modifier: Math.floor(Math.random() * (20 - 5) + 5),
+      modifier: Math.floor(Math.random() * (10 - 2) + 2),
       value: 10,
       equipped: false,
     }
@@ -99,7 +99,7 @@ function generateItemRare() {
       image: "../images/Weapons/Lancer.png",
       type: "Weapon",
       subtype: "Sword",
-      modifier: Math.floor(Math.random() * (15 - 5) + 5),
+      modifier: Math.floor(Math.random() * (10 - 2) + 2),
       value: 12,
       equipped: false,
     }
@@ -144,7 +144,7 @@ function generateItemLegendary() {
       image: "../images/Weapons/moonSword.png",
       type: "Weapon",
       subtype: "Sword",
-      modifier: Math.floor(Math.random() * (50 - 35) + 35),
+      modifier: Math.floor(Math.random() * (5 - 1) + 1),
       value: Math.floor(Math.random() * (150 - 50) + 50),
       equipped: false,
     }
