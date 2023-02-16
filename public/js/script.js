@@ -144,6 +144,7 @@ if (sessionInProgress) {
 
   let worldInit = false;
 
+  let screenTowninit = false;
   let screen0init = false;
   let screen1init = false;
   let screen2init = false;
@@ -978,6 +979,11 @@ if (sessionInProgress) {
 
     function checkLevelScreen(levelScreen) {
       switch (levelScreen) {
+        case -1:
+          if (!worldInit) loadWorld();
+          if (!screenTowninit) loadScreenTown();
+          background.src = backgroundArr[levelScreen].source;
+          break;
         // Meadow Screens
         case 0:
           if (!worldInit) loadWorld();
@@ -1044,14 +1050,19 @@ if (sessionInProgress) {
         ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
         //Background Test
         ctx.drawImage(background, 0, 0 , 1200, 700);
-        // Collisions
-        updateCollisionObjects();
-        document.querySelector("#souls").value = souls;
-        document.querySelector("#experience").value = experience;
         // Projectiles
         updateProjectiles();
         //Enemies
         updateEnemies();
+        if (enemySpawnInProgress) {
+          enemySpawnInProgress = false;
+          initiateSpawn()
+        }
+
+        // Collisions
+        updateCollisionObjects();
+        document.querySelector("#souls").value = souls;
+        document.querySelector("#experience").value = experience;
         // Player
         updatePlayer();
         // Gameplay loop
@@ -1459,7 +1470,8 @@ if (sessionInProgress) {
     }
 
     function loadScreenTown() {
-      
+
+      screenTowninit = true;
     }
 
     function loadScreen0() {
