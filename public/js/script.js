@@ -106,12 +106,30 @@ if (sessionInProgress) {
   } else {
     gDefense = 1;
   }
-  if (document.querySelector("#noArtefact").style.display === "block") {
+/*   if (document.querySelector("#artefactname").style.display === "block") {
     gModifier = parseInt(document.querySelector("#artefactmodifier").innerHTML);
   } else {
     gModifier = 1;
-  }
+  } */
 
+
+  const projectileImgArr = [];
+  let gWeapon, gArmor, gArtefact;
+  if (document.querySelector("#noWeapon").style.display === "block") {
+    gWeapon = document.querySelector("#weaponname").innerHTML;
+  } else {
+    gWeapon = "";
+  }
+  if (document.querySelector("#noArmor").style.display === "block") {
+    gArmor = document.querySelector("#armorname").innerHTML;
+  } else {
+    gArmor = "";
+  }
+/*   if (document.querySelector("#noArtefact").style.display === "block") {
+    gArtefact = document.querySelector("#artefactname").innerHTML;
+  } else {
+    gArtefact = "";
+  } */
 
   // Backgrounds
   const backgroundArr = [];
@@ -189,6 +207,8 @@ if (sessionInProgress) {
       this.currentFrame = 0;
 
       // Equipment
+      this.weapon;
+      this.weaponProjectile;
       this.weaponShootInterval = 500;
       this.weaponLifeSpan = 30;
 
@@ -245,6 +265,23 @@ if (sessionInProgress) {
           this.imgContainerIdleRight.push("../images/Races/Human/IdleLeft/IdleRight/human"+i+".png");
         }
       } 
+      // Projectile array images
+      for (let i = 0; i < 5; i++) {
+        projectileImgArr.push("../images/Projectiles/pro"+i+".png");
+        console.log(projectileImgArr[i])
+      }
+      this.weapon = gWeapon;
+      if (this.weapon.includes("Wooden Wand")) {
+        this.weaponProjectile = projectileImgArr[4];
+      } else if (this.weapon.includes("Rusty Sword")) {
+        this.weaponProjectile = projectileImgArr[0];
+      } else if (this.weapon.includes("Lancer")) {
+        this.weaponProjectile = projectileImgArr[2];
+      } else if (this.weapon.includes("Heavy Sword")) {
+        this.weaponProjectile = projectileImgArr[1];
+      } else if (this.weapon.includes("Moonlair")) {
+        this.weaponProjectile = projectileImgArr[3];
+      }
     } 
 
     updateCollision() {
@@ -688,14 +725,13 @@ if (sessionInProgress) {
 
   const projectileArr = [];
   class Projectile {
-    constructor(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan, firedBy, src) {
+    constructor(x, y, width, height, xDir, yDir, speed, damage, lifeSpan, firedBy, src) {
       this.type = "projectile";
 
       this.x = x;
       this.y = y;
       this.width = width;
       this.height = height;
-      this.color = color;
       this.xDir = xDir;
       this.yDir = yDir;
       this.speed = speed;
@@ -1070,21 +1106,21 @@ if (sessionInProgress) {
         // Shooting
         if (player.canShoot) {
           if (player.shootLeft && player.shootUp) { // TOP LEFT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", -1, -1, 8, gDamage, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, -1, -1, 8, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
           } else if (player.shootUp && player.shootRight) { // TOP RIGHT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 1, -1, 8, gDamage, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 1, -1, 8, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
           } else if (player.shootRight && player.shootDown) { // BOTTOM RIGHT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 1, 1, 8, gDamage, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 1, 1, 8, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
           } else if (player.shootDown && player.shootLeft) { // BOTTOM LEFT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", -1, 1, 8, gDamage, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, -1, 1, 8, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
           } else if (player.shootRight) { // RIGHT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 1, 0, 8, gDamage, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 1, 0, 8, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
           } else if (player.shootLeft) { // LEFT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", -1, 0, 8, gDamage, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, -1, 0, 8, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
           } else if (player.shootDown) { // DOWN
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 0, 1, 8, gDamage, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 0, 1, 8, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
           } else if (player.shootUp) { // UP
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, "red", 0, -1, 8, gDamage, player.weaponLifeSpan);
+            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 0, -1, 8, gDamage, player.weaponLifeSpan, "player", player.weaponProjectile);
           }
           player.canShoot = false;
           setTimeout(() => {
@@ -1148,8 +1184,8 @@ if (sessionInProgress) {
       }
     }
 
-    function spawnProjectile(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan) {
-      const projectile = new Projectile(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan, "player", "../images/Projectiles/weak.png");
+    function spawnProjectile(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan, firedBy, src) {
+      const projectile = new Projectile(x, y, width, height, color, xDir, yDir, speed, damage, lifeSpan, firedBy, src);
       projectileArr.push(projectile);
     }
 

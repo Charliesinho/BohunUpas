@@ -28,7 +28,7 @@ function generateItemCommon() {
 
   if (randomNum >= 0 && randomNum <= 40) {
     const newItem = {
-      name: randomName1[namePosition] + `Wooden wand`,
+      name: randomName1[namePosition] + `Wooden Wand`,
       image: "../images/Weapons/woodenWand.png",
       type: "Weapon",
       subtype: "Wand",
@@ -84,7 +84,7 @@ function generateItemRare() {
 
   if (randomNum >= 0 && randomNum <= 20) {
     const newItem = {
-      name: randomName2[namePosition] + `Heavy sword`,
+      name: randomName2[namePosition] + `Heavy Sword`,
       image: "../images/Weapons/heavySword.png",
       type: "Weapon",
       subtype: "Sword",

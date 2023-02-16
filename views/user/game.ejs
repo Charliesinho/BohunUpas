@@ -43,7 +43,8 @@
         <!-- Weapons -->
         <% if (session && character.weapon.length) { %>
             <div id="noWeapon" style="display: block;"></div>
-            <div id="weaponname"><%=character.weapon[0].name%></div>
+            <div id="weaponname" ><%=character.weapon[0].name%></div>
+            <% console.log(character.weapon[0].name) %>
             <div id="damage"><%=character.weapon[0].modifier%></div>
         <% } else { %>
             <div id="noWeapon" style="display: none;"></div>
