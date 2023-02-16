@@ -419,10 +419,6 @@ if (sessionInProgress) {
 
       this.imgContainer = [];
       this.img = new Image();
-      this.imgSlimeContainer = [];
-      this.imgBatContainer = [];
-      this.imgSlimeBossContainer = [];
-      this.imgEcrolContainer = [];
       this.imageFrames;
       this.spriteSpeed = 12;
       this.currentFrame = 0;
@@ -453,28 +449,8 @@ if (sessionInProgress) {
       this.moveSpeed;
       this.moveTo;
       this.canShoot = false;
-      this.shootInterval; 
+      this.shootInterval;
     }
-    
-    preloadImages(array) {
-      if (!preloadImages.list) {
-          preloadImages.list = [];
-      }
-      let list = preloadImages.list;
-      for (let i = 0; i < array.length; i++) {
-          let img = new Image();
-          img.onload = function() {
-              let index = list.indexOf(this);
-              if (index !== -1) {
-                  // remove image from the array once it's loaded
-                  // for memory consumption reasons
-                  list.splice(index, 1);
-              }
-          }
-          list.push(img);
-          img.src = array[i];
-      }
-  }
 
     initialize() {
       if (this.name === "slime") {
@@ -488,7 +464,7 @@ if (sessionInProgress) {
         this.moveTo = this.getRandomCoordinates();
         this.moveTowardsTarget(this.moveTo);
         for (let i = 0; i < this.imageFrames; i++) {
-          this.imgSlimeContainer.push("../images/Meadow/Slime/slime"+i+".png");
+          this.imgContainer.push("../images/Meadow/Slime/slime"+i+".png");
         }
         this.initialized = true;
       }
@@ -503,7 +479,7 @@ if (sessionInProgress) {
         this.canShoot = true;
         this.shootInterval = this.getRandomShootInterval();
         for (let i = 0; i < this.imageFrames; i++) {
-          this.imgBatContainer.push("../images/Dungeon/Bat/bat"+i+".png");
+          this.imgContainer.push("../images/Dungeon/Bat/bat"+i+".png");
         }
       }
       if (this.name === "enemyprojectile") {
@@ -528,7 +504,7 @@ if (sessionInProgress) {
         this.yDir = -1;
         this.canSpawn = false;
         for (let i = 0; i < this.imageFrames; i++) {
-          this.imgSlimeBossContainer.push("../images/Meadow/SlimeBoss/slime"+i+".png");
+          this.imgContainer.push("../images/Meadow/SlimeBoss/slime"+i+".png");
         }
       }
       if (this.name === "ecrol") {
@@ -543,7 +519,7 @@ if (sessionInProgress) {
         this.y = this.movementArr[0].y;
         if (this.ecrolState) this.state = 0;
         for (let i = 0; i < this.imageFrames; i++) {
-          this.imgEcrolContainer.push("../images/Ecrol/ecrol"+i+".png");
+          this.imgContainer.push("../images/Ecrol/ecrol"+i+".png");
         }
       }
     } 
@@ -961,7 +937,7 @@ if (sessionInProgress) {
       return this.nextScreen;
     }
   }
-  
+
   window.onload = () => {
     function preloadImages(array) {
       if (!preloadImages.list) {
@@ -987,20 +963,14 @@ if (sessionInProgress) {
     myCanvas.style.border = "1px solid black";
     myCanvas.style.align = "center";
     const player = new Player(race, 100, 300, 80, 80, 5, 5, 1, 0);
-    const preloaderEnemy = new Enemy("slime", -10000000, -1000000, 0, 0);
 
     function startGame() {
       player.initialize()
       preloadImages(player.imgContainerIdleLeft);
       preloadImages(player.imgContainerIdleRight);
       preloadImages(player.imgContainerRight);
-      preloadImages(player.imgContainerLeft);
-      preloadImages(preloaderEnemy.imgSlimeContainer);
-      preloadImages(preloaderEnemy.imgBatContainer);
-      preloadImages(preloaderEnemy.imgSlimeBossContainer);
-      preloadImages(preloaderEnemy.imgEcrolContainer);
+      preloadImages(player.imgContainerLeft); 
       checkLevelScreen(levelScreen);
-
       gameplayLoop();
     }
     
@@ -1073,20 +1043,15 @@ if (sessionInProgress) {
         // Reset for new drawing
         ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
         //Background Test
-        ctx.drawImage(background, 0, 0 , 1200, 700);   
-        // Projectiles
-        updateProjectiles();
-        //Enemies
-        updateEnemies();
-        if (enemySpawnInProgress) {
-          enemySpawnInProgress = false;
-          initiateSpawn()
-        }
-
+        ctx.drawImage(background, 0, 0 , 1200, 700);
         // Collisions
         updateCollisionObjects();
         document.querySelector("#souls").value = souls;
         document.querySelector("#experience").value = experience;
+        // Projectiles
+        updateProjectiles();
+        //Enemies
+        updateEnemies();
         // Player
         updatePlayer();
         // Gameplay loop
@@ -1299,11 +1264,7 @@ if (sessionInProgress) {
 
 
         enemyArr[i].updateCollision();
-        if (enemyArr[i] && enemyArr[i].name !== "ecrol") {
-          if (enemyArr[i].name === "slime") animate(enemyArr[i], enemyArr[i].imgSlimeContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
-          if (enemyArr[i].name === "bat") animate(enemyArr[i], enemyArr[i].imgBatContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
-          if (enemyArr[i].name === "slimeBoss") animate(enemyArr[i], enemyArr[i].imgSlimeBossContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
-        }
+        if (enemyArr[i] && enemyArr[i].name !== "ecrol") animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
       }
     }
 
@@ -1495,6 +1456,10 @@ if (sessionInProgress) {
       backgroundArr.push(new Background(myCanvas.width, -myCanvas.height * 4, myCanvas.width, myCanvas.height, "../images/Dungeon/dungeon2.png"));
       backgroundArr.push(new Background(myCanvas.width, -myCanvas.height * 5, myCanvas.width, myCanvas.height, "../images/Dungeon/dungeon3.png"));
       worldInit = true;
+    }
+
+    function loadScreenTown() {
+      
     }
 
     function loadScreen0() {
