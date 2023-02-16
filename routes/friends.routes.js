@@ -84,6 +84,7 @@ router.get("/friends", isLoggedIn, async (req, res, next) => {
         model: "Character"
       }
     });
+    console.log("FROM /FRIENDS: ", user)
 
     const currentUser = getUserWithoutHash(user[0]);
     const character = await Character.findById(currentUser.charId).populate("inventory");
@@ -96,7 +97,29 @@ router.get("/friends", isLoggedIn, async (req, res, next) => {
 router.post("/friends/find", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
   const sessionName = req.session.user.username;
-  const user = await User.find({username: sessionName}).populate("character").populate("friends");
+  const user = await User.find({username: sessionName}).populate("character")
+  .populate({
+    path: "messages",
+    populate: {
+      path: "sender",
+      model: "User"
+    }
+  })
+  .populate({
+    path: "messages",
+    populate: {
+        path: "attachment",
+        model: "Item"
+    }
+  })
+  .populate({
+    path: "friends",
+    populate: {
+      path: "character",
+      model: "Character"
+    }
+  });
+  console.log("FROM /FRIENDS/FIND: ", user)
   const currentUser = getUserWithoutHash(user[0]);
   const character = await Character.findById(currentUser.charId).populate("inventory");
   const searchTerm = req.body.searchTerm;
