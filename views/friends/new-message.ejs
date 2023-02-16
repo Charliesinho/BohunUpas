@@ -9,6 +9,7 @@
                 <div>To:</div> <input class="cleanInput messageInputs" name="toField" value="<%=friend.username%>" readonly/>
                 <div>Subject:</div> <input class="cleanInput messageInputs" type="text" name="subject" value="<%=content.subject%>" placeholder="Subject" minlength="1"/>
                 <div>Message:</div> <input class="cleanInput messageTextBody messageInputs" type="textarea" name="textBody" value="<%=content.body%>" placeholder="Message" minlength="1" maxlength="5000" rows="10" cols="10"/>
+                <%  %>
                 <% if (!attachment) { %>
                     <div>Attachment:</div><button class="buttonItem" style="width: 120px;" type="submit" name="attachmentBtn" value="attachmentBtn">Attach item</button>
                 <% } else if (item === null) { %>
@@ -21,6 +22,9 @@
                 <% } %>
                 <div class="centerText"><button class="buttonItem" style="width: 120px;" type="submit" name="sendBtn" value="sendBtn">Send message</button></div>
             </form>
+            <% if (errorMessage !== "") { %>
+                <div class="display-error-message centralize"><%=errorMessage%></div>
+            <% } %>
         </div>
     </section>
 <% } %>

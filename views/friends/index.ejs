@@ -67,7 +67,7 @@
                         <% if (currentUser.messages.length) { %>
                             <% currentUser.messages.forEach(message => { %>
                                 <ul class="messageCard">
-                                    <li>From: <%=message.sender%></li>
+                                    <li>From: <%=message.sender.username%></li>
                                     <li>Subject: "<%=message.subject%>"</li>
                                     <li>"<%=message.textBody%>"</li>
                                     <% if (message.messageType === "friendrequest") { %>

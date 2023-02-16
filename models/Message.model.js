@@ -15,11 +15,9 @@ const messageSchema = new Schema(
     },
     subject: {
       type: String,
-      required: true,
     },
     textBody: {
       type: String,
-      required: true,
     },
     attachment: {
       type: [Schema.Types.ObjectId],
