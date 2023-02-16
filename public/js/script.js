@@ -136,8 +136,6 @@ if (sessionInProgress) {
     gArtefact = "";
   }
 
- 
-  console.log(gLevel, " ", gDamage)
   // Backgrounds
   const backgroundArr = [];
   let background = new Image();
@@ -155,7 +153,7 @@ if (sessionInProgress) {
   let screen8init = false;
   let screen9init = false;
 
-  let levelScreen = 0;
+  let levelScreen = 4;
 
   let animateId;
   let roomTransit = false;
@@ -947,7 +945,10 @@ if (sessionInProgress) {
     }
   }
 
+
   window.onload = () => {
+    let level4Spawn = true;
+    let level8Spawn = true;
     function preloadImages(array) {
       if (!preloadImages.list) {
           preloadImages.list = [];
@@ -1043,6 +1044,9 @@ if (sessionInProgress) {
     }
 
     function gameplayLoop() {
+      let spawnImg = new Image();
+      spawnImg.src = "../images/Environment/SlimeGel.png";
+
       if (levelScreen < 6) {
         document.getElementById("meadowMap").style.display = "block";
         document.getElementById("caveMap").style.display = "none";
@@ -1064,7 +1068,16 @@ if (sessionInProgress) {
         updateEnemies();
         if (enemySpawnInProgress) {
           enemySpawnInProgress = false;
+          if (levelScreen === 4) level4Spawn = false;
+          if (levelScreen === 8) level8Spawn = false;
           initiateSpawn()
+        }
+
+        if (level4Spawn && levelScreen === 4) {
+          ctx.drawImage(spawnImg, myCanvas.width / 2, myCanvas.height / 2, 200, 200)
+        }
+        if (level8Spawn && levelScreen === 8) {
+          ctx.drawImage(spawnImg, myCanvas.width / 2, myCanvas.height / 2, 300, 300)
         }
 
         // Collisions
@@ -1328,7 +1341,6 @@ if (sessionInProgress) {
     }
 
     function initiateSpawn() {
-      console.log("FIRED")
       // Spawn boundaries
       collisionObjectArr.push(new CollisionObject(0, 0, 45, myCanvas.height, "environment", -1, "", false, true));
       collisionObjectArr.push(new CollisionObject(myCanvas.width - 45, 0, 45, myCanvas.height, "environment", -1, "", false, true));
@@ -1386,7 +1398,6 @@ if (sessionInProgress) {
       }
       for (let i = 0; i < enemyArr.length; i++) {
         enemyArr[i].initialize();
-        console.log("INIT")
       }
       enemySpawnInProgress = false;
       inBattle = true;
