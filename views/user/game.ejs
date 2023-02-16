@@ -1,62 +1,7 @@
+
+
 <section  id="gameSection">
-<div>
-    <h1>Game</h1>
-    <!-- Character -->
-    <% if (session && sessionRace2.character[0].race === "Dino") { %>
-        <div id="dinoSelect" style="display: block;"></div>
-    <% } else { %>
-        <div id="dinoSelect" style="display: none;"></div>
-    <% } %> 
-    
-    <% if (session && sessionRace2.character[0].race === "Undead") { %>
-        <div id="undeadSelect" style="display: block;"></div>
-    <% } else { %>
-        <div id="undeadSelect" style="display: none;"></div>
-    <% } %>
-    
-    <% if (session && sessionRace2.character[0].race === "Human") { %>
-        <div id="humanSelect" style="display: block;"></div>
-    <% } else { %>
-        <div id="humanSelect" style="display: none;"></div>
-    <% } %>
-        
-    
-    <!-- Weapons -->
-    <% if (session && character.weapon.length) { %>
-        <div id="noWeapon" style="display: block;"></div>
-        <div id="weaponname"><%=character.weapon[0].name%></div>
-        <div id="damage"><%=character.weapon[0].modifier%></div>
-    <% } else { %>
-        <div id="noWeapon" style="display: none;"></div>
-    <% } %>
-    
-    <!-- Armor -->
-    <% if (session && character.armor.length) { %>
-        <div id="noArmor" style="display: block;"></div>
-        <div id="armorname"><%=character.armor[0].name%></div>
-        <div id="defense"><%=character.armor[0].modifier%></div>
-    <% } else { %>
-        <div id="noArmor" style="display: none;"></div>
-    <% } %>
-    
-    <!-- Artefact -->
-    <% if (session && character.artefact.length > 0) { %>
-        <div id="noArtefact" style="display: block;"></div>
-        <div id="artefactname"><%=character.artefact[0].name%></div>
-        <div id="artefactmodifier"><%=character.artefact[0].modifier%></div>
-    <% } else { %>
-        <div id="noArtefact" style="display: none;"></div>
-    <% } %>
-    
-    <!-- Souls / XP Save -->    
-    <form method="POST" action="/user/<%=sessionRace2.character[0]._id%>/game">
-        <% if (session) { %>       
-        <label>Souls: <input id="souls" style="display: block;" name="souls" type="number" value="<%=sessionRace2.character[0].souls%>" readonly></input></label>
-        <label>XP: <input id="experience" style="display: block;" name="experience" type="number" value="<%=sessionRace2.character[0].experience%>" readonly></input></label> 
-        <% } %></p>
-        <button type="submit">Save</button>
-    </form>
-    </div>
+
 
 <div>
 
@@ -72,8 +17,65 @@
 
 
 </div> 
-
 <div class="mapCard">
+    <div class="inGameStats">
+        <h1>Game</h1>
+        <!-- Character -->
+        <% if (session && sessionRace2.character[0].race === "Dino") { %>
+            <div id="dinoSelect" style="display: block;"></div>
+        <% } else { %>
+            <div id="dinoSelect" style="display: none;"></div>
+        <% } %> 
+        
+        <% if (session && sessionRace2.character[0].race === "Undead") { %>
+            <div id="undeadSelect" style="display: block;"></div>
+        <% } else { %>
+            <div id="undeadSelect" style="display: none;"></div>
+        <% } %>
+        
+        <% if (session && sessionRace2.character[0].race === "Human") { %>
+            <div id="humanSelect" style="display: block;"></div>
+        <% } else { %>
+            <div id="humanSelect" style="display: none;"></div>
+        <% } %>
+            
+        
+        <!-- Weapons -->
+        <% if (session && character.weapon.length) { %>
+            <div id="noWeapon" style="display: block;"></div>
+            <div id="weaponname"><%=character.weapon[0].name%></div>
+            <div id="damage"><%=character.weapon[0].modifier%></div>
+        <% } else { %>
+            <div id="noWeapon" style="display: none;"></div>
+        <% } %>
+        
+        <!-- Armor -->
+        <% if (session && character.armor.length) { %>
+            <div id="noArmor" style="display: block;"></div>
+            <div id="armorname"><%=character.armor[0].name%></div>
+            <div id="defense"><%=character.armor[0].modifier%></div>
+        <% } else { %>
+            <div id="noArmor" style="display: none;"></div>
+        <% } %>
+        
+        <!-- Artefact -->
+        <% if (session && character.artefact.length > 0) { %>
+            <div id="noArtefact" style="display: block;"></div>
+            <div id="artefactname"><%=character.artefact[0].name%></div>
+            <div id="artefactmodifier"><%=character.artefact[0].modifier%></div>
+        <% } else { %>
+            <div id="noArtefact" style="display: none;"></div>
+        <% } %>
+        
+        <!-- Souls / XP Save -->    
+        <form method="POST" action="/user/<%=sessionRace2.character[0]._id%>/game">
+            <% if (session) { %>       
+            <label>Souls: <input id="souls" style="display: block;" name="souls" type="number" value="<%=sessionRace2.character[0].souls%>" readonly></input></label>
+            <label>XP: <input id="experience" style="display: block;" name="experience" type="number" value="<%=sessionRace2.character[0].experience%>" readonly></input></label> 
+            <% } %></p>
+            <button type="submit">Save</button>
+        </form>
+        </div>
 <h1 class="mapTitle">Meadow</h1>
 <iframe class="mapFrame" width="700" height="500" src="https://my.spline.design/untitled-9beec2002796a691af5bd25120f128c7/"></iframe>  
 </div>

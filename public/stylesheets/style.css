@@ -496,6 +496,7 @@ input:focus {
   padding-left: 30px;
   width: 600px;
   margin-left: 0px;
+  margin-right: 0px;
 }
 
 .mapTitle {
@@ -508,6 +509,15 @@ input:focus {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+#gameSection {
+  border-width: 2px;
+  border-style: solid;
+  padding-bottom: 50px;
+  margin: 20px 0px 20px 0px;
+  border-radius: 20px;
+  border-color: rgb(132, 83, 61);
 }
 
 #friendsMessagesSite {
@@ -525,4 +535,8 @@ input:focus {
 .friendAcceptRejectBtnCtn {
   display: flex;
   gap: 5px;
+}
+
+.inGameStats {
+  display: flex;
 }
