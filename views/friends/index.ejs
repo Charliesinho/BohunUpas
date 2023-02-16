@@ -82,8 +82,8 @@
                                     <% } else if (message.messageType === "message") { %>
                                         <% if (message.attachment !== null) { %>
                                             <div>Attachment:<%- include("../../partials/item-card.ejs", {item: message.attachment}) %></div>
-                                            <form action="/friends/claim-attachment" method="POST">
-                                                <button type="submit"></button>
+                                            <form action="/friends/claim-attachment/<%=message._id%>" method="POST">
+                                                <button class="buttonItem btnWider" type="submit">Claim attachment</button>
                                             </form>
                                         <% } %>
                                     <% } %>
