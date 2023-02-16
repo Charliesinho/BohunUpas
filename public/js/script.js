@@ -46,8 +46,7 @@ function ShowLegendary() {
 }
 }
 
-var chromiumIssue1092080WorkaroundOverlay = document.querySelector('.chromium-issue-1092080-workaroundoverlay');
-console.log(chromiumIssue1092080WorkaroundOverlay)
+
 
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event
@@ -164,6 +163,7 @@ if (sessionInProgress) {
   let enemySpawnInProgress = false;
   const myCanvas = document.querySelector("canvas");
   const ctx = myCanvas.getContext("2d");
+  ctx.imageSmoothingEnabled = true;
 
   class Background {
     constructor(x, y, width, height, source) {
@@ -1284,8 +1284,6 @@ if (sessionInProgress) {
       obj.img.src = imgContainer[obj.currentFrame];
       // Draw sprite
       ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
-      
-      chromiumIssue1092080WorkaroundOverlay.style.transform = `scaleX(${Math.random()})`;
     }
 
     function initiateSpawn() {
