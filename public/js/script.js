@@ -939,6 +939,26 @@ if (sessionInProgress) {
   }
 
   window.onload = () => {
+    function preloadImages(array) {
+      if (!preloadImages.list) {
+          preloadImages.list = [];
+      }
+      let list = preloadImages.list;
+      for (let i = 0; i < array.length; i++) {
+          let img = new Image();
+          img.onload = function() {
+              let index = list.indexOf(this);
+              if (index !== -1) {
+                  // remove image from the array once it's loaded
+                  // for memory consumption reasons
+                  list.splice(index, 1);
+              }
+          }
+          list.push(img);
+          img.src = array[i];
+      }
+  }
+
     myCanvas.style.backgroundColor = "white";
     myCanvas.style.border = "1px solid black";
     myCanvas.style.align = "center";
@@ -946,6 +966,10 @@ if (sessionInProgress) {
 
     function startGame() {
       player.initialize()
+      preloadImages(player.imgContainerIdleLeft);
+      preloadImages(player.imgContainerIdleRight);
+      preloadImages(player.imgContainerRight);
+      preloadImages(player.imgContainerLeft);
       checkLevelScreen(levelScreen);
       gameplayLoop();
     }
