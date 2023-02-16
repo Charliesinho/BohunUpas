@@ -423,7 +423,7 @@ if (sessionInProgress) {
       this.state;
       this.ecrolState = true;
       this.movementArr;
-      this.ecrolTimeout = 3000;
+      this.ecrolTimeout = 5000;
 
       // Gameplay values
       this.initialized = false;
@@ -499,7 +499,7 @@ if (sessionInProgress) {
         this.hp = 1000;
         this.damage = 1000;
         this.imageFrames = 4;
-        this.moveSpeed = 10;
+        this.moveSpeed = 12;
         this.movementArr = this.ecrolPatterns();
         this.x = this.movementArr[0].x;
         this.y = this.movementArr[0].y;
