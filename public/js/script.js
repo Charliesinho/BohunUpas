@@ -1588,10 +1588,10 @@ if (sessionInProgress) {
       // ENEMIES
       enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
       enemyArr.push(new Enemy("slime", 200, 200, 90, 80));
-      enemyArr.push(new Enemy("slime", 300, 600, 90, 80));
+      enemyArr.push(new Enemy("slime", 200, 400, 90, 80));
       enemyArr.push(new Enemy("slime", 500, 200, 90, 80));
       enemyArr.push(new Enemy("slime", 200, 500, 90, 80));
-      enemyArr.push(new Enemy("slime", 800, 600, 90, 80));
+      enemyArr.push(new Enemy("slime", 200, 200, 90, 80));
       
       // Initialize enemies
       for (let i = 0; i < enemyArr.length; i++) {
