@@ -1,10 +1,5 @@
-
-
 <section  id="gameSection">
-
-
 <div>
-
 <% if (session) { %> 
     <div id="sessionInProgress" style="display: block;"></div>
 <% } else { %>
@@ -15,7 +10,6 @@
     <canvas id="canvas" width="1200" height="700"></canvas>
     <progress id="health" value="100" max="100"></progress>
 </div>  
-
 
 </div> 
 <div class="mapCard">
@@ -85,7 +79,7 @@
                 <label>XP: <input class="buttonUnformat statsInGame" id="experience" style="display: block;" name="experience" type="number" value="<%=sessionRace2.character[0].experience%>" readonly></input></label> 
             </div> 
             <% } %></p>
-            <button type="submit">Save</button>
+            <button id="saveGameButton" type="submit" style="display: none;">Save</button>
         </form>
         
         </div>

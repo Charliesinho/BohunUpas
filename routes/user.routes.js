@@ -173,6 +173,8 @@ router.post("/createCharacter", isLoggedIn, async (req, res) => {
   
 });
 
+const levelReqs = [0, 100, 350, 700, 1500, 4000, 9000, 15000, 24000, 40000, 80000, 125000, 200000, 295000, 400500, 560000, 790000, 999999, 1400000, 1900000, 3000000]
+
 router.get("/characterProfile", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
   const profile = await User.findOne({username: req.session.user.username}).populate('character');
@@ -184,9 +186,24 @@ router.get("/characterProfile", isLoggedIn, async (req, res, next) => {
   if (!profile.character.length) {
     res.redirect("/user/createCharacter");
   } else {
-    res.render("user/characterProfile", {errorMessage: "", profile: profile, character: character, sessionRace: sessionRace[0].character, rendering: rendering, session: loginCheck});
+    res.render("user/characterProfile", {errorMessage: "", profile: profile, character: character, sessionRace: sessionRace[0].character, levelReqs: levelReqs, rendering: rendering, session: loginCheck});
   }
 });
+
+router.post("/levelUp", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
+  const profile = await User.findOne({username: req.session.user.username}).populate('character');
+  const level = profile.character[0].level + 1;
+  const souls = profile.character[0].souls + 10 * level;
+  const xp = profile.character[0].experience - levelReqs[level - 1];
+  await Character.findOneAndUpdate({_id: profile.character[0]._id}, {level: level, souls: souls, experience: xp});
+
+  if (!profile.character.length) {
+    res.redirect("/user/createCharacter");
+  } else {
+    res.redirect("/user/characterProfile");
+  }
+})
 
 
 router.get("/soulkeeper/:charId", isLoggedIn, async (req, res, next) => {

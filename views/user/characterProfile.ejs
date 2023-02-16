@@ -3,9 +3,21 @@
     <div id="stats"> 
         <div>  
            <div class="aboveNameStats">
-            
-            <p>Level: <%=profile.character[0].level%></p> 
-            <p>XP: <%=profile.character[0].experience%> / 100</p> 
+            <% console.log(profile.character[0].level, " ", levelReqs.length) %>
+            <% if (profile.character[0].level <= levelReqs.length - 1) { %>
+                <p>Level: <%=profile.character[0].level%></p> 
+                <p>XP: <%=profile.character[0].experience%> / <%=levelReqs[profile.character[0].level]%></p> 
+                <% if (parseInt(profile.character[0].experience) >= levelReqs[profile.character[0].level]) { %>
+                <p>
+                    <form action="/user/levelUp" method="POST">
+                        <button class="buttonItem btnWider" type="submit">Level Up!</button>
+                    </form>
+                </p>
+                <% } %>
+            <% } else { %>
+                <p>Level: <%=profile.character[0].level%></p> 
+                <p>XP: <%=profile.character[0].experience%></p> 
+            <% } %>
            </div>
         <div>
         <h1 id="characterName"><%=profile.username%></h1>
