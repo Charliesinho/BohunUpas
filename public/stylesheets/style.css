@@ -653,3 +653,15 @@ justify-items: center;
 .articlePara {
   font-size: 18px;
 }
+
+#health {
+  width: 400px;
+ border-width: 4px;
+ border-radius: 8px;
+ border-color: #3a2b25;
+ border-style: solid;
+ margin-top: -50px;
+ background-color: rgb(255, 130, 130);
+ color: green;
+ box-shadow: 0 0 6px black;
+}
