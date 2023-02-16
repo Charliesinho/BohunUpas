@@ -1,11 +1,19 @@
 setTimeout(() => {  
+  if ( document.getElementById("mediumPack")) {
   if (document.getElementById("mediumPack").style.display === "block") {
     document.getElementById("mediumPack").style.display = "none";
-  }
+  }}
+
+  if ( document.getElementById("mediumPack")) {
   if (document.getElementById("legendaryPack").style.display === "block") {
     document.getElementById("legendaryPack").style.display = "none";
-  }
+  }}
 }, 3000)
+
+setTimeout(() => {    
+    document.getElementById("caveMap").style.display = "none";  
+}, 2000)
+
   
 
 function ShowBasic() {
@@ -982,6 +990,15 @@ if (sessionInProgress) {
     }
 
     function gameplayLoop() {
+      if (levelScreen < 5) {
+        document.getElementById("meadowMap").style.display = "block";
+        document.getElementById("caveMap").style.display = "none";
+      }
+      if (levelScreen > 4) {
+        document.getElementById("caveMap").style.display = "block";
+        document.getElementById("meadowMap").style.display = "none";
+      }
+
       if (!roomTransit) {
         cancelAnimationFrame(animateId);
         // Reset for new drawing

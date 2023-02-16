@@ -497,11 +497,16 @@ input:focus {
   width: 600px;
   margin-left: 0px;
   margin-right: 0px;
+  margin-bottom: -50px;
 }
 
 .mapTitle {
   font-size: 50px;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.509);
+  margin: 0;
+  padding: 30px 0 0 0;
+  text-align: center;
+  margin-bottom: -20px;
 }
 
 .mapCard {
@@ -512,10 +517,10 @@ input:focus {
 }
 
 #gameSection {
-  border-width: 2px;
+  border-width: 4px;
   border-style: solid;
   padding-bottom: 50px;
-  margin: 20px 0px 20px 0px;
+  margin: 10px 0px 0px 0px;
   border-radius: 20px;
   border-color: rgb(132, 83, 61);
 }
@@ -541,6 +546,61 @@ input:focus {
   display: flex;
 }
 
+.packTitleButton {
+  width: 200px;
+  height: 50px;
+}
+
+
+#meadowMap {
+  display: block;
+  align-content: center;
+  align-items: center;
+justify-content: center;
+justify-items: center;
+}
+
+#caveMap {
+  display: block;
+  align-content: center;
+}
+
+.ultraWideButton {
+  width: 200px;
+  height: 200px;
+}
+
+#weaponname {
+  padding-top: 20px;
+  margin-left: 10px;
+}
+
+#armorname {
+  padding-top: 20px;
+}
+
+#armorname {
+  margin-left: 10px;
+}
+
+#defense {
+  color: rgb(255, 222, 164)
+}
+
+#damage {
+  color: rgb(255, 222, 164)
+}
+
+.statsInGame {
+  color: rgb(255, 218, 172);
+  display: flex;
+  align-items: center;
+  text-align: center;
+  padding-top: 20px;
+  font-weight: bolder;
+  font-size: 17px;
+  margin-left: -25px;
+}
 .newMessageCtn {
   display: flex;
   justify-content: center;

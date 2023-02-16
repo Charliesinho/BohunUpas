@@ -19,7 +19,6 @@
 </div> 
 <div class="mapCard">
     <div class="inGameStats">
-        <h1>Game</h1>
         <!-- Character -->
         <% if (session && sessionRace2.character[0].race === "Dino") { %>
             <div id="dinoSelect" style="display: block;"></div>
@@ -43,8 +42,11 @@
         <!-- Weapons -->
         <% if (session && character.weapon.length) { %>
             <div id="noWeapon" style="display: block;"></div>
-            <div id="weaponname" ><%=character.weapon[0].name%></div>
-            <div id="damage"><%=character.weapon[0].modifier%></div>
+            <div id="weaponname" class="buttonItem widerButton ultraWideButton" ><%=character.weapon[0].name%> 
+                <p id="damage">+<%=character.weapon[0].modifier%></p>
+                <img src="<%=character.weapon[0].image%>" width="90px">
+            </div>
+            
         <% } else { %>
             <div id="noWeapon" style="display: none;"></div>
         <% } %>
@@ -52,8 +54,10 @@
         <!-- Armor -->
         <% if (session && character.armor.length) { %>
             <div id="noArmor" style="display: block;"></div>
-            <div id="armorname"><%=character.armor[0].name%></div>
-            <div id="defense"><%=character.armor[0].modifier%></div>
+            <div id="armorname" class="buttonItem widerButton ultraWideButton"><%=character.armor[0].name%>
+                <p id="defense">+<%=character.armor[0].modifier%></p>
+                <img src="<%=character.armor[0].image%>" width="90px">
+            </div>
         <% } else { %>
             <div id="noArmor" style="display: none;"></div>
         <% } %>
@@ -69,15 +73,27 @@
         
         <!-- Souls / XP Save -->    
         <form method="POST" action="/user/<%=sessionRace2.character[0]._id%>/game">
-            <% if (session) { %>       
-            <label>Souls: <input id="souls" style="display: block;" name="souls" type="number" value="<%=sessionRace2.character[0].souls%>" readonly></input></label>
-            <label>Level: <input id="level" style="display: block;" name="level" type="number" value="<%=sessionRace2.character[0].level%>" readonly></input></label> 
-            <label>XP: <input id="experience" style="display: block;" name="experience" type="number" value="<%=sessionRace2.character[0].experience%>" readonly></input></label> 
+            <% if (session) { %>      
+            <div class="buttonItem widerButton ultraWideButton"  id="armorname">
+                <label>Souls: <input class="buttonUnformat statsInGame" id="souls" style="display: block;" name="souls" type="number" value="<%=sessionRace2.character[0].souls%>" readonly></input></label>
+                <br>
+                <label>XP: <input class="buttonUnformat statsInGame" id="experience" style="display: block;" name="experience" type="number" value="<%=sessionRace2.character[0].experience%>" readonly></input></label> 
+            </div> 
             <% } %></p>
             <button type="submit">Save</button>
         </form>
+        
+        </div>
+        
+        <div id="meadowMap">
+            <h1 class="mapTitle">Meadow</h1>
+            <iframe class="mapFrame" width="700" height="500" src="https://my.spline.design/untitled-9beec2002796a691af5bd25120f128c7/"></iframe>  
+        </div>
+
+        <div id="caveMap">
+            <h1 class="mapTitle">Cave</h1>
+            <iframe class="mapFrame" width="700" height="500" src="https://my.spline.design/untitledcopy-b8995cbe53228ac42c6fcc9327e03aed/"></iframe>  
+        </div>
+
     </div>
-<h1 class="mapTitle">Meadow</h1>
-<iframe class="mapFrame" width="700" height="500" src="https://my.spline.design/untitled-9beec2002796a691af5bd25120f128c7/"></iframe>  
-</div>
 </section>
