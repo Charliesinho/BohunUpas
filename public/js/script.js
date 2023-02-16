@@ -390,7 +390,7 @@ if (sessionInProgress) {
           this.health.value -= damage - this.getDefense();
         } else {
           this.hp -= 1;
-          this.health.value -= damage - this.getDefense();
+          this.health.value -= 1
         }
         console.log("HIT - ", this.hp)
         // Kill player
