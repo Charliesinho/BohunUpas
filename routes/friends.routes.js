@@ -68,10 +68,13 @@ router.get("/friends", isLoggedIn, async (req, res, next) => {
       populate: {
         path: "sender",
         model: "User"
-      },
+      }
+    })
+    .populate({
+      path: "messages",
       populate: {
-        path: "attachment",
-        model: "Item"
+          path: "attachment",
+          model: "Item"
       }
     })
     .populate({
