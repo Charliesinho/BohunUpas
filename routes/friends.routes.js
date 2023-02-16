@@ -66,6 +66,10 @@ router.get("/friends", isLoggedIn, async (req, res, next) => {
     .populate({
       path: "messages",
       populate: {
+        path: "sender",
+        model: "User"
+      },
+      populate: {
         path: "attachment",
         model: "Item"
       }
@@ -77,6 +81,7 @@ router.get("/friends", isLoggedIn, async (req, res, next) => {
         model: "Character"
       }
     });
+    console.log("FRIEND: ", user)
 
     const currentUser = getUserWithoutHash(user[0]);
     const character = await Character.findById(currentUser.charId).populate("inventory");
@@ -247,75 +252,75 @@ router.post("/friends/newMessage/:friendId/att/", isLoggedIn, async (req, res, n
   }
   const rendering = "newmessage";
 
-  let attachedItem;
-  if (Object.keys(req.body).includes("attachmentBtn")) {
-    console.log("ARRIVED HERE 1");
-    attachedItem = null;
-    res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachedItem: null, attachment: true, item: attachedItem, rendering: rendering, errorMessage: ""});
-  }
-  // ATTACH ITEM
-  let itemId = "";
-
-  if (Object.keys(req.body).includes("attachItemBtn")) {
-    console.log("ARRIVED HERE 2", req.body);
-    itemId = req.body.attachItemBtn;
-    attachedItem = await Item.findById(itemId);
-    res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachment: true, item: attachedItem, rendering: rendering, errorMessage: ""});
-  }
-  // REMOVE ATTACHMENT
-  if (Object.keys(req.body).includes("removeAttachedItemBtn")) {
-    console.log("ARRIVED HERE 3", req.body);
-    attachedItem = null;
-    res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachment: true, item: attachedItem, rendering: rendering, errorMessage: ""});
-  }
-  // SEND MESSAGE
-  if (Object.keys(req.body).includes("sendBtn")) {
-    console.log("ARRIVED HERE 4", req.body.attachedItem);
-    const friend = await User.findById(req.params.friendId);
-    // Remove item if attachment
-    if (Object.keys(req.body).includes("attachmentcheck")) { // WITH ATTACHMENT PATH
-      // Find Item in inventory
-      let itemIndex = 0;
-      for (let i = 0; i < character.inventory.length; i++) {
-        if (JSON.stringify(character.inventory[i]._id) === `"${req.body.attachedItem._id}"`) {
-          itemIndex = i;
-          console.log("ITEM WAS FOUND CORRECTLY YAY")
-          break;
-        }
-      }
-      // Remove item from inventory
-      character.inventory.splice(itemIndex, 1);
-      await character.save();
-      // Send message
-      const message = generateNewMessage(friend, currentUser, req.body.subject, req.body.textBody, req.body.attachedItem);
-      const newMessage = await Message.create(message);
-      friend.messages.unshift(newMessage._id);
-      await friend.save();
-    } else { // WITHOUT ATTACHMENT PATH
-      const message = generateNewMessage(friend, currentUser, req.body.subject, req.body.textBody);
-      const newMessage = await Message.create(message);
-      friend.messages.unshift(newMessage._id);
-      await friend.save();
+  try {
+    let attachedItem;
+    if (Object.keys(req.body).includes("attachmentBtn")) {
+      console.log("ARRIVED HERE 1");
+      attachedItem = null;
+      res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachedItem: null, attachment: true, item: attachedItem, rendering: rendering, errorMessage: ""});
     }
-    res.redirect("/friends");
+    // ATTACH ITEM
+    let itemId = "";
+
+    if (Object.keys(req.body).includes("attachItemBtn")) {
+      console.log("ARRIVED HERE 2", req.body);
+      itemId = req.body.attachItemBtn;
+      attachedItem = await Item.findById(itemId);
+      res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachment: true, item: attachedItem, rendering: rendering, errorMessage: ""});
+    }
+    // REMOVE ATTACHMENT
+    if (Object.keys(req.body).includes("removeAttachedItemBtn")) {
+      console.log("ARRIVED HERE 3", req.body);
+      attachedItem = null;
+      res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachment: true, item: attachedItem, rendering: rendering, errorMessage: ""});
+    }
+    // SEND MESSAGE
+    if (Object.keys(req.body).includes("sendBtn")) {
+      console.log("ARRIVED HERE 4", req.body.attachedItem);
+      const friend = await User.findById(req.params.friendId);
+      // Remove item if attachment
+      if (Object.keys(req.body).includes("attachmentcheck")) { // WITH ATTACHMENT PATH
+        // Find Item in inventory
+        let itemIndex = 0;
+        for (let i = 0; i < character.inventory.length; i++) {
+          if (JSON.stringify(character.inventory[i]._id) === `"${req.body.attachedItem._id}"`) {
+            itemIndex = i;
+            break;
+          }
+        }
+        // Remove item from inventory
+        character.inventory.splice(itemIndex, 1);
+        await character.save();
+        // Send message
+        const message = generateNewMessage(friend, currentUser, req.body.subject, req.body.textBody, req.body.attachedItem);
+        const newMessage = await Message.create(message);
+        friend.messages.unshift(newMessage._id);
+        await friend.save();
+      } else { // WITHOUT ATTACHMENT PATH
+        const message = generateNewMessage(friend, currentUser, req.body.subject, req.body.textBody);
+        const newMessage = await Message.create(message);
+        friend.messages.unshift(newMessage._id);
+        await friend.save();
+      }
+      res.redirect("/friends");
+    }
+  } catch (error) {
+    console.log("Error sending message: ", error);
+    res.redirect("/friends")
   }
 }); 
 
-// SEND NEW MESSAGE
+// CLAIM ATTACHMENT
 router.post("/friends/claim-attachment/:messageId", isLoggedIn, async (req, res, next) => {
   checkLogin(req.session.user);
   const sessionName = req.session.user.username;
   const user = await User.find({username: sessionName}).populate("character").populate("friends");
   const currentUser = getUserWithoutHash(user[0]);
   const character = await Character.findById(currentUser.charId).populate("inventory");
-  const friend = await User.findById(req.params.friendId);
-  const att = false;
-  const rendering = "newmessage";
 
   try { 
     // Get message and attachment
     const message = await Message.findById(req.params.messageId).populate("attachment");
-    const item = await Item.findById(message.attachment._id);
     // Inventory check
     if (character.inventory.length < 6) {
       const attachment = message.attachment.pop();
@@ -326,9 +331,8 @@ router.post("/friends/claim-attachment/:messageId", isLoggedIn, async (req, res,
     } else {
       res.render("friends", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, searchResult: "", searchTerm: searchTerm, errorMessage: "Not enough space in your inventory!"});
     }
-    //res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, item: null, attachment: att, rendering: rendering, errorMessage: ""});
   } catch (error) {
-    console.log("Error creating new message: ", error);
+    console.log("Error receiving attachment: ", error);
     res.redirect("/friends");
   }
 }); 
