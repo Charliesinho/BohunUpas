@@ -1020,8 +1020,6 @@ if (sessionInProgress) {
         ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
         //Background Test
         ctx.drawImage(background, 0, 0 , 1200, 700);   
-        // Player
-        updatePlayer();
         // Projectiles
         updateProjectiles();
         //Enemies
@@ -1035,6 +1033,8 @@ if (sessionInProgress) {
         updateCollisionObjects();
         document.querySelector("#souls").value = souls;
         document.querySelector("#experience").value = experience;
+        // Player
+        updatePlayer();
         // Gameplay loop
         animateId = requestAnimationFrame(gameplayLoop);
       } else {
