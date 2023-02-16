@@ -621,3 +621,35 @@ justify-items: center;
   height: 200px;
   text-align: left;
 }
+
+#newsSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.newsTitle {
+  font-size: 80px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.475);
+}
+
+.newsArticle {
+  display: flex;
+  width: 1000px;
+  justify-content: center;
+  align-items: flex-end;
+  line-height: 30px;
+  gap: 50px;
+  margin-bottom: -50px;
+  margin-top: 100px;
+  text-align: justify;
+}
+
+.articleTitle {
+  font-size: 100px;
+}
+
+.articlePara {
+  font-size: 18px;
+}

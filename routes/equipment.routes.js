@@ -138,7 +138,7 @@ function generateItemLegendary() {
   let randomName2 = ["Cool ", "Chill ", "Nice ", "Charming "]
   let randomName3 = ["Epic ", "Wise ", "Brutal ", "Scary "]
 
-  if (randomNum >= 0 && randomNum <= 49) {
+  if (randomNum >= 0 && randomNum <= 40) {
     const newItem = {
       name: randomName3[namePosition] + `Moonlair`,
       image: "../images/Weapons/moonSword.png",
@@ -160,7 +160,18 @@ function generateItemLegendary() {
       equipped: false,
     }
     return newItem;
-  }  
+  }  else if (randomNum >= 41 && randomNum <= 49) {
+    const newItem = {
+      name: randomName3[namePosition] + `Swampy`,
+      image: "../images/Weapons/swampy.png",
+      type: "Weapon",
+      subtype: "Sword",
+      modifier: Math.floor(Math.random() * (36 - 25) + 25),
+      value: Math.floor(Math.random() * (350 - 100) + 100),
+      equipped: false,
+    }
+    return newItem;
+  } 
 }
               // name: `Awesome Weapon`,
               // equip: "Weapon",

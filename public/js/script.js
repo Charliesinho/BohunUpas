@@ -246,7 +246,7 @@ if (sessionInProgress) {
 
     initialize() {
       // Projectile array images
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 6; i++) {
         projectileImgArr.push("../images/Projectiles/pro"+i+".png");
         console.log(projectileImgArr[i])
       }
@@ -278,6 +278,11 @@ if (sessionInProgress) {
         this.weaponShootInterval = 1;
         this.weaponLifeSpan = 1000;
         this.weaponProjectileSpeed = Math.floor(Math.random() * (21 - 1) + 1);
+      } else if (this.weapon.includes("Swampy")) {
+        this.weaponProjectile = projectileImgArr[5];
+        this.weaponShootInterval = 1000;
+        this.weaponLifeSpan = 5000;
+        this.weaponProjectileSpeed = .2;
       }
       // Configure Armor values
       this.armor = gArmor;
