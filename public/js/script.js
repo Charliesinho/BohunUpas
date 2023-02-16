@@ -1045,7 +1045,7 @@ if (sessionInProgress) {
 
     function gameplayLoop() {
       let spawnImg = new Image();
-      spawnImg.src = "../images/Environment/SlimeGel.png";
+      spawnImg.src = "../images/Environment/spawnSlimeGel.png";
 
       if (levelScreen < 6) {
         document.getElementById("meadowMap").style.display = "block";
