@@ -112,11 +112,18 @@ if (sessionInProgress) {
 
   // Equipment fetch
   const projectileImgArr = [];
-  let gWeapon, gArmor, gArtefact;
+  let gWeapon, gArmor, gArtefact; //Equipment
+  let souls, experience, gLevel; // Stats
   if (document.querySelector("#noWeapon").style.display === "block") {
     gWeapon = document.querySelector("#weaponname").innerHTML;
+    souls = parseInt(document.querySelector("#souls").value)
+    experience = parseInt(document.querySelector("#experience").value)
+    gLevel = parseInt(document.querySelector("#level").innerHTML)  
   } else {
     gWeapon = "";
+    souls = parseInt(document.querySelector("#souls").value)
+    experience = parseInt(document.querySelector("#experience").value)
+    gLevel = 1; 
   }
   if (document.querySelector("#noArmor").style.display === "block") {
     gArmor = document.querySelector("#armorname").innerHTML;
@@ -129,11 +136,7 @@ if (sessionInProgress) {
     gArtefact = "";
   }
 
-  // Stats
-  let souls = parseInt(document.querySelector("#souls").value)
-  let experience = parseInt(document.querySelector("#experience").value)
-  let gLevel = parseInt(document.querySelector("#level").innerHTML)  
-
+ 
   console.log(gLevel, " ", gDamage)
   // Backgrounds
   const backgroundArr = [];
@@ -283,6 +286,11 @@ if (sessionInProgress) {
         this.weaponShootInterval = 1000;
         this.weaponLifeSpan = 5000;
         this.weaponProjectileSpeed = .2;
+      } else {
+        this.weaponProjectile = projectileImgArr[4];
+        this.weaponShootInterval = 600;
+        this.weaponLifeSpan = 30;
+        this.weaponProjectileSpeed = 8;
       }
       // Configure Armor values
       this.armor = gArmor;

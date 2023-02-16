@@ -47,6 +47,17 @@ function generateFriendRequestMessage(recipient, sender) {
   }
 }
 
+function generateNewMessage(recipient, sender, subject, body, attachment) {
+  return {
+    recipient: recipient._id,
+    sender: sender.id,
+    subject: subject,
+    textBody: body,
+    attachment: attachment,
+    messageType: "message",
+  }
+}
+
 // MAIN PAGE
 router.get("/friends", isLoggedIn, async (req, res, next) => {
     checkLogin(req.session.user);
@@ -241,6 +252,7 @@ router.post("/friends/newMessage/:friendId/att/", isLoggedIn, async (req, res, n
   }
   // ATTACH ITEM
   let itemId = "";
+  
   if (Object.keys(req.body).includes("attachItemBtn")) {
     itemId = req.body.attachItemBtn;
     attachedItem = await Item.findById(itemId);
@@ -277,15 +289,40 @@ router.post("/friends/newMessage/:friendId/att/", isLoggedIn, async (req, res, n
   }
 }); 
 
-function generateNewMessage(recipient, sender, subject, body, attachment) {
-  return {
-    recipient: recipient._id,
-    sender: sender.id,
-    subject: subject,
-    textBody: body,
-    attachment: attachment,
-    messageType: "message",
+// SEND NEW MESSAGE
+router.post("/friends/claim-attachment/:messageId", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
+  const sessionName = req.session.user.username;
+  const user = await User.find({username: sessionName}).populate("character").populate("friends");
+  const currentUser = getUserWithoutHash(user[0]);
+  const character = await Character.findById(currentUser.charId).populate("inventory");
+  const friend = await User.findById(req.params.friendId);
+  const att = false;
+  const rendering = "newmessage";
+
+  try { 
+    // Get message and attachment
+    const message = await Message.findById(req.params.messageId).populate("attachment");
+    const item = await Item.findById(message.attachment._id);
+    // Inventory check
+    if (character.inventory.length < 6) {
+      const attachment = message.attachment;
+      //character.inventory.push(attachment._id);
+      message.attachment = null;
+      console.log(message)
+      //await message.save();
+      //await character.save();
+    } else {
+      res.render("friends", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, searchResult: "", searchTerm: searchTerm, errorMessage: "Not enough space in your inventory!"});
+    }
+
+    console.log("SO FAR SO GOOD?", message, item)
+
+    //res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, item: null, attachment: att, rendering: rendering, errorMessage: ""});
+  } catch (error) {
+    console.log("Error creating new message: ", error);
+    res.redirect("/friends");
   }
-}
+}); 
 
 module.exports = router;
