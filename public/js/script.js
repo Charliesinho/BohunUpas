@@ -509,7 +509,6 @@ if (sessionInProgress) {
         this.damage = 10;
         this.imageFrames = 6;
         this.moveSpeed = 500;
-        this.randomMoveTimer = Math.floor(Math.random() * (400 - 200) + 200);
         this.xDir = -1;
         this.yDir = -1;
         this.canSpawn = false;
@@ -603,7 +602,7 @@ if (sessionInProgress) {
         this.xDir *= -1;
       }
       // Vertical Collisions
-      if (this.checkCollision(collisionObjectArr, 5, 0, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 0, 0)) {
+      if (this.checkCollision(collisionObjectArr, 5, 0, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 5, 0)) {
         this.yDir *= -1;
       }
       // Move 
@@ -1260,13 +1259,12 @@ if (sessionInProgress) {
         if (enemyArr[i].name === "slimeBoss") {
           enemyArr[i].slimeBossMovement();
           if (!enemyArr[i].canSpawn) {
-            console.log("TIMEOUT")
             enemyArr[i].canSpawn = true;
             enemyArr[i].spawnInterval = setInterval(() => {
               const newEnemy = new Enemy("slime", myCanvas.width / 2 - 90, myCanvas.height / 2 - 80, 90, 80);
               newEnemy.initialize();
               enemyArr.splice(enemyArr.length-2, 0, newEnemy);
-            }, 5000)
+            }, 2000)
             setTimeout(() => {
               // ROOM TRANSIT
               collisionObjectArr.push(new CollisionObject(220, myCanvas.height - 15, 680, 15, "roomtransit", 4, "up", false, false));
@@ -1682,7 +1680,7 @@ if (sessionInProgress) {
       // SOME COLLISIONS AND TRANSITS CREATED IN UPDATEENEMY()
 
       // BOSS
-      enemyArr.push(new Enemy("slimeBoss", myCanvas.width / 2 - 100, myCanvas.height + 50, 300, 280));
+      enemyArr.push(new Enemy("slimeBoss", myCanvas.width / 2, myCanvas.height + 50, 300, 280));
       
       // Initialize enemies
       for (let i = 0; i < enemyArr.length; i++) {
