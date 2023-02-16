@@ -86,6 +86,11 @@
                                                 <button class="buttonItem btnWider" type="submit">Claim attachment</button>
                                             </form>
                                         <% } %>
+                                        <div>
+                                            <form action="/friends/deleteMessage/<%=message._id%>" method="POST">
+                                                <button class="buttonItem" type="submit">Delete</button>
+                                            </form>
+                                        </div>
                                     <% } %>
                                 </ul>
                             <% }) %>

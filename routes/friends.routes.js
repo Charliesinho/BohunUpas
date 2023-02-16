@@ -340,4 +340,38 @@ router.post("/friends/claim-attachment/:messageId", isLoggedIn, async (req, res,
   }
 }); 
 
+// DELETE EMAIL
+router.post("/friends/deleteMessage/:messageId", isLoggedIn, async (req, res, next) => {
+  checkLogin(req.session.user);
+  const sessionName = req.session.user.username;
+  const user = await User.find({username: sessionName}).populate("character").populate("friends").populate("messages");
+  const currentUser = getUserWithoutHash(user[0]);
+  const character = await Character.findById(currentUser.charId).populate("inventory");
+
+  try { 
+    // Get message and attachment
+    const message = await Message.findById(req.params.messageId).populate("attachment");
+    // Inventory check
+    if (!message.attachment.length) {
+      // Find message in array
+      let msgIndex = 0;
+      for (let i = 0; i < user[0].messages.length; i++) {
+        if (JSON.stringify(user[0].messages[i]._id) === `"${req.params.messageId}"`) {
+          msgIndex = i;
+          break;
+        }
+      }
+      user[0].messages.splice(msgIndex, 1);
+      await Message.findOneAndDelete({_id: req.params.messageId});
+      await user[0].save();
+      res.redirect("/friends");
+    } else {
+      res.render("friends", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, searchResult: "", searchTerm: searchTerm, errorMessage: "Claim your attachment before deleting!"});
+    }
+  } catch (error) {
+    console.log("Error receiving attachment: ", error);
+    res.redirect("/friends");
+  }
+}); 
+
 module.exports = router;
