@@ -304,7 +304,8 @@ router.post("/friends/newMessage/:friendId/att/", isLoggedIn, async (req, res, n
         // Find Item in inventory
         let itemIndex = 0;
         for (let i = 0; i < character.inventory.length; i++) {
-          if (JSON.stringify(character.inventory[i]._id) === `"${req.body.attachedItem._id}"`) {
+          if (JSON.stringify(character.inventory[i]._id) === `"${req.body.attachedItem}"`) {
+            console.log("ITEM AS POSITION ", i)
             itemIndex = i;
             break;
           }
