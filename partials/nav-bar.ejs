@@ -85,7 +85,7 @@
 
     <div id="navRight" >
       <% if (session) { %> <% if (sessionRace.length === 0) { %>
-      <p  class="buttonItem widerButton playnow">
+      <p  class="buttonItemPlay widerButton playnow">
         <a
           id="btn-playnow"
           style="text-decoration: none"
@@ -95,19 +95,24 @@
         </a>
       </p>
       <% } else { %>
-      <p  class="buttonItem widerButton playnow">
+        <div>
+      <p class="buttonItemPlay widerButton playnow">
         <a id="btn-playnow" style="text-decoration: none" href="/user/game">
           Play Now
         </a>
       </p>
+    </div>
       <% } %>
+      <div>
       <p>
         <a id="btn-logout" style="text-decoration: none" href="/auth/logout">
           Logout
         </a>
       </p>
+    </div>
       <% } else { %>
-      <p  class="buttonItem widerButton playnow">
+        <div>
+      <p  class="buttonItemPlay widerButton playnow">
         <a
           id="btn-playnow"
           style="text-decoration: none"
@@ -116,6 +121,7 @@
           Play Now
         </a>
       </p>
+    </div>
       <% } %>
     </div>
   </div>
