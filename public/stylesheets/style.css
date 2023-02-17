@@ -689,3 +689,55 @@ justify-items: center;
  color: green;
  box-shadow: 0 0 6px black;
 }
+
+.signup {
+  width: 600px;
+  padding-bottom: 50px;
+  margin-top: -50px;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 23px;
+}
+
+
+.signup:hover {
+  width: 600px;
+  padding-bottom: 50px;
+}
+
+.playnow {
+  text-align: center;
+  vertical-align: middle;
+  margin-top: 0px;
+}
+
+.detailsaccount {
+  margin-bottom: 60px;
+  padding-top: 65px;
+}
+
+.flex {
+  display: flex;
+  align-items: flex-start;
+  gap: 100px;
+  justify-content: center;
+}
+
+.accounttable {
+  padding-bottom: 50px;
+  line-height: 30px;
+  font-size: 30px;
+}
+
+.ultraOnlyWideButton {
+  width: 300px;
+}
+
+
+.accounttable:hover {
+  padding-bottom: 50px;
+  line-height: 30px;
+  font-size: 30px;
+}
