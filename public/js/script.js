@@ -517,7 +517,7 @@ if (sessionInProgress) {
       if (this.name === "ecrol") {
         this.souls = 500;
         this.experience = 1000;
-        this.hp = 1000;
+        this.hp = 500;
         this.damage = 1000;
         this.imageFrames = 4;
         this.moveSpeed = 12;
