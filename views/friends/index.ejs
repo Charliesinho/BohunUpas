@@ -66,6 +66,8 @@
                         <% if (currentUser.messages.length) { %>
                             <% currentUser.messages.forEach(message => { %>
                                 <ul class="messageCard">
+                                    <li>Sent: <%=message.createdAt%></li>
+                                    <br>
                                     <li>From: <%=message.sender.username%></li>
                                     <li>Subject: "<%=message.subject%>"</li>
                                     <br>
@@ -87,7 +89,7 @@
                                             </form>
                                         <% } %>
                                         <div>
-                                            <form action="/friends/deleteMessage/<%=message._id%>" method="POST">
+                                            <form action="/friends/deleteMessage/<%=message._id%>" method="POST" style="margin-top: 10px;">
                                                 <button class="buttonItem" type="submit">Delete</button>
                                             </form>
                                         </div>

@@ -265,9 +265,9 @@ router.post("/marketplace/remove-offer/:offerId/:itemId", isLoggedIn, async (req
     // Character ID check
     if (JSON.stringify(offer.owner._id), " VS ", `"${character._id}"`) {
       // Return to inventory, delete offer and save character
-      await Marketplace.findByIdAndDelete(req.params.offerId);
-      character.inventory.push(item);
+      character.inventory.push(item._id);
       await character.save();
+      await Marketplace.findByIdAndDelete(req.params.offerId);
       res.redirect("/marketplace/view-own-offers");
     }
   } else {
