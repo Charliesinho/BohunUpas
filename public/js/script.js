@@ -510,14 +510,14 @@ if (sessionInProgress) {
         this.xDir = -1;
         this.yDir = -1;
         this.canSpawn = false;
-        for (let i = 0; i < this.imageFrames; i++) {
+        //for (let i = 0; i < this.imageFrames; i++) {
           this.imgContainer.push("../images/Meadow/SlimeBoss/slime0.png");
-        }
+        //}
       }
       if (this.name === "ecrol") {
         this.souls = 500;
         this.experience = 1000;
-        this.hp = 1000;
+        this.hp = 500;
         this.damage = 1000;
         this.imageFrames = 4;
         this.moveSpeed = 12;
