@@ -29,6 +29,9 @@
         <% } else if (rendering === "newmessage") { %>
         <div class="invButtons">
             <form action="/friends/newMessage/<%=friend._id%>/att/" method="POST">
+                <% console.log("FROM PARTIAL INVENTORY DISPLAY: ", subject, " ", body) %>
+                <input style="display: none;" name="<%=subject%>" value="<%=subject%>" />
+                <input style="display: none;" name="<%=body%>" value="<%=body%>" />
                 <button class="buttonItem" type="submit" name="attachItemBtn" value="<%=item._id%>">Attach</button>
             </form>    
         </div>      

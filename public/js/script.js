@@ -153,7 +153,7 @@ if (sessionInProgress) {
   let screen8init = false;
   let screen9init = false;
 
-  let levelScreen = 9;
+  let levelScreen = 0;
 
   let animateId;
   let roomTransit = false;

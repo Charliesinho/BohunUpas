@@ -9,16 +9,13 @@
                 <div>To:</div> <input class="cleanInput messageInputs" name="toField" value="<%=friend.username%>" readonly/>
                 <div>Subject:</div> <input class="cleanInput messageInputs" type="text" name="subject" value="<%=content.subject%>" placeholder="Subject" minlength="1"/>
                 <div>Message:</div> <input class="cleanInput messageTextBody messageInputs" type="textarea" name="textBody" value="<%=content.body%>" placeholder="Message" minlength="1" maxlength="5000" rows="10" cols="10"/>
-                <%  %>
                 <% if (!attachment) { %>
                     <div>Attachment:</div><button class="buttonItem" style="width: 120px;" type="submit" name="attachmentBtn" value="attachmentBtn">Attach item</button>
                 <% } else if (item === null) { %>
-                    <%- include("../../partials/inventory-display.ejs", {character: character}) %> 
+                    <%- include("../../partials/inventory-display.ejs", {character: character, subject: content.subject, body: content.body}) %> 
                 <% } else { %>
                     <%- include("../../partials/item-card.ejs") %>
-                    <input value="<%=item._id%>" name="attachedItem" style="display: none;"/>
-                    <input value="hasattachment" name="attachmentcheck" style="display: none;"/>
-                    <button class="buttonItem btnWider" type="submit" name="removeAttachedItemBtn" value="removeAttachedItemBtn">Remove attachment</button>
+<!--                     <button class="buttonItem btnWider" type="submit" name="removeAttachedItemBtn" value="removeAttachedItemBtn">Remove attachment</button> -->
                 <% } %>
                 <div class="centerText"><button class="buttonItem" style="width: 120px;" type="submit" name="sendBtn" value="sendBtn">Send message</button></div>
             </form>

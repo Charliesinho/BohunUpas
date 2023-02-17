@@ -293,6 +293,7 @@ router.post("/friends/newMessage/:friendId/att/", isLoggedIn, async (req, res, n
     // REMOVE ATTACHMENT
     if (Object.keys(req.body).includes("removeAttachedItemBtn")) {
       attachedItem = null;
+      console.log("CONTENT: ", content);
       res.render("friends/new-message", {session: loginCheck, sessionRace: [currentUser], currentUser: currentUser, character: character, friend: friend, content: content, attachment: true, item: attachedItem, rendering: rendering, errorMessage: ""});
     }
     // SEND MESSAGE
