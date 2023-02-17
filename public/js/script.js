@@ -153,7 +153,7 @@ if (sessionInProgress) {
   let screen8init = false;
   let screen9init = false;
 
-  let levelScreen = 0;
+  let levelScreen = 9;
 
   let animateId;
   let roomTransit = false;
@@ -1300,8 +1300,8 @@ if (sessionInProgress) {
 
 
         enemyArr[i].updateCollision();
-        if (enemyArr[i] && enemyArr[i].name !== "slimeBoss") animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
-        if (enemyArr[i] && enemyArr[i].name !== "ecrol") animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
+        if (enemyArr[i] && enemyArr[i].name !== "slimeBoss" && enemyArr[i].name !== "ecrol") animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
+        if (enemyArr[i] && enemyArr[i].name === "slimeBoss") animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
       }
     }
 

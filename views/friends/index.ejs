@@ -1,6 +1,5 @@
 <%- include("../../partials/nav-bar.ejs") %>
 
-
 <% if (currentUser) { %>
     <div class="centerText">
         <h2>Hello, <%=currentUser.username%> the <%=currentUser.character[0].race %>!</h2>
@@ -69,6 +68,7 @@
                                 <ul class="messageCard">
                                     <li>From: <%=message.sender.username%></li>
                                     <li>Subject: "<%=message.subject%>"</li>
+                                    <br>
                                     <li>"<%=message.textBody%>"</li>
                                     <% if (message.messageType === "friendrequest") { %>
                                         <div class="friendAcceptRejectBtnCtn">
