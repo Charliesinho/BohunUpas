@@ -1273,6 +1273,7 @@ if (sessionInProgress) {
           enemyArr[i].slimeBossMovement();
           if (!enemyArr[i].canSpawn) {
             enemyArr[i].canSpawn = true;
+            ctx.drawImage(enemyArr[i].img, enemyArr[i].x, enemyArr[i].y, enemyArr[i].width, enemyArr[i].height)
             enemyArr[i].spawnInterval = setInterval(() => {
               const newEnemy = new Enemy("slime", myCanvas.width / 2 - 90, myCanvas.height / 2 - 80, 90, 80);
               newEnemy.initialize();
@@ -1288,7 +1289,7 @@ if (sessionInProgress) {
             }, 1500)
             setTimeout(() => {
               collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 50, myCanvas.width, 50, "environment", -1, "", false, true));
-            }, 6500)
+            }, 10000)
           }
         }
 
@@ -1299,6 +1300,7 @@ if (sessionInProgress) {
 
 
         enemyArr[i].updateCollision();
+        if (enemyArr[i] && enemyArr[i].name !== "slimeBoss") animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
         if (enemyArr[i] && enemyArr[i].name !== "ecrol") animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
       }
     }
@@ -1691,7 +1693,7 @@ if (sessionInProgress) {
       // SOME COLLISIONS AND TRANSITS CREATED IN UPDATEENEMY()
 
       // BOSS
-      enemyArr.push(new Enemy("slimeBoss", myCanvas.width / 2, myCanvas.height + 50, 300, 280));
+      enemyArr.push(new Enemy("slimeBoss", myCanvas.width / 2 + 15, myCanvas.height + 50, 300, 280));
       
       // Initialize enemies
       for (let i = 0; i < enemyArr.length; i++) {
