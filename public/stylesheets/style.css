@@ -65,6 +65,7 @@ h1 {
 #navRight {
   display: flex;
   gap: 30px;
+  padding-top: 20px;
 }
 
 #gameSection {
@@ -570,7 +571,7 @@ input:focus {
   flex-direction: column;
   justify-content: flex-start;
   padding: 20px 30px;
-  border: 1px rgb(132, 83, 61) solid;
+ 
 }
 
 .messageCard li {
@@ -699,4 +700,91 @@ justify-items: center;
  background-color: rgb(255, 130, 130);
  color: green;
  box-shadow: 0 0 6px black;
+}
+
+.signup {
+  width: 600px;
+  padding-bottom: 50px;
+  margin-top: -50px;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 23px;
+}
+
+
+.signup:hover {
+  width: 600px;
+  padding-bottom: 50px;
+}
+
+.playnow {
+  text-align: center;
+  vertical-align: middle;
+  margin-top: 0px;
+}
+
+.detailsaccount {
+  margin-bottom: 60px;
+  padding-top: 65px;
+}
+
+.flex {
+  display: flex;
+  align-items: flex-start;
+  gap: 100px;
+  justify-content: center;
+}
+
+.accounttable {
+  padding-bottom: 50px;
+  line-height: 30px;
+  font-size: 30px;
+}
+
+.ultraOnlyWideButton {
+  width: 300px;
+}
+
+
+.accounttable:hover {
+  padding-bottom: 50px;
+  line-height: 30px;
+  font-size: 30px;
+}
+
+.messages {
+  display: flex;
+}
+
+.buttonItemPlay {
+  border-radius: 8px;
+  border-style: solid;
+  height: 40px;
+  width: 150px;
+  border-color: rgba(61, 36, 33, 0.644);
+  background-color: rgb(36, 27, 25); 
+  border-width: 2px;
+  box-shadow: 0 5px rgb(19, 12, 11);
+  padding-bottom: 0px;
+  padding-top: 15px;
+  margin-bottom: 5px;
+  color:white;
+  font-weight: bolder;
+  text-align: center;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.buttonItemPlay:hover {
+  background-color: greenyellow;
+  color: #0C0C11;
+}
+
+#btn-playnow {
+  color: #ffffff;
+}
+
+#btn-playnow:hover {
+  color: #000000;
 }

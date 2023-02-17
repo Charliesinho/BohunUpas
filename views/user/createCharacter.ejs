@@ -1,16 +1,17 @@
 <%- include("../../partials/nav-bar.ejs") %>
-<section>
-    <form method="POST" action="/user/createCharacter">      
+<section class="alignLogin">
+    <form class="alignLogin itemTable loginTable accounttable" method="POST" action="/user/createCharacter">      
   
       <label for="">
         Choose race:
-        <select name="race" required>
+        <br>
+        <select class="buttonItem widerButton ultraOnlyWideButton" name="race" required>
           <option value="Dino">Dino</option>
           <option value="Undead">Undead</option>
           <option value="Human">Human</option>
         </select>
       </label>
-      <button type="submit">Create</button>
+      <button class="buttonItem widerButton ultraOnlyWideButton" type="submit">Create</button>
     </form>
   
     <% if (errorMessage !== "") { %>

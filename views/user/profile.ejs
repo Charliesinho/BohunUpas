@@ -1,21 +1,44 @@
 <%- include("../../partials/nav-bar.ejs") %>
-<h1>Profile</h1>
-<% if (sessionRace.length) { %>
-    <h2>Your Character</h2> 
-    <form action="/user/characterProfile" method="GET">
-        <p>Name: <%=profile.username%></p>
-        <p>Race: <%=profile.character[0].race%></p>
-        <button type="submit">See Character Details</button>
-    </form>
-<% } %>
-<hr/>
-<h2>Account Details</h2>
-<div>
-    <div>Username: <%-profile.username%> </div>
-    <div>Email: <%-profile.email%> </div>
-    <form action="/user/profile-update" method="GET">
-        <button type="submit">Change Details</button>
-    </form>
+
+<h1 class="loginTitle">Profile</h1>
+<section  class="alignLogin">
+
+<div class="flex">
+    <div>
+    <% if (sessionRace.length) { %>
+        <h2>Your Character</h2> 
+        <form class="alignLogin itemTable loginTable accounttable" action="/user/characterProfile" method="GET">
+            <p>Name: <%=profile.username%></p>
+            <p>Race: <%=profile.character[0].race%></p>
+            <button  class="buttonItem widerButton ultraOnlyWideButton" type="submit">See Character Details</button>
+        </form>
+    <% } %>
 </div>
 
+<div>
+    <h2 class="loginTitle detailsaccount">Account Details</h2>
+    <div class="alignLogin itemTable loginTable accounttable">
+        <div>Username: <%-profile.username%> </div>
+        <div>Email: <%-profile.email%> </div>
+        <form action="/user/profile-update" method="GET">
+            <button class="buttonItem widerButton ultraOnlyWideButton" type="submit">Change Details</button>
+        </form>
+    </div>
+</div>
+
+<div>
+    <h2 class="loginTitle detailsaccount">Your Friends</h2>
+    <div class="alignLogin itemTable loginTable accounttable">
+        <div style="display: flex; align-items: center; flex-direction: column">
+        <a href="/friends" style="text-decoration: none; font-size: 30px; text-align: center; gap: 30px">
+            <img src="/images/Icons/Book.png" height="60px" />
+            <br>SEE FRIENDS</a>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+</section>
 

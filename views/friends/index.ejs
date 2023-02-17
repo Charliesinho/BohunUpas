@@ -9,7 +9,7 @@
         <section id="friendsSection">
             <h1 class="centerText">Friends</h1>
             <div>
-                <form action="/friends/find" method="POST" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <form  class="alignLogin itemTable loginTable accounttable" action="/friends/find" method="POST" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
                     <div>Search friends</div>
                     <input style="margin-bottom: 5px;" class="cleanInput" name="searchTerm" type="text" minlength="1" placeholder="username"/>
                     <button class="buttonItem widerButton">Search</button>
@@ -21,15 +21,16 @@
                     <div class="display-error-message centralize"><%=errorMessage%></div>
                 <% } else { %>
                     <% if (searchResult !== null && searchResult !== "" && searchResult.username !== currentUser.username && !inFriendsList) { %>
-                        <form action="/friends/addRequest/<%=searchResult._id%>" method="POST">
-                            <div class="friends-card">
+                        <form class="alignLogin itemTable loginTable accounttable" action="/friends/addRequest/<%=searchResult._id%>" method="POST">
+                            <div class="friends-card" >
                                 <div>Result:</div>
-                                <div class="friendSearchResultCard">
+                                <div class="friendSearchResultCard" >
                                     <div><%=searchResult.username%></div>
                                     <button class="buttonItem widerButton" type="submit">Add friend</button>
                                 </div>
                             </div>
                         </form>
+                   
                     <% } else { %>
                         <% if (searchResult !== "") { %>
                         <div>Your search for "<%=searchTerm%>" returned no results.</div>
@@ -37,20 +38,20 @@
                     <% } %>
                 <% } %>
             </div>
-
-            <div class="friendsCtn">
+        
+            <div  class="friendsCtn">
+                <div class="centerText" style="font-size: 50px; margin-bottom: -50px; padding-top: 20px;">Friends list</div>
             <% if (!currentUser.friends.length) { %>
-                <div class="centerText">You have no friends</div>
+                <div class="centerText" style="padding-bottom: 50px; padding-top: 50px;">You have no friends</div>
             <% } else { %>
-                <div class="centerText">Friends list</div>
                 <% currentUser.friends.forEach(friend => { %>
-                <ul>
+                <ul class="messageCard alignLogin itemTable loginTable accounttable messages" style="font-size: 16px;">
                     <li><%=friend.username%></li>
                     <li><%=friend.character[0].race%></li>
                     <li>Level: <%=friend.character[0].level%></li>
                     <li>
                         <form action="/friends/newMessage/<%=friend._id%>" method="GET">
-                            <button class="buttonItem" type="submit">Send Message</button>
+                            <button class="buttonItem ultraOnlyWideButton" type="submit">Send Message</button>
                         </form>
                     </li>
                 </ul>
@@ -58,14 +59,14 @@
             <% } %>
             </div>
         </section>
-        <section id="messageSection">
+        <section id="messageSection" >
             <div>
                 <h2>Messages</h2>
                 <div>
-                    <div class="messageContainer">
+                    <div>
                         <% if (currentUser.messages.length) { %>
                             <% currentUser.messages.forEach(message => { %>
-                                <ul class="messageCard">
+                                <ul  class="messageCard alignLogin itemTable loginTable accounttable messages" style="font-size: 16px;">
                                     <li>Sent: <%=message.createdAt%></li>
                                     <br>
                                     <li>From: <%=message.sender.username%></li>
@@ -83,7 +84,7 @@
                                         </div>
                                     <% } else if (message.messageType === "message") { %>
                                         <% if (message.attachment.length) { %>
-                                            <div>Attachment:<%- include("../../partials/item-card.ejs", {item: message.attachment[0]}) %></div>
+                                            <div style="padding-bottom: 50px;">Attachment:<%- include("../../partials/item-card.ejs", {item: message.attachment[0]}) %></div>
                                             <form action="/friends/claim-attachment/<%=message._id%>" method="POST">
                                                 <button class="buttonItem btnWider" type="submit">Claim attachment</button>
                                             </form>

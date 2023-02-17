@@ -1,17 +1,21 @@
 <%- include("../../partials/nav-bar.ejs") %>
-<h1>Profile</h1>
 
-<h2>Details</h2>
-<div>
-    <form action="/user/profile-update" method="POST">
-        <div>Username: <input type="text" name="username" value="<%-user.username%>" /> </div>
-        <div>Email: <input type="email" name="email" value="<%-user.email%>" /> </div>
-        <div>Current password: <input type="password" name="Cpassword" placeholder="**********" /></div>
-        <div>New password: <input type="password" name="password" placeholder="**********" /></div>
-        <div>Repeat new password: <input type="password" name="Rpassword" placeholder="**********" /> </div>
-        <button type="submit">Change Details</button>
+<section class="alignLogin">
+
+
+<h1 style="margin-top: 00px; margin-bottom: -100px;">Profile</h1>
+<div >
+    <form class="alignLogin itemTable loginTable accounttable signup" style="padding-left: 50px;" action="/user/profile-update" method="POST">
+        <div>Username: <input class="cleanInput" type="text" name="username" value="<%-user.username%>" /> </div>
+        <div>Email: <input class="cleanInput" type="email" name="email" value="<%-user.email%>" /> </div>
+        <div>Current password: <input class="cleanInput" type="password" name="Cpassword" placeholder="**********" /></div>
+        <div>New password: <input class="cleanInput" type="password" name="password" placeholder="**********" /></div>
+        <div>Repeat new password: <input class="cleanInput" type="password" name="Rpassword" placeholder="**********" /> </div>
+        <button class="buttonItem ultraOnlyWideButton" type="submit">Change Details</button>
     </form>
     <% if (errorMessage !== "") { %>
         <div class="display-error-message centralize"><%=errorMessage%></div>
     <% } %>
 </div>
+
+</section>
