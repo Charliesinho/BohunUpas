@@ -118,8 +118,10 @@ models: Contains the different models / schemas:
 <br>
 partials: includes repeated code for inventory, items and the nav bar to be called wherever needed
 <br>
-public: contains all game elements and connects canvas with ejs
+public: contains styles and all game elements and connects canvas with ejs
 <br>
-routes: contains all the routes and takes care of all the elements
+routes: contains all the routes and takes care of the rendering for the individual sites
+<br>
+views: all the different views rendered by the relevant routes
 
 ### ...

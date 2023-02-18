@@ -1,952 +1,984 @@
-setTimeout(() => {  
-  if ( document.getElementById("mediumPack")) {
-  if (document.getElementById("mediumPack").style.display === "block") {
-    document.getElementById("mediumPack").style.display = "none";
-  }}
-
-  if ( document.getElementById("mediumPack")) {
-  if (document.getElementById("legendaryPack").style.display === "block") {
-    document.getElementById("legendaryPack").style.display = "none";
-  }}
-}, 3000)
-
-setTimeout(() => {    
-    document.getElementById("caveMap").style.display = "none";  
-}, 2000)
-
-
-
-function ShowBasic() {
-  if (document.getElementById("basicPack").style.display === "block") {
-  document.getElementById("basicPack").style.display = "none";
-} else {
-  document.getElementById("basicPack").style.display = "block";
-  document.getElementById("mediumPack").style.display = "none";
-  document.getElementById("legendaryPack").style.display = "none";
-}
-}
-
-function ShowMedium() {
-  if (document.getElementById("mediumPack").style.display === "block") {
-  document.getElementById("mediumPack").style.display = "none";
-} else {
-  document.getElementById("mediumPack").style.display = "block";
-  document.getElementById("legendaryPack").style.display = "none";
-  document.getElementById("basicPack").style.display = "none";
-}
-}
-
-function ShowLegendary() {
-  if (document.getElementById("legendaryPack").style.display === "block") {
-  document.getElementById("legendaryPack").style.display = "none";
-} else {
-  document.getElementById("legendaryPack").style.display = "block";
-  document.getElementById("mediumPack").style.display = "none";
-  document.getElementById("basicPack").style.display = "none";
-}
-}
-
-
-const saveBtn = document.querySelector("#saveGameButton");
-
-// https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("BohunUpas JS imported successfully!");
-});
-
-let session = document.querySelector("#sessionInProgress");
-let sessionInProgress = false;
-
-// Run if logged in
-if (session) {
-  if (session.style.display === "block") {
-    sessionInProgress = true;
-  }
-}
-
-// All code execution only if session
-if (sessionInProgress) {
-  // Get races
-  let dinoSelect = document.querySelector("#dinoSelect")
-  let dinoCheck = false;
-  let undeadSelect = document.querySelector("#undeadSelect")
-  let undeadCheck = false;
-  let humanSelect = document.querySelector("#humanSelect")
-  let humanCheck = false;
-
-  let race;
-
-  if (dinoSelect.style.display === "block") {
-    dinoCheck = true;
-    console.log("dino")
-  }
-  if (undeadSelect.style.display === "block") {
-    undeadCheck = true;
-    console.log("undead")
-  }
-  if (humanSelect.style.display === "block") {
-    humanCheck = true;
-    console.log("human")
-  }
-  if (dinoCheck) race = "Dino";
-  if (undeadCheck) race = "Undead";
-  if (humanCheck) race = "Human";
-  
-  // Equipment based stats
-  let gDamage, gDefense, gModifier
-  if (document.querySelector("#noWeapon").style.display === "block") {
-    gDamage = parseInt(document.querySelector("#damage").innerHTML);
-  } else {
-    gDamage = 1;
-  }
-  if (document.querySelector("#noArmor").style.display === "block") {
-    gDefense = parseInt(document.querySelector("#defense").innerHTML);
-  } else {
-    gDefense = 1;
-  }
-  if (document.querySelector("#noArtefact").style.display === "block") {
-    gModifier = parseInt(document.querySelector("#artefactmodifier").innerHTML);
-  } else {
-    gModifier = 1;
-  }
-
-  // Equipment fetch
-  const projectileImgArr = [];
-  let gWeapon, gArmor, gArtefact; //Equipment
-  let souls, experience, gLevel; // Stats
-  if (document.querySelector("#noWeapon").style.display === "block") {
-    gWeapon = document.querySelector("#weaponname").innerHTML;
-    souls = parseInt(document.querySelector("#souls").value)
-    experience = parseInt(document.querySelector("#experience").value)
-    gLevel = parseInt(document.querySelector("#level").innerHTML)  
-  } else {
-    gWeapon = "";
-    souls = parseInt(document.querySelector("#souls").value)
-    experience = parseInt(document.querySelector("#experience").value)
-    gLevel = 1; 
-  }
-  if (document.querySelector("#noArmor").style.display === "block") {
-    gArmor = document.querySelector("#armorname").innerHTML;
-  } else {
-    gArmor = "";
-  }
-  if (document.querySelector("#noArtefact").style.display === "block") {
-    gArtefact = document.querySelector("#artefactname").innerHTML;
-  } else {
-    gArtefact = "";
-  }
-
-  // Backgrounds
-  const backgroundArr = [];
-  let background = new Image();
-
-  let worldInit = false;
-
-  let screen0init = false;
-  let screen1init = false;
-  let screen2init = false;
-  let screen3init = false;
-  let screen4init = false;
-  let screen5init = false;
-  let screen6init = false;
-  let screen7init = false;
-  let screen8init = false;
-  let screen9init = false;
-
-  let levelScreen = 0;
-
-  let animateId;
-  let roomTransit = false;
-  let transitSpeed = 5;
-  let transitDir = "";
-  let enemySpawnInProgress = false;
-  const myCanvas = document.querySelector("canvas");
-  const ctx = myCanvas.getContext("2d");
-  ctx.imageSmoothingEnabled = true;
-
-  class Background {
-    constructor(x, y, width, height, source) {
-      this.x = x;
-      this.y = y;
-      this.width = width;
-      this.height = height;
-      this.source = source;
-
-      this.img = new Image();
-      this.img.src = this.source;
+window.addEventListener("load", () => {
+    setTimeout(() => {  
+      if ( document.getElementById("mediumPack")) {
+      if (document.getElementById("mediumPack").style.display === "block") {
+        document.getElementById("mediumPack").style.display = "none";
+      }}
+    
+      if ( document.getElementById("mediumPack")) {
+      if (document.getElementById("legendaryPack").style.display === "block") {
+        document.getElementById("legendaryPack").style.display = "none";
+      }}
+    }, 3000)
+    
+    setTimeout(() => {    
+        document.getElementById("caveMap").style.display = "none";  
+    }, 2000)
+    
+    
+    
+    function ShowBasic() {
+      if (document.getElementById("basicPack").style.display === "block") {
+      document.getElementById("basicPack").style.display = "none";
+    } else {
+      document.getElementById("basicPack").style.display = "block";
+      document.getElementById("mediumPack").style.display = "none";
+      document.getElementById("legendaryPack").style.display = "none";
     }
-  }
-  
-  class Player {
-    constructor(race, x, y, width, height, xSpeed, ySpeed, xFacing, yFacing) {
-      this.type = "player";
-      this.race = race;
-      this.experience = experience;
-      this.level = gLevel;
-
-      
-      // Pass in vars
-      this.x = x;
-      this.y = y;
-      this.width = width;
-      this.height = height;
-      this.xSpeed = xSpeed;
-      this.ySpeed = ySpeed;
-      this.xFacing = xFacing;
-      this.yFacing = yFacing;
-
-      // Movement
-      this.moveLeft = false;
-      this.moveRight = false;
-      this.moveUp = false;
-      this.moveDown = false;
-
-      //Animation
-      this.shadow = new Image();
-      this.shadow.src = "../images/ShadowPlayer.png"
-      this.imgContainerRight = [];
-      this.imgContainerLeft = [];
-      this.imgContainerIdleLeft = [];
-      this.imgContainerIdleRight = [];
-
-      this.img = new Image();
-      this.imageFrames;
-      this.spriteSpeed = 12;
-      this.currentFrame = 0;
-
-      // Gameplay values
-      this.damage;
-      this.takenDamage = false;
-      this.iframes = 500;
-      this.alive = true;
-      this.hp = 10;
-      this.health = document.querySelector("#health")
-      this.health.max = this.hp
-      this.health.value = this.hp
-      
-
-      // Equipment
-      this.weapon;
-      this.weaponProjectile;
-      this.weaponShootInterval;
-      this.weaponProjectileSpeed;
-      this.weaponLifeSpan;
-      
-      this.armor;
-
-      this.artefact;
-
-      // Shoot
-      this.shootRight = false;
-      this.shootLeft = false;
-      this.shootUp = false;
-      this.shootDown = false;
-      this.shoot = false;
-      this.canShoot = true;
-      
-      // Collision
-      this.left = this.x;
-      this.right = this.x + this.width;
-      this.top = this.y;
-      this.bottom = this.y + this.height;
     }
-
-    initialize() {
-      // Projectile array images
-      for (let i = 0; i < 6; i++) {
-        projectileImgArr.push("../images/Projectiles/pro"+i+".png");
-        console.log(projectileImgArr[i])
+    
+    function ShowMedium() {
+      if (document.getElementById("mediumPack").style.display === "block") {
+      document.getElementById("mediumPack").style.display = "none";
+    } else {
+      document.getElementById("mediumPack").style.display = "block";
+      document.getElementById("legendaryPack").style.display = "none";
+      document.getElementById("basicPack").style.display = "none";
+    }
+    }
+    
+    function ShowLegendary() {
+      if (document.getElementById("legendaryPack").style.display === "block") {
+      document.getElementById("legendaryPack").style.display = "none";
+    } else {
+      document.getElementById("legendaryPack").style.display = "block";
+      document.getElementById("mediumPack").style.display = "none";
+      document.getElementById("basicPack").style.display = "none";
+    }
+    }
+    
+    
+    const saveBtn = document.querySelector("#saveGameButton");
+    
+    // https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event
+    document.addEventListener("DOMContentLoaded", () => {
+      console.log("BohunUpas JS imported successfully!");
+    });
+    
+    let session = document.querySelector("#sessionInProgress");
+    let sessionInProgress = false;
+    
+    // Run if logged in
+    if (session) {
+      if (session.style.display === "block") {
+        sessionInProgress = true;
       }
-      // Configure Weapon values
-      this.weapon = gWeapon;
-      this.damage = gDamage;
-      if (this.weapon.includes("Wooden Wand")) {
-        this.weaponProjectile = projectileImgArr[4];
-        this.weaponShootInterval = 500;
-        this.weaponLifeSpan = 30;
-        this.weaponProjectileSpeed = 8;
-      } else if (this.weapon.includes("Rusty Sword")) {
-        this.weaponProjectile = projectileImgArr[0];
-        this.weaponShootInterval = 500;
-        this.weaponLifeSpan = 40;
-        this.weaponProjectileSpeed = 8;
-      } else if (this.weapon.includes("Lancer")) {
-        this.weaponProjectile = projectileImgArr[2];
-        this.weaponShootInterval = 1000;
-        this.weaponLifeSpan = 50;
-        this.weaponProjectileSpeed = 20;
-      } else if (this.weapon.includes("Heavy Sword")) {
-        this.weaponProjectile = projectileImgArr[1];
-        this.weaponShootInterval = 400;
-        this.weaponLifeSpan = 1000;
-        this.weaponProjectileSpeed = .5;
-      } else if (this.weapon.includes("Moonlair")) {
-        this.weaponProjectile = projectileImgArr[3];
-        this.weaponShootInterval = 1;
-        this.weaponLifeSpan = 1000;
-        this.weaponProjectileSpeed = Math.floor(Math.random() * (21 - 1) + 1);
-      } else if (this.weapon.includes("Swampy")) {
-        this.weaponProjectile = projectileImgArr[5];
-        this.weaponShootInterval = 1000;
-        this.weaponLifeSpan = 5000;
-        this.weaponProjectileSpeed = .2;
+    }
+    
+    // All code execution only if session
+    if (sessionInProgress) {
+      // Get races
+      let dinoSelect = document.querySelector("#dinoSelect")
+      let dinoCheck = false;
+      let undeadSelect = document.querySelector("#undeadSelect")
+      let undeadCheck = false;
+      let humanSelect = document.querySelector("#humanSelect")
+      let humanCheck = false;
+    
+      let race;
+    
+      if (dinoSelect.style.display === "block") {
+        dinoCheck = true;
+        console.log("dino")
+      }
+      if (undeadSelect.style.display === "block") {
+        undeadCheck = true;
+        console.log("undead")
+      }
+      if (humanSelect.style.display === "block") {
+        humanCheck = true;
+        console.log("human")
+      }
+      if (dinoCheck) race = "Dino";
+      if (undeadCheck) race = "Undead";
+      if (humanCheck) race = "Human";
+      
+      // Equipment based stats
+      let gDamage, gDefense, gModifier
+      if (document.querySelector("#noWeapon").style.display === "block") {
+        gDamage = parseInt(document.querySelector("#damage").innerHTML);
       } else {
-        this.weaponProjectile = projectileImgArr[4];
-        this.weaponShootInterval = 600;
-        this.weaponLifeSpan = 30;
-        this.weaponProjectileSpeed = 8;
+        gDamage = 1;
       }
-      // Configure Armor values
-      this.armor = gArmor;
-      this.defense = gDefense;
-      
-      // Configure Artefact values
-      this.artefact = gArtefact;
-
-      // Load player sprites
-      if (this.race === "Dino") {      
-        for (let i = 0; i < 6; i++) {
-          this.imgContainerRight.push("../images/Races/Dino/RunRight/dino"+i+".png");
-          this.imgContainerLeft.push("../images/Races/Dino/RunLeft/dino"+i+".png");
-        }
-        for (let i = 0; i < 4; i++) {
-          this.imgContainerIdleLeft.push("../images/Races/Dino/IdleLeft/dino"+i+".png");
-          this.imgContainerIdleRight.push("../images/Races/Dino/IdleRight/dino"+i+".png");
-        }
-      } 
-      if (this.race === "Undead") {      
-        for (let i = 0; i < 6; i++) {
-          this.imgContainerRight.push("../images/Races/Undead/RunRight/undead"+i+".png");
-          this.imgContainerLeft.push("../images/Races/Undead/RunLeft/undead"+i+".png");
-        }
-        for (let i = 0; i < 4; i++) {
-          this.imgContainerIdleLeft.push("../images/Races/Undead/IdleLeft/undead"+i+".png");
-          this.imgContainerIdleRight.push("../images/Races/Undead/IdleRight/undead"+i+".png");
-        }
-      } 
-      if (this.race === "Human") {      
-        for (let i = 0; i < 6; i++) {
-          this.imgContainerRight.push("../images/Races/Human/IdleLeft/RunRight/human"+i+".png");
-          this.imgContainerLeft.push("../images/Races/Human/IdleLeft/RunLeft/human"+i+".png");
-        }
-        for (let i = 0; i < 4; i++) {
-          this.imgContainerIdleLeft.push("../images/Races/Human/IdleLeft/IdleLeft/human"+i+".png");
-          this.imgContainerIdleRight.push("../images/Races/Human/IdleLeft/IdleRight/human"+i+".png");
-        }
-      } 
-    } 
-
-    updateCollision() {
-      this.left = this.x;
-      this.right = this.x + this.width;
-      this.top = this.y;
-      this.bottom = this.y + this.height;
-    }
-
-    checkCollision(arr, ot, or, ob, ol) {
-      for (let i = 0; i < arr.length; i++) {
-        if (this.left - ol < arr[i].right &&
-          this.right + or > arr[i].left &&
-          this.top - ot < arr[i].bottom &&
-          this.bottom + ob >= arr[i].top) { 
-            if (arr[i].getType() === "environment" || arr[i].getType() === "playerblock") {
-              return true;
-            } else if (arr[i].getType() === "enemy" || (arr[i].getType() === "projectile" && arr[i].firedBy === "enemy")) {
-              this.hit(arr[i].damage)
-            } else if (arr[i].getType() === "roomtransit" && !roomTransit) {
-              roomTransit = true;
-              levelScreen = arr[i].nextScreen;
-              transitDir = arr[i].transitDir;
-            }
-          }
-      }
-    }
-
-    getType() {
-      return this.type;
-    }
-
-    getUnstuck() {
-      this.x = 300;
-      this.y = 300
-    }
-
-    getDamage() {
-      return this.damage + this.level;
-    }
-    getDefense() {
-      return this.defense;
-    }
-
-    hit(damage) {
-      // Check iframes
-      if (!this.takenDamage) {
-        this.takenDamage = true;
-        // Receive Damage
-        if (damage - this.getDefense() > 0) {
-          this.hp -= damage - this.getDefense();
-          this.health.value -= damage - this.getDefense();
-        } else {
-          this.hp -= 1;
-          this.health.value -= 1
-        }
-        console.log("HIT - ", this.hp)
-        // Kill player
-        if (this.hp <= 0) {
-          this.destroy();
-        } else { // Reset iframes
-          setTimeout(() => {
-            this.takenDamage = false;
-          }, this.iframes)
-        }
-      }
-    }
-
-    destroy() {
-      this.alive = false;
-      setTimeout(() => {
-        history.back()
-      }, 2000)
-    }
-  }
-
-
-  const enemyArr = [];
-  class Enemy {
-    constructor(name, x, y, width, height) {
-      this.type = "enemy"
-      this.souls = 0;
-      this.experience = 0;
-
-      this.name = name;    
-      this.x = x;
-      this.y = y;
-      this.width = width;
-      this.height = height;
-      this.screen = levelScreen;
-
-      this.imgContainer = [];
-      this.img = new Image();
-      this.imageFrames;
-      this.spriteSpeed = 12;
-      this.currentFrame = 0;
-
-      // Collision
-      this.left = this.x;
-      this.right = this.x + this.width;
-      this.top = this.y;
-      this.bottom = this.y + this.height;
-
-      // Boss
-      this.xDir;
-      this.yDir;
-      this.canSpawn;
-      this.spawnInterval;
-      this.state;
-      this.ecrolState = true;
-      this.movementArr;
-      this.ecrolTimeout = 5000;
-
-      // Gameplay values
-      this.initialized = false;
-      this.hp;
-      this.iframes = 100;
-      this.damage;
-      this.takenDamage = false;
-      this.randomMoveTimer;
-      this.moveSpeed;
-      this.moveTo;
-      this.canShoot = false;
-      this.shootInterval;
-    }
-
-    initialize() {
-      if (this.name === "slime") {
-        this.souls = 1;
-        this.experience = 1;
-        this.hp = 15;
-        this.damage = 5;
-        this.imageFrames = 4;
-        this.moveSpeed = 1;
-        this.randomMoveTimer = Math.floor(Math.random() * (400 - 200) + 200);
-        this.moveTo = this.getRandomCoordinates();
-        this.moveTowardsTarget(this.moveTo);
-        for (let i = 0; i < this.imageFrames; i++) {
-          this.imgContainer.push("../images/Meadow/Slime/slime"+i+".png");
-        }
-        this.initialized = true;
-      }
-      if (this.name === "bat") {
-        this.souls = 1;
-        this.experience = 1;
-        this.hp = 15;
-        this.damage = 7;
-        this.imageFrames = 4;
-        this.xDir = -1;
-        this.moveSpeed = 1;
-        this.canShoot = true;
-        this.shootInterval = this.getRandomShootInterval();
-        for (let i = 0; i < this.imageFrames; i++) {
-          this.imgContainer.push("../images/Dungeon/Bat/bat"+i+".png");
-        }
-      }
-      if (this.name === "enemyprojectile") {
-        this.souls = 0;
-        this.experience = 0;
-        this.hp = 10;
-        this.damage = 15;
-        this.imageFrames = 1;
-        this.yDir = 1;
-        this.moveSpeed = 1;
-        this.imgContainer.push("../images/Projectiles/weakFire.png");
-      }
-      if (this.name === "slimeBoss") {
-        this.souls = 100;
-        this.experience = 50;
-        this.hp = 500;
-        this.damage = 10;
-        this.imageFrames = 6;
-        this.moveSpeed = 500;
-        this.xDir = -1;
-        this.yDir = -1;
-        this.canSpawn = false;
-        for (let i = 0; i < this.imageFrames; i++) {
-          this.imgContainer.push("../images/Meadow/SlimeBoss/slime0.png");
-        }
-      }
-      if (this.name === "ecrol") {
-        this.souls = 500;
-        this.experience = 1000;
-        this.hp = 500;
-        this.damage = 1000;
-        this.imageFrames = 4;
-        this.moveSpeed = 12;
-        this.movementArr = this.ecrolPatterns();
-        this.x = this.movementArr[0].x;
-        this.y = this.movementArr[0].y;
-        if (this.ecrolState) this.state = 0;
-        for (let i = 0; i < this.imageFrames; i++) {
-          this.imgContainer.push("../images/Ecrol/ecrol"+i+".png");
-        }
-      }
-    } 
-
-    getRandomCoordinates() {
-      const randomPointX = myCanvas.width;
-      const randomPointY = myCanvas.height;
-      const randomCoordinates = {
-        x: Math.floor(Math.random() * ((randomPointX - this.width - 60) - (this.width + 60) + (this.width + 60))),
-        y: Math.floor(Math.random() * ((randomPointY - this.height - 60) - (this.height + 60) + (this.width + 60))),
-      };
-      return randomCoordinates;
-    }
-
-    getRandomShootInterval() {
-      return Math.floor(Math.random() * (5000 - 3000) + 3000);
-    }
-
-    checkCollision(arr, ot, or, ob, ol) {
-      for (let i = 0; i < arr.length; i++) {
-        if (this.left - ol < arr[i].right &&
-          this.right + or > arr[i].left &&
-          this.top - ot < arr[i].bottom &&
-          this.bottom + ob >= arr[i].top) { 
-            if (arr[i].getType() === "environment" && arr[i].getType() !== "playerblock") {
-              return true;
-            }
-        }
-      }
-    }
-
-    moveTowardsTarget(randomCoordinates) {
-      // Horizontal Movement
-      if (this.x < randomCoordinates.x && this.x < myCanvas.width - this.width && !this.checkCollision(collisionObjectArr, 0, 10, 0, 0)) {
-        this.x += this.moveSpeed;
-      } else if (this.x > randomCoordinates.x && this.x > 0 && !this.checkCollision(collisionObjectArr, 0, 0, 0, 10)) {
-        this.x -= this.moveSpeed;
-      }
-      // Vertial Movement
-      if (this.y > randomCoordinates.y && this.y > 0 && !this.checkCollision(collisionObjectArr, 10, 0, 0, 0)) {
-        this.y -= this.moveSpeed;
-      } else if (this.x < randomCoordinates.y && this.y < myCanvas.height - this.height && !this.checkCollision(collisionObjectArr, 0, 0, 10, 0)) {
-        this.y += this.moveSpeed;
-      }
-    }
-
-    moveLeftRight() {
-      if (this.checkCollision(collisionObjectArr, 0, 5, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 0, 5)) {
-        this.xDir *= -1;
-      }
-      this.x += this.moveSpeed * this.xDir;
-    }
-
-    shootDown() {
-      if (this.canShoot) {
-        this.canShoot = false;
-        enemyArr.push(new Enemy("enemyprojectile", this.x, this.y, 32, 32));
-        setTimeout(() => {
-          this.canShoot = true;
-        }, this.shootInterval);
-      }
-    }
-
-    moveDown() {
-      this.y += this.moveSpeed;
-    }
-
-    slimeBossMovement() {
-      // Horizontal Collisions
-      if (this.checkCollision(collisionObjectArr, 0, 5, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 0, 5)) {
-        this.xDir *= -1;
-      }
-      // Vertical Collisions
-      if (this.checkCollision(collisionObjectArr, 5, 0, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 5, 0)) {
-        this.yDir *= -1;
-      }
-      // Move 
-      this.x += (this.moveSpeed / 1.2 / this.hp) * this.xDir;
-      this.y += (this.moveSpeed / this.hp) * this.yDir;
-    }
-
-    ecrolPositionPicker() {
-      this.state = Math.floor(Math.random() * 5)
-    }
-
-    ecrolBossMovement() {
-      if (this.ecrolState) {
-        switch (this.state) {
-          case 0:
-            this.ecrolState = false;
-            this.img.src = this.imgContainer[1];
-            this.x = this.movementArr[this.state].x
-            this.y = this.movementArr[this.state].y
-            setTimeout(() => {
-              this.ecrolState = true;
-              this.ecrolPositionPicker();
-            }, this.ecrolTimeout)
-            break;
-          case 1:
-            this.ecrolState = false;
-            this.img.src = this.imgContainer[3];
-            this.x = this.movementArr[this.state].x
-            this.y = this.movementArr[this.state].y
-            setTimeout(() => {
-              this.ecrolState = true;
-              this.ecrolPositionPicker();
-            }, this.ecrolTimeout)
-            break;
-          case 2:
-            this.ecrolState = false;
-            this.img.src = this.imgContainer[2];
-            this.x = this.movementArr[this.state].x
-            this.y = this.movementArr[this.state].y
-            setTimeout(() => {
-              this.ecrolState = true;
-              this.ecrolPositionPicker();
-            }, this.ecrolTimeout)
-            break;
-          case 3:
-            this.ecrolState = false;
-            this.img.src = this.imgContainer[2];
-            this.x = this.movementArr[this.state].x
-            this.y = this.movementArr[this.state].y
-            setTimeout(() => {
-              this.ecrolState = true;
-              this.ecrolPositionPicker();
-            }, this.ecrolTimeout)
-            break;
-          case 4:
-            this.ecrolState = false;
-            this.img.src = this.imgContainer[0];
-            this.x = this.movementArr[this.state].x
-            this.y = this.movementArr[this.state].y
-            setTimeout(() => {
-              this.ecrolState = true;
-              this.ecrolPositionPicker();
-            }, this.ecrolTimeout)
-            break;
-        }
-      }
-      if (this.state < 2) {
-        this.width = 531
-        this.height = 150
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+      if (document.querySelector("#noArmor").style.display === "block") {
+        gDefense = parseInt(document.querySelector("#defense").innerHTML);
       } else {
-        this.width = 150
-        this.height = 531
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        gDefense = 1;
       }
-      this.ecrolMove();
-    }
-
-    ecrolMove() {
-      switch (this.state) {
-        case 0:
-          this.x += this.moveSpeed;
-          break;
-        case 1:
-          this.x -= this.moveSpeed;
-          break;
-        case 2:
-          this.y += this.moveSpeed
-          break;
-        case 3:
-          this.y += this.moveSpeed
-          break;
-        case 4:
-          this.y -= this.moveSpeed
-          break;
-      }
-    }
-
-    ecrolPatterns() {
-      const arr = [
-        // LEFT -> RIGHT 0
-        {
-          x: -myCanvas.width,
-          y: 100,
-        },
-        // RIGHT -> LEFT 1
-        {
-          x: myCanvas.width * 2,
-          y: 350,
-        },
-        // TOP -> BOTTOM (middle) 2
-        {
-          x: 300,
-          y: -myCanvas.height,
-        },
-        // TOP -> BOTTOM (offset) 3
-        {
-          x: 550,
-          y: -myCanvas.height,
-        },
-        // BOTTOM -> TOP () 4
-        {
-          x: myCanvas.width / 2 + 150,
-          y: myCanvas.height * 2,
-        },
-      ]
-      
-      return arr;
-    }
-
-    updateCollision() {
-      if (this.name === "enemyprojectile" && this.y > myCanvas.height - this.height) this.destroy();
-      this.left = this.x;
-      this.right = this.x + this.width;
-      this.top = this.y;
-      this.bottom = this.y + this.height;
-    }
-
-    hit(damage) {
-      if (this.name === "enemyprojectile") this.destroy();
-      this.takenDamage = true;
-      this.hp -= damage;
-      if (this.hp <= 0) {
-        this.destroy();
+      if (document.querySelector("#noArtefact").style.display === "block") {
+        gModifier = parseInt(document.querySelector("#artefactmodifier").innerHTML);
       } else {
-        setTimeout(() => {
+        gModifier = 1;
+      }
+    
+      // Equipment fetch
+      const projectileImgArr = [];
+      let gWeapon, gArmor, gArtefact; //Equipment
+      let souls, experience, gLevel; // Stats
+      if (document.querySelector("#noWeapon").style.display === "block") {
+        gWeapon = document.querySelector("#weaponname").innerHTML;
+        souls = parseInt(document.querySelector("#souls").value)
+        experience = parseInt(document.querySelector("#experience").value)
+        gLevel = parseInt(document.querySelector("#level").innerHTML)  
+      } else {
+        gWeapon = "";
+        souls = parseInt(document.querySelector("#souls").value)
+        experience = parseInt(document.querySelector("#experience").value)
+        gLevel = 1; 
+      }
+      if (document.querySelector("#noArmor").style.display === "block") {
+        gArmor = document.querySelector("#armorname").innerHTML;
+      } else {
+        gArmor = "";
+      }
+      if (document.querySelector("#noArtefact").style.display === "block") {
+        gArtefact = document.querySelector("#artefactname").innerHTML;
+      } else {
+        gArtefact = "";
+      }
+    
+      // Backgrounds
+      const backgroundArr = [];
+      let background = new Image();
+    
+      let worldInit = false;
+    
+      let screen0init = false;
+      let screen1init = false;
+      let screen2init = false;
+      let screen3init = false;
+      let screen4init = false;
+      let screen5init = false;
+      let screen6init = false;
+      let screen7init = false;
+      let screen8init = false;
+      let screen9init = false;
+    
+      let levelScreen = 0;
+    
+      let animateId;
+      let roomTransit = false;
+      let transitSpeed = 5;
+      let transitDir = "";
+      let enemySpawnInProgress = false;
+      const myCanvas = document.querySelector("canvas");
+      const ctx = myCanvas.getContext("2d");
+      ctx.imageSmoothingEnabled = true;
+    
+      class Background {
+        constructor(x, y, width, height, source) {
+          this.x = x;
+          this.y = y;
+          this.width = width;
+          this.height = height;
+          this.source = source;
+    
+          this.img = new Image();
+          this.img.src = this.source;
+        }
+      }
+      
+      class Player {
+        constructor(race, x, y, width, height, xSpeed, ySpeed, xFacing, yFacing) {
+          this.type = "player";
+          this.race = race;
+          this.experience = experience;
+          this.level = gLevel;
+    
+          
+          // Pass in vars
+          this.x = x;
+          this.y = y;
+          this.width = width;
+          this.height = height;
+          this.xSpeed = xSpeed;
+          this.ySpeed = ySpeed;
+          this.xFacing = xFacing;
+          this.yFacing = yFacing;
+    
+          // Movement
+          this.moveLeft = false;
+          this.moveRight = false;
+          this.moveUp = false;
+          this.moveDown = false;
+    
+          //Animation
+          this.shadow = new Image();
+          this.shadow.src = "../images/ShadowPlayer.png"
+          this.imgContainerRight = [];
+          this.imgContainerLeft = [];
+          this.imgContainerIdleLeft = [];
+          this.imgContainerIdleRight = [];
+    
+          this.img = new Image();
+          this.imageFrames;
+          this.spriteSpeed = 12;
+          this.currentFrame = 0;
+    
+          // Gameplay values
+          this.damage;
           this.takenDamage = false;
-        }, this.iframes)
-      }
-      console.log("HIT")
-    }
-
-    destroy() { // GRANT SOULS AND XP
-      if (this.name === "slimeBoss") {
-        for (let i = collisionObjectArr.length - 1; i >= 0; i--) {
-          if (collisionObjectArr[i].triggerDestroy) {
-            collisionObjectArr[i].destroy();
+          this.iframes = 500;
+          this.alive = true;
+          this.hp = 10;
+          this.health = document.querySelector("#health")
+          this.health.max = this.hp
+          this.health.value = this.hp
+          
+    
+          // Equipment
+          this.weapon;
+          this.weaponProjectile;
+          this.weaponShootInterval;
+          this.weaponProjectileSpeed;
+          this.weaponLifeSpan;
+          
+          this.armor;
+    
+          this.artefact;
+    
+          // Shoot
+          this.shootRight = false;
+          this.shootLeft = false;
+          this.shootUp = false;
+          this.shootDown = false;
+          this.shoot = false;
+          this.canShoot = true;
+          
+          // Collision
+          this.left = this.x;
+          this.right = this.x + this.width;
+          this.top = this.y;
+          this.bottom = this.y + this.height;
+        }
+    
+        initialize() {
+          // Projectile array images
+          for (let i = 0; i < 6; i++) {
+            projectileImgArr.push("../images/Projectiles/pro"+i+".png");
+            console.log(projectileImgArr[i])
+          }
+          // Configure Weapon values
+          this.weapon = gWeapon;
+          this.damage = gDamage;
+          if (this.weapon.includes("Wooden Wand")) {
+            this.weaponProjectile = projectileImgArr[4];
+            this.weaponShootInterval = 500;
+            this.weaponLifeSpan = 30;
+            this.weaponProjectileSpeed = 8;
+          } else if (this.weapon.includes("Rusty Sword")) {
+            this.weaponProjectile = projectileImgArr[0];
+            this.weaponShootInterval = 500;
+            this.weaponLifeSpan = 40;
+            this.weaponProjectileSpeed = 8;
+          } else if (this.weapon.includes("Lancer")) {
+            this.weaponProjectile = projectileImgArr[2];
+            this.weaponShootInterval = 1000;
+            this.weaponLifeSpan = 50;
+            this.weaponProjectileSpeed = 20;
+          } else if (this.weapon.includes("Heavy Sword")) {
+            this.weaponProjectile = projectileImgArr[1];
+            this.weaponShootInterval = 400;
+            this.weaponLifeSpan = 1000;
+            this.weaponProjectileSpeed = .5;
+          } else if (this.weapon.includes("Moonlair")) {
+            this.weaponProjectile = projectileImgArr[3];
+            this.weaponShootInterval = 1;
+            this.weaponLifeSpan = 1000;
+            this.weaponProjectileSpeed = Math.floor(Math.random() * (21 - 1) + 1);
+          } else if (this.weapon.includes("Swampy")) {
+            this.weaponProjectile = projectileImgArr[5];
+            this.weaponShootInterval = 1000;
+            this.weaponLifeSpan = 5000;
+            this.weaponProjectileSpeed = .2;
+          } else {
+            this.weaponProjectile = projectileImgArr[4];
+            this.weaponShootInterval = 600;
+            this.weaponLifeSpan = 30;
+            this.weaponProjectileSpeed = 8;
+          }
+          // Configure Armor values
+          this.armor = gArmor;
+          this.defense = gDefense;
+          
+          // Configure Artefact values
+          this.artefact = gArtefact;
+    
+          // Load player sprites
+          if (this.race === "Dino") {      
+            for (let i = 0; i < 6; i++) {
+              this.imgContainerRight.push("../images/Races/Dino/RunRight/dino"+i+".png");
+              this.imgContainerLeft.push("../images/Races/Dino/RunLeft/dino"+i+".png");
+            }
+            for (let i = 0; i < 4; i++) {
+              this.imgContainerIdleLeft.push("../images/Races/Dino/IdleLeft/dino"+i+".png");
+              this.imgContainerIdleRight.push("../images/Races/Dino/IdleRight/dino"+i+".png");
+            }
+          } 
+          if (this.race === "Undead") {      
+            for (let i = 0; i < 6; i++) {
+              this.imgContainerRight.push("../images/Races/Undead/RunRight/undead"+i+".png");
+              this.imgContainerLeft.push("../images/Races/Undead/RunLeft/undead"+i+".png");
+            }
+            for (let i = 0; i < 4; i++) {
+              this.imgContainerIdleLeft.push("../images/Races/Undead/IdleLeft/undead"+i+".png");
+              this.imgContainerIdleRight.push("../images/Races/Undead/IdleRight/undead"+i+".png");
+            }
+          } 
+          if (this.race === "Human") {      
+            for (let i = 0; i < 6; i++) {
+              this.imgContainerRight.push("../images/Races/Human/RunRight/human"+i+".png");
+              this.imgContainerLeft.push("../images/Races/Human/RunLeft/human"+i+".png");
+            }
+            for (let i = 0; i < 4; i++) {
+              this.imgContainerIdleLeft.push("../images/Races/Human/IdleLeft/human"+i+".png");
+              this.imgContainerIdleRight.push("../images/Races/Human/IdleRight/human"+i+".png");
+            }
+          } 
+        } 
+    
+        updateCollision() {
+          this.left = this.x;
+          this.right = this.x + this.width;
+          this.top = this.y;
+          this.bottom = this.y + this.height;
+        }
+    
+        checkCollision(arr, ot, or, ob, ol) {
+          for (let i = 0; i < arr.length; i++) {
+            if (this.left - ol < arr[i].right &&
+              this.right + or > arr[i].left &&
+              this.top - ot < arr[i].bottom &&
+              this.bottom + ob >= arr[i].top) { 
+                if (arr[i].getType() === "environment" || arr[i].getType() === "playerblock") {
+                  return true;
+                } else if (arr[i].getType() === "enemy" || (arr[i].getType() === "projectile" && arr[i].firedBy === "enemy")) {
+                  this.hit(arr[i].damage)
+                } else if (arr[i].getType() === "roomtransit" && !roomTransit) {
+                  roomTransit = true;
+                  levelScreen = arr[i].nextScreen;
+                  transitDir = arr[i].transitDir;
+                }
+              }
           }
         }
-        clearInterval(this.spawnInterval);
-      }
-      this.dropSouls();
-      this.grantXp();
-      const posInArr = enemyArr.indexOf(this);
-      enemyArr.splice(posInArr, 1);
-    }
-
-    remove() { // DON'T GRANT SOULS OR XP
-      const posInArr = enemyArr.indexOf(this);
-      enemyArr.splice(posInArr, 1);
-    }
-
-    dropSouls() {
-      souls += this.souls;
-    }
-    grantXp() {
-      experience += this.experience;
-    }
-
-    getType() {
-      return this.type; 
-    }
-  }
-
-
-  const projectileArr = [];
-  class Projectile {
-    constructor(x, y, width, height, xDir, yDir, speed, damage, lifeSpan, firedBy, src) {
-      this.type = "projectile";
-
-      this.x = x;
-      this.y = y;
-      this.width = width;
-      this.height = height;
-      this.xDir = xDir;
-      this.yDir = yDir;
-      this.speed = speed;
-      this.damage = damage;
-      this.lifeSpan = lifeSpan;
-      this.firedBy = firedBy;
-      this.src = src
-
-      this.img = new Image();
-      this.img.src = this.src;
-
-      // Collision
-      this.left = this.x;
-      this.right = this.x + this.width;
-      this.top = this.y;
-      this.bottom = this.y + this.height;
-    }
-
-    updateProjectile() {
-      // Collision
-      this.left = this.x;
-      this.right = this.x + this.width
-      this.top = this.y;
-      this.bottom = this.y + this.height;
-
-      // Move projectiles
-      if (this.xDir + this.yDir === 1) {
-        this.x += this.speed * this.xDir;
-        this.y += this.speed * this.yDir;
-      } else {
-        this.x += this.speed / 1.4 * this.xDir;
-        this.y += this.speed / 1.4 * this.yDir;
-      }
-      // Draw
-      ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-
-      // Destory if lifeSpan reached
-      this.lifeSpan--;
-      if (this.lifeSpan <= 0) {
-        this.destroy();
-      }
-    }
-
-    checkCollision(arr, ot, or, ob, ol) {
-      for (let i = 0; i < arr.length; i++) {
-        if (this.left - ol < arr[i].right &&
-          this.right + or > arr[i].left &&
-          this.top - ot < arr[i].bottom &&
-          this.bottom + ob >= arr[i].top) { 
-            // Enemy Collision
-            if (arr[i].getType() === "enemy" && this.firedBy === "player") {
-              const projectile = projectileArr.indexOf(this);
-              if (!arr[i].takenDamage) arr[i].hit(projectileArr[projectile].damage);
-              projectileArr[projectile].destroy();
-              break;
-            } 
-            if (arr[i].getType() === "environment") {
-              this.destroy();
+    
+        getType() {
+          return this.type;
+        }
+    
+        getUnstuck() {
+          this.x = 300;
+          this.y = 300
+        }
+    
+        getDamage() {
+          return this.damage + this.level;
+        }
+        getDefense() {
+          return this.defense;
+        }
+    
+        hit(damage) {
+          // Check iframes
+          if (!this.takenDamage) {
+            this.takenDamage = true;
+            // Receive Damage
+            if (damage - this.getDefense() > 0) {
+              this.hp -= damage - this.getDefense();
+              this.health.value -= damage - this.getDefense();
+            } else {
+              this.hp -= 1;
+              this.health.value -= 1
             }
-            if (arr[i].getType() === "spawntrigger") {
-              arr[i].initiatieEnemySpawn()
+            console.log("HIT - ", this.hp)
+            // Kill player
+            if (this.hp <= 0) {
               this.destroy();
+            } else { // Reset iframes
+              setTimeout(() => {
+                this.takenDamage = false;
+              }, this.iframes)
             }
           }
+        }
+    
+        destroy() {
+          this.alive = false;
+          setTimeout(() => {
+            history.back()
+          }, 2000)
+        }
       }
-      // Leaving canvas
-      if (this.x < 0 || this.y < 0 || this.x > myCanvas.width + this.width || this.y > myCanvas.height + this.height) {
-        this.destroy();
+    
+    
+      const enemyArr = [];
+      class Enemy {
+        constructor(name, x, y, width, height) {
+          this.type = "enemy"
+          this.souls = 0;
+          this.experience = 0;
+    
+          this.name = name;    
+          this.x = x;
+          this.y = y;
+          this.width = width;
+          this.height = height;
+          this.screen = levelScreen;
+    
+          this.imgContainer = [];
+          this.img = new Image();
+          this.imageFrames;
+          this.spriteSpeed = 12;
+          this.currentFrame = 0;
+    
+          // Collision
+          this.left = this.x;
+          this.right = this.x + this.width;
+          this.top = this.y;
+          this.bottom = this.y + this.height;
+          this.cOffTop = 0;
+          this.cOffRight = 0;
+          this.cOffBottom = 0;
+          this.cOffLeft = 0;
+    
+          // Boss
+          this.xDir;
+          this.yDir;
+          this.canSpawn;
+          this.spawnInterval;
+          this.state;
+          this.ecrolState = true;
+          this.movementArr;
+          this.ecrolTimeout = 5000;
+    
+          // Gameplay values
+          this.initialized = false;
+          this.hp;
+          this.iframes = 100;
+          this.damage;
+          this.takenDamage = false;
+          this.randomMoveTimer;
+          this.moveSpeed;
+          this.moveTo;
+          this.canShoot = false;
+          this.shootInterval;
+        }
+    
+        initialize() {
+          if (this.name === "slime") {
+            // Collisions
+            this.cOffTop = 2;
+            this.cOffRight = 6;
+            this.cOffBottom = this.width / 2 - 2;
+            this.cOffLeft = 6;
+            // Gameplay
+            this.souls = 1;
+            this.experience = 1;
+            this.hp = 15;
+            this.damage = 5;
+            this.imageFrames = 4;
+            this.moveSpeed = 1;
+            this.randomMoveTimer = Math.floor(Math.random() * (400 - 200) + 200);
+            this.moveTo = this.getRandomCoordinates();
+            this.moveTowardsTarget(this.moveTo);
+            for (let i = 0; i < this.imageFrames; i++) {
+              this.imgContainer.push("../images/Meadow/Slime/slime"+i+".png");
+            }
+            this.initialized = true;
+          }
+          if (this.name === "bat") {
+            // Collisions
+            this.cOffTop = 0;
+            this.cOffRight = 0;
+            this.cOffBottom = 0;
+            this.cOffLeft = 0;
+            // Gameplay
+            this.souls = 1;
+            this.experience = 1;
+            this.hp = 15;
+            this.damage = 7;
+            this.imageFrames = 4;
+            this.xDir = -1;
+            this.moveSpeed = 1;
+            this.canShoot = true;
+            this.shootInterval = this.getRandomShootInterval();
+            for (let i = 0; i < this.imageFrames; i++) {
+              this.imgContainer.push("../images/Dungeon/Bat/bat"+i+".png");
+            }
+          }
+          if (this.name === "enemyprojectile") {
+            // Collisions
+            this.cOffTop = 0;
+            this.cOffRight = 0;
+            this.cOffBottom = 0;
+            this.cOffLeft = 0;
+            // Gameplay
+            this.souls = 0;
+            this.experience = 0;
+            this.hp = 10;
+            this.damage = 15;
+            this.imageFrames = 1;
+            this.yDir = 1;
+            this.moveSpeed = 1;
+            this.imgContainer.push("../images/Projectiles/weakFire.png");
+          }
+          if (this.name === "slimeBoss") {
+            // Collisions
+            this.cOffTop = 2;
+            this.cOffRight = 6;
+            this.cOffBottom = this.width / 3 - 2;
+            this.cOffLeft = 6;
+            // Gameplay
+            this.souls = 100;
+            this.experience = 50;
+            this.hp = 500;
+            this.damage = 10;
+            this.imageFrames = 6;
+            this.moveSpeed = 500;
+            this.xDir = -1;
+            this.yDir = -1;
+            this.canSpawn = false;
+            for (let i = 0; i < this.imageFrames; i++) {
+              this.imgContainer.push("../images/Meadow/SlimeBoss/slime0.png");
+            }
+          }
+          if (this.name === "ecrol") {
+            // Collisions
+            this.cOffTop = 0;
+            this.cOffRight = 0;
+            this.cOffBottom = 0;
+            this.cOffLeft = 0;
+            // Gameplay
+            this.souls = 500;
+            this.experience = 1000;
+            this.hp = 500;
+            this.damage = 1000;
+            this.imageFrames = 4;
+            this.moveSpeed = 12;
+            this.movementArr = this.ecrolPatterns();
+            this.x = this.movementArr[0].x;
+            this.y = this.movementArr[0].y;
+            if (this.ecrolState) this.state = 0;
+            for (let i = 0; i < this.imageFrames; i++) {
+              this.imgContainer.push("../images/Ecrol/ecrol"+i+".png");
+            }
+          }
+        } 
+    
+        getRandomCoordinates() {
+          const randomPointX = myCanvas.width;
+          const randomPointY = myCanvas.height;
+          const randomCoordinates = {
+            x: Math.floor(Math.random() * ((randomPointX - this.width - 60) - (this.width + 60) + (this.width + 60))),
+            y: Math.floor(Math.random() * ((randomPointY - this.height - 60) - (this.height + 60) + (this.width + 60))),
+          };
+          return randomCoordinates;
+        }
+    
+        getRandomShootInterval() {
+          return Math.floor(Math.random() * (5000 - 3000) + 3000);
+        }
+            
+        updateCollision() {
+          if (this.name === "enemyprojectile" && this.y > myCanvas.height - this.height) this.destroy();
+          this.left = this.x + this.cOffLeft;
+          this.right = this.x + this.width - this.cOffRight;
+          this.top = this.y + this.cOffTop;
+          this.bottom = this.y + this.height - this.cOffBottom;
+        }
+
+        checkCollision(arr, ot, or, ob, ol) {
+          for (let i = 0; i < arr.length; i++) {
+            if (this.left - ol < arr[i].right &&
+              this.right + or > arr[i].left &&
+              this.top - ot < arr[i].bottom &&
+              this.bottom + ob >= arr[i].top) { 
+                if (arr[i].getType() === "environment" && arr[i].getType() !== "playerblock") {
+                  return true;
+                }
+            }
+          }
+        }
+    
+        moveTowardsTarget(randomCoordinates) {
+          // Horizontal Movement
+          if (this.x < randomCoordinates.x && this.x < myCanvas.width - this.width && !this.checkCollision(collisionObjectArr, 0, 10, 0, 0)) {
+            this.x += this.moveSpeed;
+          } else if (this.x > randomCoordinates.x && this.x > 0 && !this.checkCollision(collisionObjectArr, 0, 0, 0, 10)) {
+            this.x -= this.moveSpeed;
+          }
+          // Vertial Movement
+          if (this.y > randomCoordinates.y && this.y > 0 && !this.checkCollision(collisionObjectArr, 10, 0, 0, 0)) {
+            this.y -= this.moveSpeed;
+          } else if (this.x < randomCoordinates.y && this.y < myCanvas.height - this.height && !this.checkCollision(collisionObjectArr, 0, 0, 10, 0)) {
+            this.y += this.moveSpeed;
+          }
+        }
+    
+        moveLeftRight() {
+          if (this.checkCollision(collisionObjectArr, 0, 5, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 0, 5)) {
+            this.xDir *= -1;
+          }
+          this.x += this.moveSpeed * this.xDir;
+        }
+    
+        shootDown() {
+          if (this.canShoot) {
+            this.canShoot = false;
+            enemyArr.push(new Enemy("enemyprojectile", this.x, this.y, 32, 32));
+            setTimeout(() => {
+              this.canShoot = true;
+            }, this.shootInterval);
+          }
+        }
+    
+        moveDown() {
+          this.y += this.moveSpeed;
+        }
+    
+        slimeBossMovement() {
+          // Horizontal Collisions
+          if (this.checkCollision(collisionObjectArr, 0, 5, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 0, 5)) {
+            this.xDir *= -1;
+          }
+          // Vertical Collisions
+          if (this.checkCollision(collisionObjectArr, 5, 0, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 5, 0)) {
+            this.yDir *= -1;
+          }
+          // Move 
+          this.x += (this.moveSpeed / 1.2 / this.hp) * this.xDir;
+          this.y += (this.moveSpeed / this.hp) * this.yDir;
+        }
+    
+        ecrolPositionPicker() {
+          this.state = Math.floor(Math.random() * 5)
+        }
+    
+        ecrolBossMovement() {
+          if (this.ecrolState) {
+            switch (this.state) {
+              case 0:
+                this.ecrolState = false;
+                this.img.src = this.imgContainer[1];
+                this.x = this.movementArr[this.state].x
+                this.y = this.movementArr[this.state].y
+                setTimeout(() => {
+                  this.ecrolState = true;
+                  this.ecrolPositionPicker();
+                }, this.ecrolTimeout)
+                break;
+              case 1:
+                this.ecrolState = false;
+                this.img.src = this.imgContainer[3];
+                this.x = this.movementArr[this.state].x
+                this.y = this.movementArr[this.state].y
+                setTimeout(() => {
+                  this.ecrolState = true;
+                  this.ecrolPositionPicker();
+                }, this.ecrolTimeout)
+                break;
+              case 2:
+                this.ecrolState = false;
+                this.img.src = this.imgContainer[2];
+                this.x = this.movementArr[this.state].x
+                this.y = this.movementArr[this.state].y
+                setTimeout(() => {
+                  this.ecrolState = true;
+                  this.ecrolPositionPicker();
+                }, this.ecrolTimeout)
+                break;
+              case 3:
+                this.ecrolState = false;
+                this.img.src = this.imgContainer[2];
+                this.x = this.movementArr[this.state].x
+                this.y = this.movementArr[this.state].y
+                setTimeout(() => {
+                  this.ecrolState = true;
+                  this.ecrolPositionPicker();
+                }, this.ecrolTimeout)
+                break;
+              case 4:
+                this.ecrolState = false;
+                this.img.src = this.imgContainer[0];
+                this.x = this.movementArr[this.state].x
+                this.y = this.movementArr[this.state].y
+                setTimeout(() => {
+                  this.ecrolState = true;
+                  this.ecrolPositionPicker();
+                }, this.ecrolTimeout)
+                break;
+            }
+          }
+          if (this.state < 2) {
+            this.width = 531
+            this.height = 150
+            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+          } else {
+            this.width = 150
+            this.height = 531
+            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+          }
+          this.ecrolMove();
+        }
+    
+        ecrolMove() {
+          switch (this.state) {
+            case 0:
+              this.x += this.moveSpeed;
+              break;
+            case 1:
+              this.x -= this.moveSpeed;
+              break;
+            case 2:
+              this.y += this.moveSpeed
+              break;
+            case 3:
+              this.y += this.moveSpeed
+              break;
+            case 4:
+              this.y -= this.moveSpeed
+              break;
+          }
+        }
+    
+        ecrolPatterns() {
+          const arr = [
+            // LEFT -> RIGHT 0
+            {
+              x: -myCanvas.width,
+              y: 100,
+            },
+            // RIGHT -> LEFT 1
+            {
+              x: myCanvas.width * 2,
+              y: 350,
+            },
+            // TOP -> BOTTOM (middle) 2
+            {
+              x: 300,
+              y: -myCanvas.height,
+            },
+            // TOP -> BOTTOM (offset) 3
+            {
+              x: 550,
+              y: -myCanvas.height,
+            },
+            // BOTTOM -> TOP () 4
+            {
+              x: myCanvas.width / 2 + 150,
+              y: myCanvas.height * 2,
+            },
+          ]
+          
+          return arr;
+        }
+    
+        hit(damage) {
+          if (this.name === "enemyprojectile") this.destroy();
+          this.takenDamage = true;
+          this.hp -= damage;
+          if (this.hp <= 0) {
+            this.destroy();
+          } else {
+            setTimeout(() => {
+              this.takenDamage = false;
+            }, this.iframes)
+          }
+          console.log("HIT")
+        }
+    
+        destroy() { // GRANT SOULS AND XP
+          if (this.name === "slimeBoss") {
+            for (let i = collisionObjectArr.length - 1; i >= 0; i--) {
+              if (collisionObjectArr[i].triggerDestroy) {
+                collisionObjectArr[i].destroy();
+              }
+            }
+            clearInterval(this.spawnInterval);
+          }
+          this.dropSouls();
+          this.grantXp();
+          const posInArr = enemyArr.indexOf(this);
+          enemyArr.splice(posInArr, 1);
+        }
+    
+        remove() { // DON'T GRANT SOULS OR XP
+          const posInArr = enemyArr.indexOf(this);
+          enemyArr.splice(posInArr, 1);
+        }
+    
+        dropSouls() {
+          souls += this.souls;
+        }
+        grantXp() {
+          experience += this.experience;
+        }
+    
+        getType() {
+          return this.type; 
+        }
       }
-    }
-
-    destroy() {
-      const posInArr = projectileArr.indexOf(this);
-      projectileArr.splice(posInArr, 1);
-    }
-
-    getType() {
-      return this.type;
-    }
-  }
-
-  const collisionObjectArr = [];
-  class CollisionObject {
-    constructor(x, y, width, height, type, nextScreen, transitDir, debug, triggerDestroy) {
-      this.x = x;
-      this.y = y;
-      this.width = width;
-      this.height = height;
-      this.type = type;
-      this.nextScreen = nextScreen;
-      this.transitDir = transitDir;
-      this.debug = debug;
-      this.triggerDestroy = triggerDestroy;
-
-      // Collision
-      this.left = this.x;
-      this.right = this.x + this.width;
-      this.top = this.y;
-      this.bottom = this.y + this.height;
-
-      // Functional
-      this.spawnInit = false;
-    }
-
-    updateCollisionObjects() {
-      // Update Collisions
-      this.left = this.x;
-      this.right = this.x + this.width;
-      this.top = this.y;
-      this.bottom = this.y + this.height;
-      
-      // Show Collisions
-      if (this.debug) {
-        ctx.beginPath();
-        ctx.fillStyle = "rgba(0,0,0,0.5)";
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-        ctx.closePath();
+    
+    
+      const projectileArr = [];
+      class Projectile {
+        constructor(x, y, width, height, xDir, yDir, speed, damage, lifeSpan, firedBy, src) {
+          this.type = "projectile";
+    
+          this.x = x;
+          this.y = y;
+          this.width = width;
+          this.height = height;
+          this.xDir = xDir;
+          this.yDir = yDir;
+          this.speed = speed;
+          this.damage = damage;
+          this.lifeSpan = lifeSpan;
+          this.firedBy = firedBy;
+          this.src = src
+    
+          this.img = new Image();
+          this.img.src = this.src;
+    
+          // Collision
+          this.left = this.x;
+          this.right = this.x + this.width;
+          this.top = this.y;
+          this.bottom = this.y + this.height;
+        }
+    
+        updateProjectile() {
+          // Collision
+          this.left = this.x;
+          this.right = this.x + this.width
+          this.top = this.y;
+          this.bottom = this.y + this.height;
+    
+          // Move projectiles
+          if (this.xDir + this.yDir === 1) {
+            this.x += this.speed * this.xDir;
+            this.y += this.speed * this.yDir;
+          } else {
+            this.x += this.speed / 1.4 * this.xDir;
+            this.y += this.speed / 1.4 * this.yDir;
+          }
+          // Draw
+          ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+    
+          // Destory if lifeSpan reached
+          this.lifeSpan--;
+          if (this.lifeSpan <= 0) {
+            this.destroy();
+          }
+        }
+    
+        checkCollision(arr, ot, or, ob, ol) {
+          for (let i = 0; i < arr.length; i++) {
+            if (this.left - ol < arr[i].right &&
+              this.right + or > arr[i].left &&
+              this.top - ot < arr[i].bottom &&
+              this.bottom + ob >= arr[i].top) { 
+                // Enemy Collision
+                if (arr[i].getType() === "enemy" && this.firedBy === "player") {
+                  const projectile = projectileArr.indexOf(this);
+                  if (!arr[i].takenDamage) arr[i].hit(projectileArr[projectile].damage);
+                  projectileArr[projectile].destroy();
+                  break;
+                } 
+                if (arr[i].getType() === "environment") {
+                  this.destroy();
+                }
+                if (arr[i].getType() === "spawntrigger") {
+                  arr[i].initiatieEnemySpawn()
+                  this.destroy();
+                }
+              }
+          }
+          // Leaving canvas
+          if (this.x < 0 || this.y < 0 || this.x > myCanvas.width + this.width || this.y > myCanvas.height + this.height) {
+            this.destroy();
+          }
+        }
+    
+        destroy() {
+          const posInArr = projectileArr.indexOf(this);
+          projectileArr.splice(posInArr, 1);
+        }
+    
+        getType() {
+          return this.type;
+        }
       }
-    }
-
-    selfDestruct() {
-      if (this.triggerDestroy) {
-        setTimeout(() => {
-          this.destroy();
-        }, 5000)
+    
+      const collisionObjectArr = [];
+      class CollisionObject {
+        constructor(x, y, width, height, type, nextScreen, transitDir, debug, triggerDestroy) {
+          this.x = x;
+          this.y = y;
+          this.width = width;
+          this.height = height;
+          this.type = type;
+          this.nextScreen = nextScreen;
+          this.transitDir = transitDir;
+          this.debug = debug;
+          this.triggerDestroy = triggerDestroy;
+    
+          // Collision
+          this.left = this.x;
+          this.right = this.x + this.width;
+          this.top = this.y;
+          this.bottom = this.y + this.height;
+    
+          // Functional
+          this.spawnInit = false;
+        }
+    
+        updateCollisionObjects() {
+          // Update Collisions
+          this.left = this.x;
+          this.right = this.x + this.width;
+          this.top = this.y;
+          this.bottom = this.y + this.height;
+          
+          // Show Collisions
+          if (this.debug) {
+            ctx.beginPath();
+            ctx.fillStyle = "rgba(0,0,0,0.5)";
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+            ctx.closePath();
+          }
+        }
+    
+        selfDestruct() {
+          if (this.triggerDestroy) {
+            setTimeout(() => {
+              this.destroy();
+            }, 5000)
+          }
+        }
+    
+        initiatieEnemySpawn() {
+          if (!this.spawnInit) {
+            enemySpawnInProgress = true;
+            this.spawnInit = true;
+            this.destroy()
+          }
+        }
+    
+        destroy() {
+          const posInArr = collisionObjectArr.indexOf(this);
+          collisionObjectArr.splice(posInArr, 1);
+        }
+    
+        getType() {
+          return this.type;
+        }
+    
+        getNextScreen() {
+          return this.nextScreen;
+        }
       }
-    }
-
-    initiatieEnemySpawn() {
-      if (!this.spawnInit) {
-        enemySpawnInProgress = true;
-        this.spawnInit = true;
-        this.destroy()
-      }
-    }
-
-    destroy() {
-      const posInArr = collisionObjectArr.indexOf(this);
-      collisionObjectArr.splice(posInArr, 1);
-    }
-
-    getType() {
-      return this.type;
-    }
-
-    getNextScreen() {
-      return this.nextScreen;
-    }
-  }
-
-
-  window.onload = () => {
     let level4Spawn = true;
     let level8Spawn = true;
     function preloadImages(array) {
@@ -1044,18 +1076,6 @@ if (sessionInProgress) {
     }
 
     function gameplayLoop() {
-      let spawnImg = new Image();
-      spawnImg.src = "../images/Environment/spawnSlimeGel.png";
-
-      if (levelScreen < 6) {
-        document.getElementById("meadowMap").style.display = "block";
-        document.getElementById("caveMap").style.display = "none";
-      }
-      if (levelScreen > 5) {
-        document.getElementById("caveMap").style.display = "block";
-        document.getElementById("meadowMap").style.display = "none";
-      }
-
       if (!roomTransit) {
         cancelAnimationFrame(animateId);
         // Reset for new drawing
@@ -1064,26 +1084,12 @@ if (sessionInProgress) {
         ctx.drawImage(background, 0, 0 , 1200, 700);
         // Projectiles
         updateProjectiles();
-        //Enemies
+        // Enemies
         updateEnemies();
-        if (enemySpawnInProgress) {
-          enemySpawnInProgress = false;
-          if (levelScreen === 4) level4Spawn = false;
-          if (levelScreen === 8) level8Spawn = false;
-          initiateSpawn()
-        }
-
-        if (level4Spawn && levelScreen === 4) {
-          ctx.drawImage(spawnImg, myCanvas.width / 2 - 72, myCanvas.height / 2  - 72, 72, 72)
-        }
-        if (level8Spawn && levelScreen === 8) {
-          ctx.drawImage(spawnImg, myCanvas.width / 2 - 72, myCanvas.height / 2  - 72, 72, 72)
-        }
-
+        // Level Events
+        checkLevelEvents();
         // Collisions
         updateCollisionObjects();
-        document.querySelector("#souls").value = souls;
-        document.querySelector("#experience").value = experience;
         // Player
         updatePlayer();
         // Gameplay loop
@@ -1173,13 +1179,43 @@ if (sessionInProgress) {
       }
     }
 
+    function checkLevelEvents() {      
+      // Level Dependent Enemy Spawns
+      let spawnImg = new Image();
+      spawnImg.src = "../images/Environment/spawnSlimeGel.png";
+      if (level4Spawn && levelScreen === 4) {
+        ctx.drawImage(spawnImg, myCanvas.width / 2 - 72, myCanvas.height / 2  - 72, 72, 72)
+      }
+      if (level8Spawn && levelScreen === 8) {
+        ctx.drawImage(spawnImg, myCanvas.width / 2 - 72, myCanvas.height / 2  - 72, 72, 72)
+      }
+      if (enemySpawnInProgress) {
+        enemySpawnInProgress = false;
+        if (levelScreen === 4) level4Spawn = false;
+        if (levelScreen === 8) level8Spawn = false;
+        initiateSpawn()
+      }
+      // 3D Level Models
+      if (levelScreen < 6) {
+        document.getElementById("meadowMap").style.display = "block";
+        document.getElementById("caveMap").style.display = "none";
+      }
+      if (levelScreen > 5) {
+        document.getElementById("caveMap").style.display = "block";
+        document.getElementById("meadowMap").style.display = "none";
+      }
 
+    }
 
     function updatePlayer() {
       if (player.alive) {
         // Collision
         player.updateCollision();
-        player.checkCollision(enemyArr, 0, 0, 0, 0);
+        player.checkCollision(enemyArr, -50, -14, -17, -14);
+
+        // Update Stats
+        document.querySelector("#souls").value = souls;
+        document.querySelector("#experience").value = experience;
 
         // Movement and Boundaries
         ctx.globalAlpha = 0.4;
@@ -1298,7 +1334,7 @@ if (sessionInProgress) {
           enemyArr[i].ecrolBossMovement();
         }
 
-
+        // Collisions
         enemyArr[i].updateCollision();
         if (enemyArr[i] && enemyArr[i].name !== "slimeBoss" && enemyArr[i].name !== "ecrol") animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
         if (enemyArr[i] && enemyArr[i].name === "slimeBoss") animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
@@ -1820,5 +1856,4 @@ if (sessionInProgress) {
       screen9init = true;
     }
   }
-
-}
+})
