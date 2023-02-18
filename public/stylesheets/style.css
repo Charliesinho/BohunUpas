@@ -672,14 +672,21 @@ justify-items: center;
 
 .newsArticle {
   display: flex;
-  width: 1000px;
+  width: 1500px;
   justify-content: center;
-  align-items: flex-end;
+  align-items: flex-start;
   line-height: 30px;
   gap: 50px;
   margin-bottom: -50px;
   margin-top: 100px;
   text-align: justify;
+}
+
+.newsIframe {
+  width: 600px;
+  height: 600px;
+  border-color: transparent;
+  border-radius: 50px;
 }
 
 .articleTitle {
@@ -688,6 +695,7 @@ justify-items: center;
 
 .articlePara {
   font-size: 18px;
+  width: 600px;
 }
 
 #health {
