@@ -413,15 +413,9 @@ window.addEventListener("load", () => {
           this.artefact = gArtefact;
     
           // Load player sprites
-          if (this.race === "Dino") {   
-            this.image = document.getElementById("dino"); 
-          } 
-          if (this.race === "Undead") {   
-
-          } 
-          if (this.race === "Human") {    
-
-          } 
+          if (this.race === "Dino") this.image = document.getElementById("dino"); 
+          //if (this.race === "Undead")
+          //if (this.race === "Human")
         } 
     
         updateCollision() {
@@ -479,7 +473,7 @@ window.addEventListener("load", () => {
                 this.frameY = 3;
               }
             }
-            if (this.moveDown && this.y < myCanvas.height - this.height) {
+            if (this.moveDown && this.y < myCanvas.height - this.height && !roomTransit) {
               if (!this.checkCollision(collisionObjectArr, 0, 0, 5, 0) && !roomTransit) this.y += this.ySpeed * deltaTime;
               if(this.xFacing === 1 && !this.moveRight) {
                 this.frameY = 2;
@@ -488,7 +482,7 @@ window.addEventListener("load", () => {
                 this.frameY = 3;
               }     
             }
-            if (!this.moveDown && !this.moveLeft && !this.moveRight && !this.moveUp) {
+            if (!this.moveDown && !this.moveLeft && !this.moveRight && !this.moveUp && !roomTransit) {
               if(this.xFacing === 1) {
                 this.frameY = 0;
               }
@@ -691,6 +685,9 @@ window.addEventListener("load", () => {
             }, this.randomMoveTimer)
           }
           if (this.name === "bat") {
+            this.image = document.getElementById("bat");
+            this.spriteWidth = 100;
+            this.spriteHeight = 64;
             // Collisions
             this.cOffTop = 0;
             this.cOffRight = 0;
@@ -702,15 +699,15 @@ window.addEventListener("load", () => {
             this.hp = 15;
             this.damage = 7;
             this.imageFrames = 4;
-            this.xDir = -1;
-            this.moveSpeed = 1;
+            this.xDir = 1;
+            this.moveSpeed = 0.1;
             this.canShoot = true;
             this.shootInterval = this.getRandomShootInterval();
-            for (let i = 0; i < this.imageFrames; i++) {
-              this.imgContainer.push("../images/Dungeon/Bat/bat"+i+".png");
-            }
           }
-          if (this.name === "enemyprojectile") {
+          if (this.name === "enemyProjectileFire") {
+            this.image = document.getElementById("enemyProjectileFire");
+            this.spriteWidth = 600;
+            this.spriteHeight = 600;
             // Collisions
             this.cOffTop = 0;
             this.cOffRight = 0;
@@ -723,8 +720,7 @@ window.addEventListener("load", () => {
             this.damage = 15;
             this.imageFrames = 1;
             this.yDir = 1;
-            this.moveSpeed = 1;
-            this.imgContainer.push("../images/Projectiles/weakFire.png");
+            this.moveSpeed = 0.1;
           }
           if (this.name === "slimeBoss") {
             this.image = document.getElementById("slimeBoss");
@@ -747,6 +743,14 @@ window.addEventListener("load", () => {
             this.canSpawn = false;
           }
           if (this.name === "ecrol") {
+            this.imageUp = document.getElementById("ecrol0");
+            this.imageRight = document.getElementById("ecrol1");
+            this.imageDown = document.getElementById("ecrol2");
+            this.imageLeft = document.getElementById("ecrol3");
+
+            this.image = this.imageRight;
+            this.spriteWidth = 531;
+            this.spriteHeight = 150;
             // Collisions
             this.cOffTop = 0;
             this.cOffRight = 0;
@@ -758,14 +762,11 @@ window.addEventListener("load", () => {
             this.hp = 500;
             this.damage = 1000;
             this.imageFrames = 4;
-            this.moveSpeed = 12;
+            this.moveSpeed = 1;
             this.movementArr = this.ecrolPatterns();
             this.x = this.movementArr[0].x;
             this.y = this.movementArr[0].y;
             if (this.ecrolState) this.state = 0;
-            for (let i = 0; i < this.imageFrames; i++) {
-              this.imgContainer.push("../images/Ecrol/ecrol"+i+".png");
-            }
           }
         } 
     
@@ -784,7 +785,7 @@ window.addEventListener("load", () => {
         }
             
         updateCollision() {
-          if (this.name === "enemyprojectile" && this.y > myCanvas.height - this.height) this.destroy();
+          if (this.name === "enemyProjectileFire" && this.y > myCanvas.height - this.height) this.destroy();
           this.left = this.x + this.cOffLeft;
           this.right = this.x + this.width - this.cOffRight;
           this.top = this.y + this.cOffTop;
@@ -805,6 +806,7 @@ window.addEventListener("load", () => {
         }
 
         draw(ctx) {
+          if (this.name === "enemyProjectileFire") this.initialize();
           ctx.drawImage(this.image, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
         }
 
@@ -813,12 +815,12 @@ window.addEventListener("load", () => {
           // Normal enemies
           if (this.name === "slime") this.moveTowardsTarget(this.moveTo, deltaTime);
           if (this.name === "bat") {
-            this.moveLeftRight();
+            this.moveLeftRight(deltaTime);
             this.shootDown();
           }
-          if (this.name === "enemyprojectile") {
+          if (this.name === "enemyProjectileFire") {
             if(!this.initialized) this.initialize()
-            this.moveDown();
+            this.moveDown(deltaTime);
           }
   
   
@@ -855,15 +857,17 @@ window.addEventListener("load", () => {
           this.updateCollision();
 
           // Frame counter
-          if (this.frameTimer > this.frameInterval) {
-            if (this.frameX < this.maxFrame) {
-              this.frameX++;
+          if (this.name !== "ecrol") {
+            if (this.frameTimer > this.frameInterval) {
+              if (this.frameX < this.maxFrame) {
+                this.frameX++;
+              } else {
+                this.frameX = 0;
+              }
+              this.frameTimer = 0;
             } else {
-              this.frameX = 0;
+              this.frameTimer += deltaTime;
             }
-            this.frameTimer = 0;
-          } else {
-            this.frameTimer += deltaTime;
           }
         }
     
@@ -883,7 +887,7 @@ window.addEventListener("load", () => {
           }
         }
     
-        moveLeftRight() {
+        moveLeftRight(deltaTime) {
           if (this.checkCollision(collisionObjectArr, 0, 5, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 0, 5)) {
             this.xDir *= -1;
           }
@@ -893,19 +897,18 @@ window.addEventListener("load", () => {
         shootDown() {
           if (this.canShoot) {
             this.canShoot = false;
-            game.enemies.push(new Enemy("enemyprojectile", this.x, this.y, 32, 32));
+            game.enemies.push(new Enemy("enemyProjectileFire", this.x, this.y, 32, 32, 0));
             setTimeout(() => {
               this.canShoot = true;
             }, this.shootInterval);
           }
         }
     
-        moveDown() {
+        moveDown(deltaTime) {
           this.y += this.moveSpeed * deltaTime;
         }
     
         slimeBossMovement(deltaTime) {
-          console.log(this.xDir, this.yDir)
           if (deltaTime === undefined) deltaTime = 0;
           // Horizontal Collisions
           if (this.checkCollision(collisionObjectArr, 0, 5, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 0, 5)) {
@@ -929,7 +932,9 @@ window.addEventListener("load", () => {
             switch (this.state) {
               case 0:
                 this.ecrolState = false;
-                this.img.src = this.imgContainer[1];
+                this.spriteWidth = 531;
+                this.spriteHeight = 150;
+                this.image = this.imageRight;
                 this.x = this.movementArr[this.state].x
                 this.y = this.movementArr[this.state].y
                 setTimeout(() => {
@@ -939,7 +944,9 @@ window.addEventListener("load", () => {
                 break;
               case 1:
                 this.ecrolState = false;
-                this.img.src = this.imgContainer[3];
+                this.spriteWidth = 531;
+                this.spriteHeight = 150;
+                this.image = this.imageLeft;
                 this.x = this.movementArr[this.state].x
                 this.y = this.movementArr[this.state].y
                 setTimeout(() => {
@@ -949,7 +956,9 @@ window.addEventListener("load", () => {
                 break;
               case 2:
                 this.ecrolState = false;
-                this.img.src = this.imgContainer[2];
+                this.spriteWidth = 150;
+                this.spriteHeight = 531;
+                this.image = this.imageDown;
                 this.x = this.movementArr[this.state].x
                 this.y = this.movementArr[this.state].y
                 setTimeout(() => {
@@ -959,7 +968,9 @@ window.addEventListener("load", () => {
                 break;
               case 3:
                 this.ecrolState = false;
-                this.img.src = this.imgContainer[2];
+                this.spriteWidth = 150;
+                this.spriteHeight = 531;
+                this.image = this.imageDown;
                 this.x = this.movementArr[this.state].x
                 this.y = this.movementArr[this.state].y
                 setTimeout(() => {
@@ -969,7 +980,9 @@ window.addEventListener("load", () => {
                 break;
               case 4:
                 this.ecrolState = false;
-                this.img.src = this.imgContainer[0];
+                this.spriteWidth = 150;
+                this.spriteHeight = 531;
+                this.image = this.imageUp;
                 this.x = this.movementArr[this.state].x
                 this.y = this.movementArr[this.state].y
                 setTimeout(() => {
@@ -1045,7 +1058,7 @@ window.addEventListener("load", () => {
         }
     
         hit(damage) {
-          if (this.name === "enemyprojectile") this.destroy();
+          if (this.name === "enemyProjectileFire") this.destroy();
           this.takenDamage = true;
           this.hp -= damage;
           if (this.hp <= 0) {
@@ -1523,16 +1536,16 @@ window.addEventListener("load", () => {
         game.enemies.push(new Enemy("slime", 850, 300, 90, 80, 5));
         game.enemies.push(new Enemy("slime", 900, 300, 90, 80, 5));
         game.enemies.push(new Enemy("slime", 950, 300, 90, 80, 5));
-        game.enemies.push(new Enemy("bat", 150, 120, 52, 36));
-        game.enemies.push(new Enemy("bat", 250, 120, 52, 36));
-        game.enemies.push(new Enemy("bat", 350, 120, 52, 36));
-        game.enemies.push(new Enemy("bat", 450, 120, 52, 36));
-        game.enemies.push(new Enemy("bat", 550, 120, 52, 36));
-        game.enemies.push(new Enemy("bat", 600, 120, 52, 36));
-        game.enemies.push(new Enemy("bat", 700, 120, 52, 36));
-        game.enemies.push(new Enemy("bat", 800, 120, 52, 36));
-        game.enemies.push(new Enemy("bat", 900, 120, 52, 36));
-        game.enemies.push(new Enemy("bat", 1000, 120, 52, 36));
+        game.enemies.push(new Enemy("bat", 150, 120, 52, 36, 4));
+        game.enemies.push(new Enemy("bat", 250, 120, 52, 36, 4));
+        game.enemies.push(new Enemy("bat", 350, 120, 52, 36, 4));
+        game.enemies.push(new Enemy("bat", 450, 120, 52, 36, 4));
+        game.enemies.push(new Enemy("bat", 550, 120, 52, 36, 4));
+        game.enemies.push(new Enemy("bat", 600, 120, 52, 36, 4));
+        game.enemies.push(new Enemy("bat", 700, 120, 52, 36, 4));
+        game.enemies.push(new Enemy("bat", 800, 120, 52, 36, 4));
+        game.enemies.push(new Enemy("bat", 900, 120, 52, 36, 4));
+        game.enemies.push(new Enemy("bat", 1000, 120, 52, 36, 4));
       }
       for (let i = 0; i < game.enemies.length; i++) {
         game.enemies[i].initialize();
@@ -1809,32 +1822,32 @@ window.addEventListener("load", () => {
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height-15, 130, 15, "roomtransit", 6, "up", false, false));
       
       // ENEMIES
-      game.enemies.push(new Enemy("bat", 100, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 200, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 300, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 400, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 500, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 150, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 250, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 350, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 450, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 550, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 100, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 200, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 300, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 400, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 500, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 150, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 250, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 350, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 450, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 550, 120, 52, 36, 5));
 
-      game.enemies.push(new Enemy("bat", 600, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 700, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 800, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 900, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 1000, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 650, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 750, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 850, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 950, 120, 52, 36));
-      game.enemies.push(new Enemy("bat", 1050, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 600, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 700, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 800, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 900, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 1000, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 650, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 750, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 850, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 950, 120, 52, 36, 5));
+      game.enemies.push(new Enemy("bat", 1050, 120, 52, 36, 5));
 
       // Initialize enemies
       for (let i = 0; i < game.enemies.length; i++) {
         game.enemies[i].initialize();
-        if (i > 8) game.enemies[i].xDir = 1;
+        if (i > 8) game.enemies[i].xDir = -1;
       }
       
       screen7init = true;
@@ -1876,7 +1889,7 @@ window.addEventListener("load", () => {
 
       // BOSS
       setTimeout(() => {
-        game.enemies.push(new Enemy("ecrol", -myCanvas.width, 0, 531, 150));
+        game.enemies.push(new Enemy("ecrol", -myCanvas.width, 0, 531, 150, 0));
         for (let i = 0; i < game.enemies.length; i++) {
           game.enemies[i].initialize();
         }

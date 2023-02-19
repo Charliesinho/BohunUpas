@@ -9,6 +9,18 @@
 #slimeBoss {
   display: none;
 }
+#bat {
+  display: none;
+}
+#enemyProjectileFire {
+  display: none;
+}
+#ecrol0,
+#ecrol1,
+#ecrol2,
+#ecrol3 {
+  display: none;
+}
 
 body {  
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;  
