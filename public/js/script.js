@@ -165,6 +165,96 @@ window.addEventListener("load", () => {
       const ctx = myCanvas.getContext("2d");
       ctx.imageSmoothingEnabled = true;
     
+      class InputHandler {
+        constructor(game, player) {
+          this.game = game;
+          this.player = player;
+          // Controls
+          document.addEventListener("keydown", (e) => {
+            switch (e.key) {
+              case "d": // Right
+              case "D":
+                this.player.moveRight = true;
+              break;
+              case "a": // Left
+              case "A":
+                this.player.moveLeft = true;
+              break;
+              case "w": // Up
+              case "W":
+                this.player.moveUp = true;
+              break;
+              case "s": // Down
+              case "S":
+                this.player.moveDown = true;
+              break;
+              case "ArrowRight": // Shoot
+                this.player.shootRight = true;
+              break;
+              case "ArrowLeft": // Shoot
+                this.player.shootLeft = true;
+              break;
+              case "ArrowUp": // Shoot
+                this.player.shootUp = true;
+              break;
+              case "ArrowDown": // Shoot
+                this.player.shootDown = true;
+              break;
+              case "p": // Shoot
+              case "P": // Shoot
+                this.player.getUnstuck();
+              break;
+            }
+          });
+          document.addEventListener("keyup", (e) => {
+            switch (e.key) {
+              case "d": // Right
+              case "D":
+                this.player.moveRight = false;
+              break;
+              case "a": // Left
+              case "A":
+                this.player.moveLeft = false;
+              break;
+              case "w": // Up
+              case "W":
+                this.player.moveUp = false;
+              break;
+              case "s": // Down
+              case "S":
+                this.player.moveDown = false;
+              break;
+              case "ArrowRight": // Shoot
+                this.player.shootRight = false;
+              break;
+              case "ArrowLeft": // Shoot
+                this.player.shootLeft = false;
+              break;
+              case "ArrowUp": // Shoot
+                this.player.shootUp = false;
+              break;
+              case "ArrowDown": // Shoot
+                this.player.shootDown = false;
+              break;
+            }
+          });  
+        }
+      }
+
+      class Game {
+        constructor(width, height) {
+          this.width = width;
+          this.height = height;
+          this.lastKey = undefined;
+          this.player = new Player(this, race, 800, 270, 80, 80, 5, 5, 1, 0);
+          this.input = new InputHandler(this, this.player);
+        }
+        render(context, deltaTime) {
+          this.player.draw(context);
+          this.player.updatePlayer(deltaTime);
+        }
+      }
+
       class Background {
         constructor(x, y, width, height, source) {
           this.x = x;
@@ -179,12 +269,19 @@ window.addEventListener("load", () => {
       }
       
       class Player {
-        constructor(race, x, y, width, height, xSpeed, ySpeed, xFacing, yFacing) {
+        constructor(game, race, x, y, width, height, xSpeed, ySpeed, xFacing, yFacing) {
+          this.game = game;
           this.type = "player";
           this.race = race;
           this.experience = experience;
           this.level = gLevel;
-    
+          //this.image = SPRITESHEET
+          this.fps = 30;
+          this.frameInterval = 1000/this.fps;
+          this.frameTimer = 0;
+          this.frameX = 0;
+          this.frameY = 0;
+          
           
           // Pass in vars
           this.x = x;
@@ -212,7 +309,7 @@ window.addEventListener("load", () => {
     
           this.img = new Image();
           this.imageFrames;
-          this.spriteSpeed = 12;
+          //this.spriteSpeed = 12;
           this.currentFrame = 0;
     
           // Gameplay values
@@ -360,6 +457,88 @@ window.addEventListener("load", () => {
                   transitDir = arr[i].transitDir;
                 }
               }
+          }
+        }
+        
+        updatePlayer(deltaTime) {
+
+          if (this.alive) {
+            // Collision
+            this.updateCollision();
+            this.checkCollision(enemyArr, -50, -14, -17, -14);
+    
+            // Update Stats
+            document.querySelector("#souls").value = souls;
+            document.querySelector("#experience").value = experience;
+            
+            // Shooting
+            if (this.canShoot) {
+              if (this.shootLeft && this.shootUp) { // TOP LEFT
+                spawnProjectile(this.x + this.width / 2 - 32, this.y + this.height / 2 - 32, 50, 50, -1, -1, this.weaponProjectileSpeed, this.getDamage(), this.weaponLifeSpan, "player", this.weaponProjectile);
+              } else if (this.shootUp && this.shootRight) { // TOP RIGHT
+                spawnProjectile(this.x + this.width / 2 - 32, this.y + this.height / 2 - 32, 50, 50, 1, -1, this.weaponProjectileSpeed, this.getDamage(), this.weaponLifeSpan, "player", this.weaponProjectile);
+              } else if (this.shootRight && this.shootDown) { // BOTTOM RIGHT
+                spawnProjectile(this.x + this.width / 2 - 32, this.y + this.height / 2 - 32, 50, 50, 1, 1, this.weaponProjectileSpeed, this.getDamage(), this.weaponLifeSpan, "player", this.weaponProjectile);
+              } else if (this.shootDown && this.shootLeft) { // BOTTOM LEFT
+                spawnProjectile(this.x + this.width / 2 - 32, this.y + this.height / 2 - 32, 50, 50, -1, 1, this.weaponProjectileSpeed, this.getDamage(), this.weaponLifeSpan, "player", this.weaponProjectile);
+              } else if (this.shootRight) { // RIGHT
+                spawnProjectile(this.x + this.width / 2 - 32, this.y + this.height / 2 - 32, 50, 50, 1, 0, this.weaponProjectileSpeed, this.getDamage(), this.weaponLifeSpan, "player", this.weaponProjectile);
+              } else if (this.shootLeft) { // LEFT
+                spawnProjectile(this.x + this.width / 2 - 32, this.y + this.height / 2 - 32, 50, 50, -1, 0, this.weaponProjectileSpeed, this.getDamage(), this.weaponLifeSpan, "player", this.weaponProjectile);
+              } else if (this.shootDown) { // DOWN
+                spawnProjectile(this.x + this.width / 2 - 32, this.y + this.height / 2 - 32, 50, 50, 0, 1, this.weaponProjectileSpeed, this.getDamage(), this.weaponLifeSpan, "player", this.weaponProjectile);
+              } else if (this.shootUp) { // UP
+                spawnProjectile(this.x + this.width / 2 - 32, this.y + this.height / 2 - 32, 50, 50, 0, -1, this.weaponProjectileSpeed, this.getDamage(), this.weaponLifeSpan, "player", this.weaponProjectile);
+              }
+              this.canShoot = false;
+              setTimeout(() => {
+                this.canShoot = true;
+              }, this.weaponShootInterval); // Passing in shootInterval from player as timeout value
+            }      
+          }
+        }
+        
+        draw(ctx, deltaTime) {
+          // Movement and Boundaries
+          ctx.globalAlpha = 0.4;
+          ctx.drawImage(this.shadow, this.x - 2, this.y, this.width, this.height)
+          ctx.globalAlpha = 1;
+
+          if (this.moveRight && this.x < myCanvas.width - this.width) {
+            if (!this.checkCollision(collisionObjectArr, 0, 5, 0, 0)) this.x += this.xSpeed;
+            this.xFacing = 1;
+            animate(this, this.imgContainerRight, 6, 8);
+          }
+          if (this.moveLeft && this.x > 0) {
+            if (!this.checkCollision(collisionObjectArr, 0, 0, 0, 5)) this.x -= this.xSpeed
+            this.xFacing = -1;
+            animate(this, this.imgContainerLeft, 6, 8);
+          }
+          if (this.moveUp && this.y > 0) {
+            if (!this.checkCollision(collisionObjectArr, 5, 0, 0, 0)) this.y -= this.ySpeed;
+            if(this.xFacing === 1 && !this.moveRight) {
+              animate(this, this.imgContainerRight, 6, 8);
+            }
+            if(this.xFacing === -1 && !this.moveLeft) {
+              animate(this, this.imgContainerLeft, 6, 8);
+            }
+          }
+          if (this.moveDown && this.y < myCanvas.height - this.height) {
+            if (!this.checkCollision(collisionObjectArr, 0, 0, 5, 0)) this.y += this.ySpeed;
+            if(this.xFacing === 1 && !this.moveRight) {
+              animate(this, this.imgContainerRight, 6, 8);
+            }
+            if(this.xFacing === -1 && !this.moveLeft) {
+              animate(this, this.imgContainerLeft, 6, 8);
+            }     
+          }
+          if (!this.moveDown && !this.moveLeft && !this.moveRight && !this.moveUp) {
+            if(this.xFacing === 1) {
+              animate(this, this.imgContainerIdleRight, 4, 6);
+            }
+            if(this.xFacing === -1) {
+              animate(this, this.imgContainerIdleLeft, 4, 6);
+            }
           }
         }
     
@@ -1004,19 +1183,20 @@ window.addEventListener("load", () => {
     myCanvas.style.backgroundColor = "white";
     myCanvas.style.border = "1px solid black";
     myCanvas.style.align = "center";
-    const player = new Player(race, 800, 270, 80, 80, 5, 5, 1, 0);
+    const game = new Game(myCanvas.width, myCanvas.height);
+    //const player = new Player(game, race, 800, 270, 80, 80, 5, 5, 1, 0);
+    let lastTime = 0;
+    startGame(lastTime);
 
-    function startGame() {
-      player.initialize()
-      preloadImages(player.imgContainerIdleLeft);
-      preloadImages(player.imgContainerIdleRight);
-      preloadImages(player.imgContainerRight);
-      preloadImages(player.imgContainerLeft); 
+    function startGame(lastTime) {
+      game.player.initialize()
+      preloadImages(game.player.imgContainerIdleLeft);
+      preloadImages(game.player.imgContainerIdleRight);
+      preloadImages(game.player.imgContainerRight);
+      preloadImages(game.player.imgContainerLeft); 
       checkLevelScreen(levelScreen);
-      gameplayLoop();
+      gameplayLoop(lastTime);
     }
-    
-    startGame();
 
     function checkLevelScreen(levelScreen) {
       switch (levelScreen) {
@@ -1075,7 +1255,10 @@ window.addEventListener("load", () => {
       }
     }
 
-    function gameplayLoop() {
+    
+    function gameplayLoop(timeStamp) {
+      const deltaTime = timeStamp - lastTime;
+      lastTime = timeStamp;
       if (!roomTransit) {
         cancelAnimationFrame(animateId);
         // Reset for new drawing
@@ -1093,6 +1276,7 @@ window.addEventListener("load", () => {
         // Player
         updatePlayer();
         // Gameplay loop
+        game.render(ctx, deltaTime);
         animateId = requestAnimationFrame(gameplayLoop);
       } else {
         cancelAnimationFrame(animateId);
@@ -1162,20 +1346,20 @@ window.addEventListener("load", () => {
       }
       // Player
       if (transitDir === "up") {
-        player.y -= transitSpeed - 1;
-        animate(player, player.imgContainerRight, 6, 8);
+        game.player.y -= transitSpeed - 1;
+        //animate(game.player, game.player.imgContainerRight, 6, 8);
       }
       if (transitDir === "down") {
-        player.y += transitSpeed - 1;
-        animate(player, player.imgContainerLeft, 6, 8);
+        game.player.y += transitSpeed - 1;
+        //animate(game.player, game.player.imgContainerLeft, 6, 8);
       }
       if (transitDir === "right") {
-        player.x -= transitSpeed - 1;
-        animate(player, player.imgContainerRight, 6, 8);
+        game.player.x -= transitSpeed - 1;
+        //animate(game.player, game.player.imgContainerRight, 6, 8);
       }
       if (transitDir === "left") {
-        player.x += transitSpeed - 1;
-        animate(player, player.imgContainerLeft, 6, 8);
+        game.player.x += transitSpeed - 1;
+        //(game.player, game.player.imgContainerLeft, 6, 8);
       }
     }
 
@@ -1208,82 +1392,7 @@ window.addEventListener("load", () => {
     }
 
     function updatePlayer() {
-      if (player.alive) {
-        // Collision
-        player.updateCollision();
-        player.checkCollision(enemyArr, -50, -14, -17, -14);
-
-        // Update Stats
-        document.querySelector("#souls").value = souls;
-        document.querySelector("#experience").value = experience;
-
-        // Movement and Boundaries
-        ctx.globalAlpha = 0.4;
-        ctx.drawImage(player.shadow, player.x - 2, player.y, player.width, player.height)
-        ctx.globalAlpha = 1;
-
-        if (player.moveRight && player.x < myCanvas.width - player.width) {
-          if (!player.checkCollision(collisionObjectArr, 0, 5, 0, 0)) player.x += player.xSpeed;
-          player.xFacing = 1;
-          animate(player, player.imgContainerRight, 6, 8);
-        }
-        if (player.moveLeft && player.x > 0) {
-          if (!player.checkCollision(collisionObjectArr, 0, 0, 0, 5)) player.x -= player.xSpeed
-          player.xFacing = -1;
-          animate(player, player.imgContainerLeft, 6, 8);
-        }
-        if (player.moveUp && player.y > 0) {
-          if (!player.checkCollision(collisionObjectArr, 5, 0, 0, 0)) player.y -= player.ySpeed;
-          if(player.xFacing === 1 && !player.moveRight) {
-            animate(player, player.imgContainerRight, 6, 8);
-          }
-          if(player.xFacing === -1 && !player.moveLeft) {
-            animate(player, player.imgContainerLeft, 6, 8);
-          }
-        }
-        if (player.moveDown && player.y < myCanvas.height - player.height) {
-          if (!player.checkCollision(collisionObjectArr, 0, 0, 5, 0)) player.y += player.ySpeed;
-          if(player.xFacing === 1 && !player.moveRight) {
-            animate(player, player.imgContainerRight, 6, 8);
-          }
-          if(player.xFacing === -1 && !player.moveLeft) {
-            animate(player, player.imgContainerLeft, 6, 8);
-          }     
-        }
-        if (!player.moveDown && !player.moveLeft && !player.moveRight && !player.moveUp) {
-          if(player.xFacing === 1) {
-            animate(player, player.imgContainerIdleRight, 4, 6);
-          }
-          if(player.xFacing === -1) {
-            animate(player, player.imgContainerIdleLeft, 4, 6);
-          }
-        }
-        
-        // Shooting
-        if (player.canShoot) {
-          if (player.shootLeft && player.shootUp) { // TOP LEFT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, -1, -1, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
-          } else if (player.shootUp && player.shootRight) { // TOP RIGHT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 1, -1, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
-          } else if (player.shootRight && player.shootDown) { // BOTTOM RIGHT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 1, 1, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
-          } else if (player.shootDown && player.shootLeft) { // BOTTOM LEFT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, -1, 1, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
-          } else if (player.shootRight) { // RIGHT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 1, 0, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
-          } else if (player.shootLeft) { // LEFT
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, -1, 0, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
-          } else if (player.shootDown) { // DOWN
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 0, 1, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
-          } else if (player.shootUp) { // UP
-            spawnProjectile(player.x + player.width / 2 - 32, player.y + player.height / 2 - 32, 50, 50, 0, -1, player.weaponProjectileSpeed, player.getDamage(), player.weaponLifeSpan, "player", player.weaponProjectile);
-          }
-          player.canShoot = false;
-          setTimeout(() => {
-            player.canShoot = true;
-          }, player.weaponShootInterval); // Passing in shootInterval from player as timeout value
-        }      
-      }
+      game.player.draw(ctx);
     }
 
     //Update Enemies
@@ -1440,78 +1549,6 @@ window.addEventListener("load", () => {
       enemySpawnInProgress = false;
       inBattle = true;
     }
-
-    
-    // Controls
-    document.addEventListener("keydown", (e) => {
-      switch (e.key) {
-        case "d": // Right
-        case "D":
-          player.moveRight = true;
-        break;
-        case "a": // Left
-        case "A":
-          player.moveLeft = true;
-        break;
-        case "w": // Up
-        case "W":
-          player.moveUp = true;
-        break;
-        case "s": // Down
-        case "S":
-          player.moveDown = true;
-        break;
-        case "ArrowRight": // Shoot
-          player.shootRight = true;
-        break;
-        case "ArrowLeft": // Shoot
-          player.shootLeft = true;
-        break;
-        case "ArrowUp": // Shoot
-          player.shootUp = true;
-        break;
-        case "ArrowDown": // Shoot
-          player.shootDown = true;
-        break;
-        case "p": // Shoot
-        case "P": // Shoot
-          player.getUnstuck();
-        break;
-      }
-    });
-
-    document.addEventListener("keyup", (e) => {
-      switch (e.key) {
-        case "d": // Right
-        case "D":
-          player.moveRight = false;
-        break;
-        case "a": // Left
-        case "A":
-          player.moveLeft = false;
-        break;
-        case "w": // Up
-        case "W":
-          player.moveUp = false;
-        break;
-        case "s": // Down
-        case "S":
-          player.moveDown = false;
-        break;
-        case "ArrowRight": // Shoot
-          player.shootRight = false;
-        break;
-        case "ArrowLeft": // Shoot
-          player.shootLeft = false;
-        break;
-        case "ArrowUp": // Shoot
-          player.shootUp = false;
-        break;
-        case "ArrowDown": // Shoot
-          player.shootDown = false;
-        break;
-      }
-    });  
 
 
     // SCREENS AND LEVELS DEFINED HERE
