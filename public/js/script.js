@@ -246,14 +246,22 @@ window.addEventListener("load", () => {
           this.height = height;
           this.player = new Player(this, race, 800, 270, 80, 80, 0.4, 0.3, 1, 0);
           this.enemies = [];
+          this.projectiles = [];
           this.input = new InputHandler(this, this.player);
         }
         render(context, deltaTime) {
+          // Player
           this.player.draw(context);
           this.player.updatePlayer(deltaTime);
+          // Enemies
           for (let i = 0; i < this.enemies.length; i++) {
             this.enemies[i].draw(context);
             this.enemies[i].updateEnemies(deltaTime);
+          }
+          // Projectiles
+          for (let i = 0; i < this.projectiles.length; i++) {
+            this.projectiles[i].draw(context);
+            this.projectiles[i].updateProjectiles(deltaTime);
           }
         }
       }
@@ -365,37 +373,37 @@ window.addEventListener("load", () => {
             this.weaponProjectile = projectileImgArr[4];
             this.weaponShootInterval = 500;
             this.weaponLifeSpan = 30;
-            this.weaponProjectileSpeed = 8;
+            this.weaponProjectileSpeed = 0.8;
           } else if (this.weapon.includes("Rusty Sword")) {
             this.weaponProjectile = projectileImgArr[0];
             this.weaponShootInterval = 500;
             this.weaponLifeSpan = 40;
-            this.weaponProjectileSpeed = 8;
+            this.weaponProjectileSpeed = 0.8;
           } else if (this.weapon.includes("Lancer")) {
             this.weaponProjectile = projectileImgArr[2];
             this.weaponShootInterval = 1000;
             this.weaponLifeSpan = 50;
-            this.weaponProjectileSpeed = 20;
+            this.weaponProjectileSpeed = 2;
           } else if (this.weapon.includes("Heavy Sword")) {
             this.weaponProjectile = projectileImgArr[1];
             this.weaponShootInterval = 400;
             this.weaponLifeSpan = 1000;
-            this.weaponProjectileSpeed = .5;
+            this.weaponProjectileSpeed = 0.05;
           } else if (this.weapon.includes("Moonlair")) {
             this.weaponProjectile = projectileImgArr[3];
-            this.weaponShootInterval = 1;
+            this.weaponShootInterval = 0.1;
             this.weaponLifeSpan = 1000;
-            this.weaponProjectileSpeed = Math.floor(Math.random() * (21 - 1) + 1);
+            this.weaponProjectileSpeed = Math.floor(Math.random() * (2 - 1) + 1);
           } else if (this.weapon.includes("Swampy")) {
             this.weaponProjectile = projectileImgArr[5];
             this.weaponShootInterval = 1000;
             this.weaponLifeSpan = 5000;
-            this.weaponProjectileSpeed = .2;
+            this.weaponProjectileSpeed = 0.02;
           } else {
             this.weaponProjectile = projectileImgArr[4];
             this.weaponShootInterval = 600;
             this.weaponLifeSpan = 30;
-            this.weaponProjectileSpeed = 8;
+            this.weaponProjectileSpeed = 0.8;
           }
           // Configure Armor values
           this.armor = gArmor;
@@ -1083,7 +1091,6 @@ window.addEventListener("load", () => {
       }
     
     
-      const projectileArr = [];
       class Projectile {
         constructor(x, y, width, height, xDir, yDir, speed, damage, lifeSpan, firedBy, src) {
           this.type = "projectile";
@@ -1110,7 +1117,8 @@ window.addEventListener("load", () => {
           this.bottom = this.y + this.height;
         }
     
-        updateProjectile() {
+        updateProjectiles(deltaTime) {
+          if (deltaTime === undefined) deltaTime = 0;
           // Collision
           this.left = this.x;
           this.right = this.x + this.width
@@ -1119,20 +1127,25 @@ window.addEventListener("load", () => {
     
           // Move projectiles
           if (this.xDir + this.yDir === 1) {
-            this.x += this.speed * this.xDir;
-            this.y += this.speed * this.yDir;
+            this.x += (this.speed * this.xDir) * deltaTime;
+            this.y += (this.speed * this.yDir) * deltaTime;
           } else {
-            this.x += this.speed / 1.4 * this.xDir;
-            this.y += this.speed / 1.4 * this.yDir;
+            this.x += (this.speed / 1.4 * this.xDir) * deltaTime;
+            this.y += (this.speed / 1.4 * this.yDir) * deltaTime;
           }
-          // Draw
-          ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+          this.checkCollision(game.enemies, 0, 0, 0, 0);
+          this.checkCollision(collisionObjectArr, 0, 0, 0, 0);
     
           // Destory if lifeSpan reached
           this.lifeSpan--;
           if (this.lifeSpan <= 0) {
             this.destroy();
           }
+        }
+
+        draw(ctx) {
+          // Draw
+          ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
         }
     
         checkCollision(arr, ot, or, ob, ol) {
@@ -1143,12 +1156,12 @@ window.addEventListener("load", () => {
               this.bottom + ob >= arr[i].top) { 
                 // Enemy Collision
                 if (arr[i].getType() === "enemy" && this.firedBy === "player") {
-                  const projectile = projectileArr.indexOf(this);
-                  if (!arr[i].takenDamage) arr[i].hit(projectileArr[projectile].damage);
-                  projectileArr[projectile].destroy();
+                  const projectile = game.projectiles.indexOf(this);
+                  if (!arr[i].takenDamage) arr[i].hit(game.projectiles[projectile].damage);
+                  game.projectiles[projectile].destroy();
                   break;
                 } 
-                if (arr[i].getType() === "environment") {
+                if (arr[i].getType() === "environment" || arr[i].getType() === "roomtransit") {
                   this.destroy();
                 }
                 if (arr[i].getType() === "spawntrigger") {
@@ -1157,15 +1170,11 @@ window.addEventListener("load", () => {
                 }
               }
           }
-          // Leaving canvas
-          if (this.x < 0 || this.y < 0 || this.x > myCanvas.width + this.width || this.y > myCanvas.height + this.height) {
-            this.destroy();
-          }
         }
     
         destroy() {
-          const posInArr = projectileArr.indexOf(this);
-          projectileArr.splice(posInArr, 1);
+          const posInArr = game.projectiles.indexOf(this);
+          game.projectiles.splice(posInArr, 1);
         }
     
         getType() {
@@ -1346,8 +1355,6 @@ window.addEventListener("load", () => {
       ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
       //Background Test
       ctx.drawImage(background, 0, 0, 1200, 700);
-      // Projectiles
-      updateProjectiles();
       // Level Events
       checkLevelEvents();
       // Collisions
@@ -1412,8 +1419,8 @@ window.addEventListener("load", () => {
         if (transitDir === "left") collisionObjectArr[i].x += transitSpeed;
       }
       // Destroy Projectiles
-      for (let i = 0; i < projectileArr.length; i++) {
-        projectileArr[i].destroy();
+      for (let i = 0; i < game.projectiles.length; i++) {
+        game.projectiles[i].destroy();
       }
       // Player
       if (transitDir === "up") {
@@ -1465,16 +1472,9 @@ window.addEventListener("load", () => {
 
     function spawnProjectile(x, y, width, height, xDir, yDir, speed, damage, lifeSpan, firedBy, src) {
       const projectile = new Projectile(x, y, width, height, xDir, yDir, speed, damage, lifeSpan, firedBy, src);
-      projectileArr.push(projectile);
+      game.projectiles.push(projectile);
     }
 
-    function updateProjectiles() {
-      for (let i = 0; i < projectileArr.length; i++) {
-          if (projectileArr[i] !== undefined) projectileArr[i].updateProjectile();
-          if (projectileArr[i] !== undefined) projectileArr[i].checkCollision(game.enemies, 0, 0, 0, 0);
-          if (projectileArr[i] !== undefined) projectileArr[i].checkCollision(collisionObjectArr, 0, 0, 0, 0);
-      }
-    }
 
     function updateCollisionObjects() {
       for (let i = 0; i < collisionObjectArr.length; i++) {
