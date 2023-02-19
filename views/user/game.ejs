@@ -9,6 +9,9 @@
 <div id="game-board" style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
     <canvas id="canvas" width="1200" height="700"></canvas>
     <progress id="health" value="100" max="100"></progress>
+    <img src="../../images/Races/Dino/dino.png" alt="dino" id="dino"/>
+    <img src="../../images/Meadow/Slime/slime.png" alt="slime" id="slime"/>
+    <img src="../../images/Meadow/SlimeBoss/slimeBoss.png" alt="slimeBoss" id="slimeBoss"/>
 </div>  
 
 </div> 
@@ -40,7 +43,7 @@
             <div id="weaponname" class="buttonItem widerButton ultraWideButton" ><%=character.weapon[0].name%> 
                 <div style="display: flex; gap: 10px; justify-content: center;">
                     <p id="damage"><%=character.weapon[0].modifier%></p>
-                    <% console.log("LEVEL: ", character.level) %>
+                    <p>+</p>
                     <p id="level"><%=character.level%></p>
                 </div>
                 <img src="<%=character.weapon[0].image%>" width="90px">

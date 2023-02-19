@@ -1,5 +1,14 @@
 @import url('https://fonts.cdnfonts.com/css/ica-rubrik-black');
 
+#dino {
+  display: none;
+}
+#slime {
+  display: none;
+}
+#slimeBoss {
+  display: none;
+}
 
 body {  
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;  

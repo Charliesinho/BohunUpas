@@ -156,7 +156,6 @@ window.addEventListener("load", () => {
     
       let levelScreen = 0;
     
-      let animateId;
       let roomTransit = false;
       let transitSpeed = 5;
       let transitDir = "";
@@ -245,13 +244,17 @@ window.addEventListener("load", () => {
         constructor(width, height) {
           this.width = width;
           this.height = height;
-          this.lastKey = undefined;
-          this.player = new Player(this, race, 800, 270, 80, 80, 5, 5, 1, 0);
+          this.player = new Player(this, race, 800, 270, 80, 80, 0.4, 0.3, 1, 0);
+          this.enemies = [];
           this.input = new InputHandler(this, this.player);
         }
         render(context, deltaTime) {
           this.player.draw(context);
           this.player.updatePlayer(deltaTime);
+          for (let i = 0; i < this.enemies.length; i++) {
+            this.enemies[i].draw(context);
+            this.enemies[i].updateEnemies(deltaTime);
+          }
         }
       }
 
@@ -275,13 +278,16 @@ window.addEventListener("load", () => {
           this.race = race;
           this.experience = experience;
           this.level = gLevel;
-          //this.image = SPRITESHEET
+          this.image;
+          this.spriteWidth = 600;
+          this.spriteHeight = 600;
           this.fps = 30;
           this.frameInterval = 1000/this.fps;
           this.frameTimer = 0;
           this.frameX = 0;
           this.frameY = 0;
-          
+          this.maxFrameIdle = 3;
+          this.maxFrameRun = 5;
           
           // Pass in vars
           this.x = x;
@@ -294,6 +300,10 @@ window.addEventListener("load", () => {
           this.yFacing = yFacing;
     
           // Movement
+          this.moveInterval = 500/this.fps;
+          this.moveTimer = 0;
+          this.move = 0;
+          this.maxMove = 4;
           this.moveLeft = false;
           this.moveRight = false;
           this.moveUp = false;
@@ -301,16 +311,11 @@ window.addEventListener("load", () => {
     
           //Animation
           this.shadow = new Image();
-          this.shadow.src = "../images/ShadowPlayer.png"
+          this.shadow.src = "../images/ShadowPlayer.png";
           this.imgContainerRight = [];
           this.imgContainerLeft = [];
           this.imgContainerIdleLeft = [];
           this.imgContainerIdleRight = [];
-    
-          this.img = new Image();
-          this.imageFrames;
-          //this.spriteSpeed = 12;
-          this.currentFrame = 0;
     
           // Gameplay values
           this.damage;
@@ -321,7 +326,6 @@ window.addEventListener("load", () => {
           this.health = document.querySelector("#health")
           this.health.max = this.hp
           this.health.value = this.hp
-          
     
           // Equipment
           this.weapon;
@@ -353,7 +357,6 @@ window.addEventListener("load", () => {
           // Projectile array images
           for (let i = 0; i < 6; i++) {
             projectileImgArr.push("../images/Projectiles/pro"+i+".png");
-            console.log(projectileImgArr[i])
           }
           // Configure Weapon values
           this.weapon = gWeapon;
@@ -402,35 +405,14 @@ window.addEventListener("load", () => {
           this.artefact = gArtefact;
     
           // Load player sprites
-          if (this.race === "Dino") {      
-            for (let i = 0; i < 6; i++) {
-              this.imgContainerRight.push("../images/Races/Dino/RunRight/dino"+i+".png");
-              this.imgContainerLeft.push("../images/Races/Dino/RunLeft/dino"+i+".png");
-            }
-            for (let i = 0; i < 4; i++) {
-              this.imgContainerIdleLeft.push("../images/Races/Dino/IdleLeft/dino"+i+".png");
-              this.imgContainerIdleRight.push("../images/Races/Dino/IdleRight/dino"+i+".png");
-            }
+          if (this.race === "Dino") {   
+            this.image = document.getElementById("dino"); 
           } 
-          if (this.race === "Undead") {      
-            for (let i = 0; i < 6; i++) {
-              this.imgContainerRight.push("../images/Races/Undead/RunRight/undead"+i+".png");
-              this.imgContainerLeft.push("../images/Races/Undead/RunLeft/undead"+i+".png");
-            }
-            for (let i = 0; i < 4; i++) {
-              this.imgContainerIdleLeft.push("../images/Races/Undead/IdleLeft/undead"+i+".png");
-              this.imgContainerIdleRight.push("../images/Races/Undead/IdleRight/undead"+i+".png");
-            }
+          if (this.race === "Undead") {   
+
           } 
-          if (this.race === "Human") {      
-            for (let i = 0; i < 6; i++) {
-              this.imgContainerRight.push("../images/Races/Human/RunRight/human"+i+".png");
-              this.imgContainerLeft.push("../images/Races/Human/RunLeft/human"+i+".png");
-            }
-            for (let i = 0; i < 4; i++) {
-              this.imgContainerIdleLeft.push("../images/Races/Human/IdleLeft/human"+i+".png");
-              this.imgContainerIdleRight.push("../images/Races/Human/IdleRight/human"+i+".png");
-            }
+          if (this.race === "Human") {    
+
           } 
         } 
     
@@ -461,15 +443,70 @@ window.addEventListener("load", () => {
         }
         
         updatePlayer(deltaTime) {
-
           if (this.alive) {
             // Collision
             this.updateCollision();
-            this.checkCollision(enemyArr, -50, -14, -17, -14);
+            this.checkCollision(game.enemies, -50, -14, -17, -14);
     
             // Update Stats
             document.querySelector("#souls").value = souls;
             document.querySelector("#experience").value = experience;
+            // Update move
+            if (this.moveRight && this.x < myCanvas.width - this.width) {
+              if (!this.checkCollision(collisionObjectArr, 0, 5, 0, 0) && !roomTransit) this.x += this.xSpeed * deltaTime;
+              this.xFacing = 1;
+              this.frameY = 2;
+            }
+            if (this.moveLeft && this.x > 0) {
+              if (!this.checkCollision(collisionObjectArr, 0, 0, 0, 5) && !roomTransit) this.x -= this.xSpeed * deltaTime;
+              this.xFacing = -1;
+              this.frameY = 3;
+            }
+            if (this.moveUp && this.y > 0) {
+              if (!this.checkCollision(collisionObjectArr, 5, 0, 0, 0) && !roomTransit) this.y -= this.ySpeed * deltaTime;
+              if(this.xFacing === 1 && !this.moveRight) {
+                this.frameY = 2;
+              }
+              if(this.xFacing === -1 && !this.moveLeft) {
+                this.frameY = 3;
+              }
+            }
+            if (this.moveDown && this.y < myCanvas.height - this.height) {
+              if (!this.checkCollision(collisionObjectArr, 0, 0, 5, 0) && !roomTransit) this.y += this.ySpeed * deltaTime;
+              if(this.xFacing === 1 && !this.moveRight) {
+                this.frameY = 2;
+              }
+              if(this.xFacing === -1 && !this.moveLeft) {
+                this.frameY = 3;
+              }     
+            }
+            if (!this.moveDown && !this.moveLeft && !this.moveRight && !this.moveUp) {
+              if(this.xFacing === 1) {
+                this.frameY = 0;
+              }
+              if(this.xFacing === -1) {
+                this.frameY = 1;
+              }
+            }
+            // Move sprites
+            if (this.frameTimer > this.frameInterval) {
+              if (this.frameY < 2) {
+                if (this.frameX < this.maxFrameIdle) {
+                  this.frameX++;
+                } else {
+                  this.frameX = 0;
+                }
+              } else {
+                if (this.frameX < this.maxFrameRun) {
+                  this.frameX++;
+                } else {
+                  this.frameX = 0;
+                }
+              }
+              this.frameTimer = 0;
+            } else {
+              this.frameTimer += deltaTime;
+            }
             
             // Shooting
             if (this.canShoot) {
@@ -498,48 +535,13 @@ window.addEventListener("load", () => {
           }
         }
         
-        draw(ctx, deltaTime) {
+        draw(ctx) {
           // Movement and Boundaries
           ctx.globalAlpha = 0.4;
           ctx.drawImage(this.shadow, this.x - 2, this.y, this.width, this.height)
           ctx.globalAlpha = 1;
-
-          if (this.moveRight && this.x < myCanvas.width - this.width) {
-            if (!this.checkCollision(collisionObjectArr, 0, 5, 0, 0)) this.x += this.xSpeed;
-            this.xFacing = 1;
-            animate(this, this.imgContainerRight, 6, 8);
-          }
-          if (this.moveLeft && this.x > 0) {
-            if (!this.checkCollision(collisionObjectArr, 0, 0, 0, 5)) this.x -= this.xSpeed
-            this.xFacing = -1;
-            animate(this, this.imgContainerLeft, 6, 8);
-          }
-          if (this.moveUp && this.y > 0) {
-            if (!this.checkCollision(collisionObjectArr, 5, 0, 0, 0)) this.y -= this.ySpeed;
-            if(this.xFacing === 1 && !this.moveRight) {
-              animate(this, this.imgContainerRight, 6, 8);
-            }
-            if(this.xFacing === -1 && !this.moveLeft) {
-              animate(this, this.imgContainerLeft, 6, 8);
-            }
-          }
-          if (this.moveDown && this.y < myCanvas.height - this.height) {
-            if (!this.checkCollision(collisionObjectArr, 0, 0, 5, 0)) this.y += this.ySpeed;
-            if(this.xFacing === 1 && !this.moveRight) {
-              animate(this, this.imgContainerRight, 6, 8);
-            }
-            if(this.xFacing === -1 && !this.moveLeft) {
-              animate(this, this.imgContainerLeft, 6, 8);
-            }     
-          }
-          if (!this.moveDown && !this.moveLeft && !this.moveRight && !this.moveUp) {
-            if(this.xFacing === 1) {
-              animate(this, this.imgContainerIdleRight, 4, 6);
-            }
-            if(this.xFacing === -1) {
-              animate(this, this.imgContainerIdleLeft, 4, 6);
-            }
-          }
+          // Draw Player
+          ctx.drawImage(this.image, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
         }
     
         getType() {
@@ -548,7 +550,7 @@ window.addEventListener("load", () => {
     
         getUnstuck() {
           this.x = 300;
-          this.y = 300
+          this.y = 300;
         }
     
         getDamage() {
@@ -559,25 +561,27 @@ window.addEventListener("load", () => {
         }
     
         hit(damage) {
-          // Check iframes
-          if (!this.takenDamage) {
-            this.takenDamage = true;
-            // Receive Damage
-            if (damage - this.getDefense() > 0) {
-              this.hp -= damage - this.getDefense();
-              this.health.value -= damage - this.getDefense();
-            } else {
-              this.hp -= 1;
-              this.health.value -= 1
-            }
-            console.log("HIT - ", this.hp)
-            // Kill player
-            if (this.hp <= 0) {
-              this.destroy();
-            } else { // Reset iframes
-              setTimeout(() => {
-                this.takenDamage = false;
-              }, this.iframes)
+          if (!roomTransit) {
+            // Check iframes
+            if (!this.takenDamage) {
+              this.takenDamage = true;
+              // Receive Damage
+              if (damage - this.getDefense() > 0) {
+                this.hp -= damage - this.getDefense();
+                this.health.value -= damage - this.getDefense();
+              } else {
+                this.hp -= 1;
+                this.health.value -= 1
+              }
+              console.log("HIT - ", this.hp)
+              // Kill player
+              if (this.hp <= 0) {
+                this.destroy();
+              } else { // Reset iframes
+                setTimeout(() => {
+                  this.takenDamage = false;
+                }, this.iframes)
+              }
             }
           }
         }
@@ -590,10 +594,9 @@ window.addEventListener("load", () => {
         }
       }
     
-    
-      const enemyArr = [];
+
       class Enemy {
-        constructor(name, x, y, width, height) {
+        constructor(name, x, y, width, height, fps) {
           this.type = "enemy"
           this.souls = 0;
           this.experience = 0;
@@ -610,6 +613,17 @@ window.addEventListener("load", () => {
           this.imageFrames;
           this.spriteSpeed = 12;
           this.currentFrame = 0;
+
+          
+          this.image;
+          this.spriteWidth;
+          this.spriteHeight;
+          this.fps = fps;
+          this.frameInterval = 1000/this.fps;
+          this.frameTimer = 0;
+          this.frameX = 0;
+          this.frameY = 0;
+          this.maxFrame = 3;
     
           // Collision
           this.left = this.x;
@@ -646,6 +660,9 @@ window.addEventListener("load", () => {
     
         initialize() {
           if (this.name === "slime") {
+            this.image = document.getElementById("slime");
+            this.spriteWidth = 700;
+            this.spriteHeight = 700;
             // Collisions
             this.cOffTop = 2;
             this.cOffRight = 6;
@@ -657,14 +674,13 @@ window.addEventListener("load", () => {
             this.hp = 15;
             this.damage = 5;
             this.imageFrames = 4;
-            this.moveSpeed = 1;
-            this.randomMoveTimer = Math.floor(Math.random() * (400 - 200) + 200);
+            this.moveSpeed = 0.1;
+            this.randomMoveTimer = Math.floor(Math.random() * (4000 - 2000) + 2000);
             this.moveTo = this.getRandomCoordinates();
             this.moveTowardsTarget(this.moveTo);
-            for (let i = 0; i < this.imageFrames; i++) {
-              this.imgContainer.push("../images/Meadow/Slime/slime"+i+".png");
-            }
-            this.initialized = true;
+            setInterval(() => {
+              this.moveTo = this.getRandomCoordinates();
+            }, this.randomMoveTimer)
           }
           if (this.name === "bat") {
             // Collisions
@@ -703,6 +719,9 @@ window.addEventListener("load", () => {
             this.imgContainer.push("../images/Projectiles/weakFire.png");
           }
           if (this.name === "slimeBoss") {
+            this.image = document.getElementById("slimeBoss");
+            this.spriteWidth = 328;
+            this.spriteHeight = 260;
             // Collisions
             this.cOffTop = 2;
             this.cOffRight = 6;
@@ -714,13 +733,10 @@ window.addEventListener("load", () => {
             this.hp = 500;
             this.damage = 10;
             this.imageFrames = 6;
-            this.moveSpeed = 500;
+            this.moveSpeed = 50;
             this.xDir = -1;
             this.yDir = -1;
             this.canSpawn = false;
-            for (let i = 0; i < this.imageFrames; i++) {
-              this.imgContainer.push("../images/Meadow/SlimeBoss/slime0.png");
-            }
           }
           if (this.name === "ecrol") {
             // Collisions
@@ -779,19 +795,83 @@ window.addEventListener("load", () => {
             }
           }
         }
+
+        draw(ctx) {
+          ctx.drawImage(this.image, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
+        }
+
+        updateEnemies(deltaTime) {
+          if (deltaTime === undefined) deltaTime = 0;
+          // Normal enemies
+          if (this.name === "slime") this.moveTowardsTarget(this.moveTo, deltaTime);
+          if (this.name === "bat") {
+            this.moveLeftRight();
+            this.shootDown();
+          }
+          if (this.name === "enemyprojectile") {
+            if(!this.initialized) this.initialize()
+            this.moveDown();
+          }
+  
+  
+          // Bosses
+          if (this.name === "slimeBoss") {
+            this.slimeBossMovement(deltaTime);
+            if (!this.canSpawn) {
+              this.canSpawn = true;
+              this.spawnInterval = setInterval(() => {
+                const newEnemy = new Enemy("slime", myCanvas.width / 2 - 90, myCanvas.height / 2 - 80, 90, 80, 5);
+                newEnemy.initialize();
+                game.enemies.splice(game.enemies.length-2, 0, newEnemy);
+              }, 2000)
+              setTimeout(() => {
+                // ROOM TRANSIT
+                collisionObjectArr.push(new CollisionObject(220, myCanvas.height - 15, 680, 15, "roomtransit", 4, "up", false, false));
+                // TO DUNGEON
+                collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 380, 0, 680, 15, "roomtransit", 6, "down", false, false));
+                // GET DESTROYED
+                collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, 0, 120, 50, "environment", -1, "", false, true));
+              }, 1500)
+              setTimeout(() => {
+                collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 50, myCanvas.width, 50, "environment", -1, "", false, true));
+              }, 5000)
+            }
+          }
+  
+          // ECROL
+          if (this.name === "ecrol") {
+            this.ecrolBossMovement(deltaTime);
+          }
+  
+          // Collisions
+          this.updateCollision();
+
+          // Frame counter
+          if (this.frameTimer > this.frameInterval) {
+            if (this.frameX < this.maxFrame) {
+              this.frameX++;
+            } else {
+              this.frameX = 0;
+            }
+            this.frameTimer = 0;
+          } else {
+            this.frameTimer += deltaTime;
+          }
+        }
     
-        moveTowardsTarget(randomCoordinates) {
+        moveTowardsTarget(randomCoordinates, deltaTime) {
+          if (deltaTime === undefined) deltaTime = 0;
           // Horizontal Movement
-          if (this.x < randomCoordinates.x && this.x < myCanvas.width - this.width && !this.checkCollision(collisionObjectArr, 0, 10, 0, 0)) {
-            this.x += this.moveSpeed;
-          } else if (this.x > randomCoordinates.x && this.x > 0 && !this.checkCollision(collisionObjectArr, 0, 0, 0, 10)) {
-            this.x -= this.moveSpeed;
+          if (this.x < randomCoordinates.x && this.x < myCanvas.width - this.width && !this.checkCollision(collisionObjectArr, 0, 10, 0, 0) && !roomTransit) {
+            this.x += this.moveSpeed * deltaTime;
+          } else if (this.x > randomCoordinates.x && this.x > 0 && !this.checkCollision(collisionObjectArr, 0, 0, 0, 10) && !roomTransit) {
+            this.x -= this.moveSpeed * deltaTime;
           }
           // Vertial Movement
-          if (this.y > randomCoordinates.y && this.y > 0 && !this.checkCollision(collisionObjectArr, 10, 0, 0, 0)) {
-            this.y -= this.moveSpeed;
-          } else if (this.x < randomCoordinates.y && this.y < myCanvas.height - this.height && !this.checkCollision(collisionObjectArr, 0, 0, 10, 0)) {
-            this.y += this.moveSpeed;
+          if (this.y > randomCoordinates.y && this.y > 0 && !this.checkCollision(collisionObjectArr, 10, 0, 0, 0) && !roomTransit) {
+            this.y -= this.moveSpeed * deltaTime;
+          } else if (this.x < randomCoordinates.y && this.y < myCanvas.height - this.height && !this.checkCollision(collisionObjectArr, 0, 0, 10, 0) && !roomTransit) {
+            this.y += this.moveSpeed * deltaTime;
           }
         }
     
@@ -799,13 +879,13 @@ window.addEventListener("load", () => {
           if (this.checkCollision(collisionObjectArr, 0, 5, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 0, 5)) {
             this.xDir *= -1;
           }
-          this.x += this.moveSpeed * this.xDir;
+          this.x += (this.moveSpeed * this.xDir) * deltaTime;
         }
     
         shootDown() {
           if (this.canShoot) {
             this.canShoot = false;
-            enemyArr.push(new Enemy("enemyprojectile", this.x, this.y, 32, 32));
+            game.enemies.push(new Enemy("enemyprojectile", this.x, this.y, 32, 32));
             setTimeout(() => {
               this.canShoot = true;
             }, this.shootInterval);
@@ -813,10 +893,12 @@ window.addEventListener("load", () => {
         }
     
         moveDown() {
-          this.y += this.moveSpeed;
+          this.y += this.moveSpeed * deltaTime;
         }
     
-        slimeBossMovement() {
+        slimeBossMovement(deltaTime) {
+          console.log(this.xDir, this.yDir)
+          if (deltaTime === undefined) deltaTime = 0;
           // Horizontal Collisions
           if (this.checkCollision(collisionObjectArr, 0, 5, 0, 0) || this.checkCollision(collisionObjectArr, 0, 0, 0, 5)) {
             this.xDir *= -1;
@@ -826,15 +908,15 @@ window.addEventListener("load", () => {
             this.yDir *= -1;
           }
           // Move 
-          this.x += (this.moveSpeed / 1.2 / this.hp) * this.xDir;
-          this.y += (this.moveSpeed / this.hp) * this.yDir;
+          this.x += ((this.moveSpeed / 1.2 / this.hp) * this.xDir) * deltaTime;
+          this.y += ((this.moveSpeed / this.hp) * this.yDir) * deltaTime;
         }
     
         ecrolPositionPicker() {
           this.state = Math.floor(Math.random() * 5)
         }
     
-        ecrolBossMovement() {
+        ecrolBossMovement(deltaTime) {
           if (this.ecrolState) {
             switch (this.state) {
               case 0:
@@ -898,25 +980,26 @@ window.addEventListener("load", () => {
             this.height = 531
             ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
           }
-          this.ecrolMove();
+          this.ecrolMove(deltaTime);
         }
     
-        ecrolMove() {
+        ecrolMove(deltaTime) {
+          if (deltaTime === undefined) deltaTime = 0;
           switch (this.state) {
             case 0:
-              this.x += this.moveSpeed;
+              this.x += this.moveSpeed * deltaTime;
               break;
             case 1:
-              this.x -= this.moveSpeed;
+              this.x -= this.moveSpeed * deltaTime;
               break;
             case 2:
-              this.y += this.moveSpeed
+              this.y += this.moveSpeed * deltaTime;
               break;
             case 3:
-              this.y += this.moveSpeed
+              this.y += this.moveSpeed * deltaTime;
               break;
             case 4:
-              this.y -= this.moveSpeed
+              this.y -= this.moveSpeed * deltaTime;
               break;
           }
         }
@@ -978,13 +1061,13 @@ window.addEventListener("load", () => {
           }
           this.dropSouls();
           this.grantXp();
-          const posInArr = enemyArr.indexOf(this);
-          enemyArr.splice(posInArr, 1);
+          const posInArr = game.enemies.indexOf(this);
+          game.enemies.splice(posInArr, 1);
         }
     
         remove() { // DON'T GRANT SOULS OR XP
-          const posInArr = enemyArr.indexOf(this);
-          enemyArr.splice(posInArr, 1);
+          const posInArr = game.enemies.indexOf(this);
+          game.enemies.splice(posInArr, 1);
         }
     
         dropSouls() {
@@ -1259,60 +1342,50 @@ window.addEventListener("load", () => {
     function gameplayLoop(timeStamp) {
       const deltaTime = timeStamp - lastTime;
       lastTime = timeStamp;
-      if (!roomTransit) {
-        cancelAnimationFrame(animateId);
-        // Reset for new drawing
-        ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-        //Background Test
-        ctx.drawImage(background, 0, 0 , 1200, 700);
-        // Projectiles
-        updateProjectiles();
-        // Enemies
-        updateEnemies();
-        // Level Events
-        checkLevelEvents();
-        // Collisions
-        updateCollisionObjects();
-        // Player
-        updatePlayer();
-        // Gameplay loop
-        game.render(ctx, deltaTime);
-        animateId = requestAnimationFrame(gameplayLoop);
-      } else {
-        cancelAnimationFrame(animateId);
-        // Transit
-        roomTransitioning();
-      }
+      // Reset for new drawing
+      ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+      //Background Test
+      ctx.drawImage(background, 0, 0, 1200, 700);
+      // Projectiles
+      updateProjectiles();
+      // Level Events
+      checkLevelEvents();
+      // Collisions
+      updateCollisionObjects();
+      // Transit
+      roomTransitioning();
+      
+      game.render(ctx, deltaTime);
+      requestAnimationFrame(gameplayLoop);
     }
 
     // Transit rooms
     function roomTransitioning() {
-      if (levelScreen === -10) {
-        saveBtn.click();
+      if (roomTransit) {
+        if (levelScreen === -10) {
+          saveBtn.click();
+        }
+        
+        // Reset for new drawing
+        ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+        // Moving DOWN a screen
+        if (transitDir === "down" && backgroundArr[levelScreen].y < 0) {
+          transitMoveElements();
+        // Moving UP a screen
+        } else if (transitDir === "up" && backgroundArr[levelScreen].y > 0) {
+          transitMoveElements();
+        // Moving RIGHT a screen
+        } else if (transitDir === "right" && backgroundArr[levelScreen].x > 0) {
+          transitMoveElements();
+        // Moving LEFT a screen
+        } else if (transitDir === "left" && backgroundArr[levelScreen].x < 0) {
+          transitMoveElements();
+        // Resume Game
+        } else {
+          roomTransit = false;
+          checkLevelScreen(levelScreen);
+        }
       }
-      
-      // Reset for new drawing
-      ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-      // Moving DOWN a screen
-      if (transitDir === "down" && backgroundArr[levelScreen].y < 0) {
-        transitMoveElements();
-      // Moving UP a screen
-      } else if (transitDir === "up" && backgroundArr[levelScreen].y > 0) {
-        transitMoveElements();
-      // Moving RIGHT a screen
-      } else if (transitDir === "right" && backgroundArr[levelScreen].x > 0) {
-        transitMoveElements();
-      // Moving LEFT a screen
-      } else if (transitDir === "left" && backgroundArr[levelScreen].x < 0) {
-        transitMoveElements();
-      // Resume Game
-      } else {
-        roomTransit = false;
-        checkLevelScreen(levelScreen);
-        gameplayLoop(); 
-      }
-      // Loop
-      requestAnimationFrame(gameplayLoop);
     }
 
     function transitMoveElements() {
@@ -1325,13 +1398,11 @@ window.addEventListener("load", () => {
         ctx.drawImage(backgroundArr[i].img, backgroundArr[i].x, backgroundArr[i].y, backgroundArr[i].width, backgroundArr[i].height);
       }
       // Shift enemies
-      for (let i = 0; i < enemyArr.length; i++) {
-        if (transitDir === "up") enemyArr[i].y -= transitSpeed;
-        if (transitDir === "down") enemyArr[i].y += transitSpeed;
-        if (transitDir === "right") enemyArr[i].x -= transitSpeed;
-        if (transitDir === "left") enemyArr[i].x += transitSpeed;
-        enemyArr[i].img.src = enemyArr[i].imgContainer[0];
-        ctx.drawImage(enemyArr[i].img, enemyArr[i].x, enemyArr[i].y, enemyArr[i].width, enemyArr[i].height)
+      for (let i = 0; i < game.enemies.length; i++) {
+        if (transitDir === "up") game.enemies[i].y -= transitSpeed;
+        if (transitDir === "down") game.enemies[i].y += transitSpeed;
+        if (transitDir === "right") game.enemies[i].x -= transitSpeed;
+        if (transitDir === "left") game.enemies[i].x += transitSpeed;
       }
       // Shift collisions
       for (let i = 0; i < collisionObjectArr.length; i++) {
@@ -1391,64 +1462,6 @@ window.addEventListener("load", () => {
 
     }
 
-    function updatePlayer() {
-      game.player.draw(ctx);
-    }
-
-    //Update Enemies
-    function updateEnemies() {
-      for (let i = 0; i < enemyArr.length; i++) {
-        if (animateId % enemyArr[i].randomMoveTimer === 0) {
-          enemyArr[i].moveTo = enemyArr[i].getRandomCoordinates();
-        }
-        // Normal enemies
-        if (enemyArr[i].name === "slime") enemyArr[i].moveTowardsTarget(enemyArr[i].moveTo);
-        if (enemyArr[i].name === "bat") {
-          enemyArr[i].moveLeftRight();
-          enemyArr[i].shootDown();
-        }
-        if (enemyArr[i].name === "enemyprojectile") {
-          if(!enemyArr[i].initialized) enemyArr[i].initialize()
-          enemyArr[i].moveDown();
-        }
-
-
-        // Bosses
-        if (enemyArr[i].name === "slimeBoss") {
-          enemyArr[i].slimeBossMovement();
-          if (!enemyArr[i].canSpawn) {
-            enemyArr[i].canSpawn = true;
-            ctx.drawImage(enemyArr[i].img, enemyArr[i].x, enemyArr[i].y, enemyArr[i].width, enemyArr[i].height)
-            enemyArr[i].spawnInterval = setInterval(() => {
-              const newEnemy = new Enemy("slime", myCanvas.width / 2 - 90, myCanvas.height / 2 - 80, 90, 80);
-              newEnemy.initialize();
-              enemyArr.splice(enemyArr.length-2, 0, newEnemy);
-            }, 2000)
-            setTimeout(() => {
-              // ROOM TRANSIT
-              collisionObjectArr.push(new CollisionObject(220, myCanvas.height - 15, 680, 15, "roomtransit", 4, "up", false, false));
-              // TO DUNGEON
-              collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 380, 0, 680, 15, "roomtransit", 6, "down", false, false));
-              // GET DESTROYED
-              collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, 0, 120, 50, "environment", -1, "", false, true));
-            }, 1500)
-            setTimeout(() => {
-              collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 50, myCanvas.width, 50, "environment", -1, "", false, true));
-            }, 10000)
-          }
-        }
-
-        // ECROL
-        if (enemyArr[i].name === "ecrol") {
-          enemyArr[i].ecrolBossMovement();
-        }
-
-        // Collisions
-        enemyArr[i].updateCollision();
-        if (enemyArr[i] && enemyArr[i].name !== "slimeBoss" && enemyArr[i].name !== "ecrol") animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
-        if (enemyArr[i] && enemyArr[i].name === "slimeBoss") animate(enemyArr[i], enemyArr[i].imgContainer, enemyArr[i].imageFrames, enemyArr[i].spriteSpeed);
-      }
-    }
 
     function spawnProjectile(x, y, width, height, xDir, yDir, speed, damage, lifeSpan, firedBy, src) {
       const projectile = new Projectile(x, y, width, height, xDir, yDir, speed, damage, lifeSpan, firedBy, src);
@@ -1458,7 +1471,7 @@ window.addEventListener("load", () => {
     function updateProjectiles() {
       for (let i = 0; i < projectileArr.length; i++) {
           if (projectileArr[i] !== undefined) projectileArr[i].updateProjectile();
-          if (projectileArr[i] !== undefined) projectileArr[i].checkCollision(enemyArr, 0, 0, 0, 0);
+          if (projectileArr[i] !== undefined) projectileArr[i].checkCollision(game.enemies, 0, 0, 0, 0);
           if (projectileArr[i] !== undefined) projectileArr[i].checkCollision(collisionObjectArr, 0, 0, 0, 0);
       }
     }
@@ -1467,24 +1480,6 @@ window.addEventListener("load", () => {
       for (let i = 0; i < collisionObjectArr.length; i++) {
         collisionObjectArr[i].updateCollisionObjects();
       }
-    }
-
-    function animate(obj, imgContainer, imageFrames, speed) {
-      // Reset the sprite count
-      if (obj.currentFrame >= imageFrames - 1) {
-        // Reset frames
-        if (animateId % speed === 0) {
-          obj.currentFrame = -1;
-        }
-      }
-
-      // Reset frames
-      if (animateId % speed === 0) {
-        obj.currentFrame++;
-      }
-      obj.img.src = imgContainer[obj.currentFrame];
-      // Draw sprite
-      ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
     }
 
     function initiateSpawn() {
@@ -1496,55 +1491,51 @@ window.addEventListener("load", () => {
         collisionObjectArr[i].selfDestruct();
       }
       
-      // Remove any enemies
-      for (let i = 0; i < enemyArr.length; i++) {
-        enemyArr[i].remove(); 
-      }
       if (levelScreen === 4) {
         // Spawn enemies
-        enemyArr.push(new Enemy("slime", 200, 400, 90, 80));
-        enemyArr.push(new Enemy("slime", 250, 400, 90, 80));
-        enemyArr.push(new Enemy("slime", 300, 400, 90, 80));
-        enemyArr.push(new Enemy("slime", 350, 400, 90, 80));
-        enemyArr.push(new Enemy("slime", 400, 400, 90, 80));
-        enemyArr.push(new Enemy("slime", 450, 400, 90, 80));
-        enemyArr.push(new Enemy("slime", 600, 500, 90, 80));
-        enemyArr.push(new Enemy("slime", 650, 500, 90, 80));
-        enemyArr.push(new Enemy("slime", 700, 500, 90, 80));
-        enemyArr.push(new Enemy("slime", 750, 500, 90, 80));
-        enemyArr.push(new Enemy("slime", 800, 500, 90, 80));
-        enemyArr.push(new Enemy("slime", 850, 400, 90, 80));
-        enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
-        enemyArr.push(new Enemy("slime", 950, 400, 90, 80));
+        game.enemies.push(new Enemy("slime", 200, 400, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 250, 400, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 300, 400, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 350, 400, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 400, 400, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 450, 400, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 600, 500, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 650, 500, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 700, 500, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 750, 500, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 800, 500, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 850, 400, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 900, 400, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 950, 400, 90, 80, 5));
       } else if (levelScreen === 8) {
         // Spawn enemies
-        enemyArr.push(new Enemy("slime", 200, 400, 90, 80));
-        enemyArr.push(new Enemy("slime", 250, 400, 90, 80));
-        enemyArr.push(new Enemy("slime", 300, 400, 90, 80));
-        enemyArr.push(new Enemy("slime", 350, 400, 90, 80));
-        enemyArr.push(new Enemy("slime", 400, 400, 90, 80));
-        enemyArr.push(new Enemy("slime", 450, 400, 90, 80));
-        enemyArr.push(new Enemy("slime", 600, 300, 90, 80));
-        enemyArr.push(new Enemy("slime", 650, 300, 90, 80));
-        enemyArr.push(new Enemy("slime", 700, 300, 90, 80));
-        enemyArr.push(new Enemy("slime", 750, 300, 90, 80));
-        enemyArr.push(new Enemy("slime", 800, 300, 90, 80));
-        enemyArr.push(new Enemy("slime", 850, 300, 90, 80));
-        enemyArr.push(new Enemy("slime", 900, 300, 90, 80));
-        enemyArr.push(new Enemy("slime", 950, 300, 90, 80));
-        enemyArr.push(new Enemy("bat", 150, 120, 52, 36));
-        enemyArr.push(new Enemy("bat", 250, 120, 52, 36));
-        enemyArr.push(new Enemy("bat", 350, 120, 52, 36));
-        enemyArr.push(new Enemy("bat", 450, 120, 52, 36));
-        enemyArr.push(new Enemy("bat", 550, 120, 52, 36));
-        enemyArr.push(new Enemy("bat", 600, 120, 52, 36));
-        enemyArr.push(new Enemy("bat", 700, 120, 52, 36));
-        enemyArr.push(new Enemy("bat", 800, 120, 52, 36));
-        enemyArr.push(new Enemy("bat", 900, 120, 52, 36));
-        enemyArr.push(new Enemy("bat", 1000, 120, 52, 36));
+        game.enemies.push(new Enemy("slime", 200, 400, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 250, 400, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 300, 400, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 350, 400, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 400, 400, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 450, 400, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 600, 300, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 650, 300, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 700, 300, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 750, 300, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 800, 300, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 850, 300, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 900, 300, 90, 80, 5));
+        game.enemies.push(new Enemy("slime", 950, 300, 90, 80, 5));
+        game.enemies.push(new Enemy("bat", 150, 120, 52, 36));
+        game.enemies.push(new Enemy("bat", 250, 120, 52, 36));
+        game.enemies.push(new Enemy("bat", 350, 120, 52, 36));
+        game.enemies.push(new Enemy("bat", 450, 120, 52, 36));
+        game.enemies.push(new Enemy("bat", 550, 120, 52, 36));
+        game.enemies.push(new Enemy("bat", 600, 120, 52, 36));
+        game.enemies.push(new Enemy("bat", 700, 120, 52, 36));
+        game.enemies.push(new Enemy("bat", 800, 120, 52, 36));
+        game.enemies.push(new Enemy("bat", 900, 120, 52, 36));
+        game.enemies.push(new Enemy("bat", 1000, 120, 52, 36));
       }
-      for (let i = 0; i < enemyArr.length; i++) {
-        enemyArr[i].initialize();
+      for (let i = 0; i < game.enemies.length; i++) {
+        game.enemies[i].initialize();
       }
       enemySpawnInProgress = false;
       inBattle = true;
@@ -1615,16 +1606,16 @@ window.addEventListener("load", () => {
       // ROOM TRANSITIONING LEFT
       collisionObjectArr.push(new CollisionObject(0, 150, 15, 440, "roomtransit", 0, "left", false, false));
       // ENEMIES
-      enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
-      enemyArr.push(new Enemy("slime", 500, 200, 90, 80));
-      enemyArr.push(new Enemy("slime", 300, 600, 90, 80));
-      enemyArr.push(new Enemy("slime", 500, 600, 90, 80));
-      enemyArr.push(new Enemy("slime", 300, 500, 90, 80));
-      enemyArr.push(new Enemy("slime", 800, 600, 90, 80));
+      game.enemies.push(new Enemy("slime", 900, 400, 90, 80, 5));
+      game.enemies.push(new Enemy("slime", 500, 200, 90, 80, 5));
+      game.enemies.push(new Enemy("slime", 300, 600, 90, 80, 5));
+      game.enemies.push(new Enemy("slime", 500, 600, 90, 80, 5));
+      game.enemies.push(new Enemy("slime", 300, 500, 90, 80, 5));
+      game.enemies.push(new Enemy("slime", 800, 600, 90, 80, 5));
       
       // Initialize enemies
-      for (let i = 0; i < enemyArr.length; i++) {
-        enemyArr[i].initialize();
+      for (let i = 0; i < game.enemies.length; i++) {
+        game.enemies[i].initialize();
       }
 
       screen1init = true;
@@ -1661,16 +1652,16 @@ window.addEventListener("load", () => {
       collisionObjectArr.push(new CollisionObject(190, myCanvas.height - 15, 820, 15, "roomtransit", 1, "up", false, false));
 
       // ENEMIES
-      enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
-      enemyArr.push(new Enemy("slime", 200, 200, 90, 80));
-      enemyArr.push(new Enemy("slime", 200, 400, 90, 80));
-      enemyArr.push(new Enemy("slime", 500, 200, 90, 80));
-      enemyArr.push(new Enemy("slime", 200, 500, 90, 80));
-      enemyArr.push(new Enemy("slime", 200, 200, 90, 80));
+      game.enemies.push(new Enemy("slime", 900, 400, 90, 80, 5));
+      game.enemies.push(new Enemy("slime", 200, 200, 90, 80, 5));
+      game.enemies.push(new Enemy("slime", 200, 400, 90, 80, 5));
+      game.enemies.push(new Enemy("slime", 500, 200, 90, 80, 5));
+      game.enemies.push(new Enemy("slime", 200, 500, 90, 80, 5));
+      game.enemies.push(new Enemy("slime", 200, 200, 90, 80, 5));
       
       // Initialize enemies
-      for (let i = 0; i < enemyArr.length; i++) {
-        enemyArr[i].initialize();
+      for (let i = 0; i < game.enemies.length; i++) {
+        game.enemies[i].initialize();
       }
       screen2init = true;
     }
@@ -1707,16 +1698,16 @@ window.addEventListener("load", () => {
       collisionObjectArr.push(new CollisionObject(220, 0, 740, 15, "roomtransit", 1, "down", false, false));
 
       // ENEMIES
-      enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
-      enemyArr.push(new Enemy("slime", 200, 200, 90, 80));
-      enemyArr.push(new Enemy("slime", 300, 600, 90, 80));
-      enemyArr.push(new Enemy("slime", 500, 600, 90, 80));
-      enemyArr.push(new Enemy("slime", 200, 500, 90, 80));
-      enemyArr.push(new Enemy("slime", 800, 600, 90, 80));
+      game.enemies.push(new Enemy("slime", 900, 400, 90, 80, 5));
+      game.enemies.push(new Enemy("slime", 200, 200, 90, 80, 5));
+      game.enemies.push(new Enemy("slime", 300, 500, 90, 80, 5));
+      game.enemies.push(new Enemy("slime", 500, 500, 90, 80, 5));
+      game.enemies.push(new Enemy("slime", 200, 500, 90, 80, 5));
+      game.enemies.push(new Enemy("slime", 800, 500, 90, 80, 5));
       
       // Initialize enemies
-      for (let i = 0; i < enemyArr.length; i++) {
-        enemyArr[i].initialize();
+      for (let i = 0; i < game.enemies.length; i++) {
+        game.enemies[i].initialize();
       }
       screen3init = true;
     }
@@ -1744,11 +1735,11 @@ window.addEventListener("load", () => {
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 64, myCanvas.height / 2 - 64, 64, 64, "spawntrigger", -1, "", false, false));
 
       // ENEMIES
-      enemyArr.push(new Enemy("slime", 900, 400, 90, 80));
+      game.enemies.push(new Enemy("slime", 900, 400, 90, 80, 5));
       
       // Initialize enemies
-      for (let i = 0; i < enemyArr.length; i++) {
-        enemyArr[i].initialize();
+      for (let i = 0; i < game.enemies.length; i++) {
+        game.enemies[i].initialize();
       }
 
       screen4init = true;
@@ -1766,11 +1757,11 @@ window.addEventListener("load", () => {
       // SOME COLLISIONS AND TRANSITS CREATED IN UPDATEENEMY()
 
       // BOSS
-      enemyArr.push(new Enemy("slimeBoss", myCanvas.width / 2 + 15, myCanvas.height + 50, 300, 280));
+      game.enemies.push(new Enemy("slimeBoss", myCanvas.width / 2 + 15, myCanvas.height + 50, 300, 280, 5));
       
       // Initialize enemies
-      for (let i = 0; i < enemyArr.length; i++) {
-        enemyArr[i].initialize();
+      for (let i = 0; i < game.enemies.length; i++) {
+        game.enemies[i].initialize();
       }
 
       screen5init = true;
@@ -1818,32 +1809,32 @@ window.addEventListener("load", () => {
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height-15, 130, 15, "roomtransit", 6, "up", false, false));
       
       // ENEMIES
-      enemyArr.push(new Enemy("bat", 100, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 200, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 300, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 400, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 500, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 150, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 250, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 350, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 450, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 550, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 100, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 200, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 300, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 400, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 500, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 150, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 250, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 350, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 450, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 550, 120, 52, 36));
 
-      enemyArr.push(new Enemy("bat", 600, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 700, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 800, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 900, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 1000, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 650, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 750, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 850, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 950, 120, 52, 36));
-      enemyArr.push(new Enemy("bat", 1050, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 600, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 700, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 800, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 900, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 1000, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 650, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 750, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 850, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 950, 120, 52, 36));
+      game.enemies.push(new Enemy("bat", 1050, 120, 52, 36));
 
       // Initialize enemies
-      for (let i = 0; i < enemyArr.length; i++) {
-        enemyArr[i].initialize();
-        if (i > 8) enemyArr[i].xDir = 1;
+      for (let i = 0; i < game.enemies.length; i++) {
+        game.enemies[i].initialize();
+        if (i > 8) game.enemies[i].xDir = 1;
       }
       
       screen7init = true;
@@ -1885,9 +1876,9 @@ window.addEventListener("load", () => {
 
       // BOSS
       setTimeout(() => {
-        enemyArr.push(new Enemy("ecrol", -myCanvas.width, 0, 531, 150));
-        for (let i = 0; i < enemyArr.length; i++) {
-          enemyArr[i].initialize();
+        game.enemies.push(new Enemy("ecrol", -myCanvas.width, 0, 531, 150));
+        for (let i = 0; i < game.enemies.length; i++) {
+          game.enemies[i].initialize();
         }
       }, 1000)
       screen9init = true;
