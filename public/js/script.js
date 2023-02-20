@@ -642,6 +642,8 @@ window.addEventListener("load", () => {
         this.cOffRight = 0;
         this.cOffBottom = 0;
         this.cOffLeft = 0;
+        this.pushBackDir = {x: 0, y: 0};
+        this.pushBackTimer = 1;
   
         // Boss
         this.xDir;
@@ -813,13 +815,36 @@ window.addEventListener("load", () => {
 
       draw(ctx) {
         if (this.name === "enemyProjectileFire") this.initialize();
+        // Hit effect
+        if (this.takenDamage) {
+          ctx.filter = "brightness(100)";
+        } else {
+          ctx.filter = "brightness(1)";
+        }
+        // Draw
         ctx.drawImage(this.image, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
+        // Reset hit effect
+        ctx.filter = "brightness(1)";
       }
 
       updateEnemies(deltaTime) {
         if (deltaTime === undefined) deltaTime = 0;
         // Normal enemies
-        if (this.name === "slime") this.moveTowardsTarget(this.moveTo, deltaTime);
+        if (this.name === "slime") {
+          this.moveTowardsTarget(this.moveTo, deltaTime);
+          if ((this.pushBackDir.x !== 0 || this.pushBackDir.y !== 0) && this.pushBackTimer > 0) {
+            if (!this.checkCollision(collisionObjectArr, 12, 10, 12, 10)) {
+              this.x += this.pushBackDir.x * deltaTime;
+              this.y += this.pushBackDir.y * deltaTime;
+            }
+            this.pushBackTimer -= 0.3;
+            if (this.pushBackTimer <= 0) {
+              this.pushBackDir.x = 0;
+              this.pushBackDir.y = 0;
+              this.pushBackTimer = 1;
+            }
+          }
+        }
         if (this.name === "bat") {
           this.moveLeftRight(deltaTime);
           this.shootDown();
@@ -828,7 +853,6 @@ window.addEventListener("load", () => {
           if(!this.initialized) this.initialize()
           this.moveDown(deltaTime);
         }
-
 
         // Bosses
         if (this.name === "slimeBoss") {
@@ -1179,6 +1203,7 @@ window.addEventListener("load", () => {
               // Enemy Collision
               if (arr[i].getType() === "enemy" && this.firedBy === "player") {
                 const projectile = game.projectiles.indexOf(this);
+                arr[i].pushBackDir = {x: this.xDir, y: this.yDir};
                 if (!arr[i].takenDamage) arr[i].hit(game.projectiles[projectile].damage);
                 game.projectiles[projectile].destroy();
                 break;
