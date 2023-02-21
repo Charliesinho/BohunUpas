@@ -150,7 +150,7 @@ window.addEventListener("load", () => {
     let level4Spawn = true;
     let level8Spawn = true;
   
-    let currentLevel = "";
+    let currentLevel = "Meadow";
     let levelScreen = 0;
 
   
@@ -249,7 +249,6 @@ window.addEventListener("load", () => {
         this.input = new InputHandler(this, this.player);
       }
       render(context, deltaTime) {
-        console.log(currentLevel)
         // Backgrounds
         for (let i = 0; i < this.backgrounds.length; i++) {
           this.backgrounds[i].draw(context);
@@ -436,10 +435,46 @@ window.addEventListener("load", () => {
               } else if (arr[i].getType() === "enemy" || (arr[i].getType() === "projectile" && arr[i].firedBy === "enemy")) {
                 this.hit(arr[i].damage)
               } else if (arr[i].getType() === "roomtransit" && !roomTransit) {
+                console.log("IN HIT")
                 roomTransit = true;
                 levelScreen = arr[i].nextScreen;
                 currentLevel = arr[i].nextLevel;
                 transitDir = arr[i].transitDir;
+                let bgFound = false;
+                if (transitDir === "up") {
+                  for (let i = 0; i < game.backgrounds.length; i++) {
+                    if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
+                      bgFound = true;
+                      break;
+                    }
+                  }
+                  if (!bgFound) game.backgrounds.push(new Background(0, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
+                } else if (transitDir === "right") {
+                  for (let i = 0; i < game.backgrounds.length; i++) {
+                    if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
+                      bgFound = true;
+                      break;
+                    }
+                  }
+                  if (!bgFound) game.backgrounds.push(new Background(myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
+                } else if (transitDir === "down") {
+                  for (let i = 0; i < game.backgrounds.length; i++) {
+                    if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
+                      bgFound = true;
+                      break;
+                    }
+                  }
+                  if (!bgFound) game.backgrounds.push(new Background(0, myCanvas.height, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
+                } else if (transitDir === "left") {
+                  for (let i = 0; i < game.backgrounds.length; i++) {
+                    if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
+                      bgFound = true;
+                      break;
+                    }
+                  }
+                  if (!bgFound) game.backgrounds.push(new Background(-myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
+                }
+                console.log(game.backgrounds)
               }
             }
         }
@@ -879,7 +914,7 @@ window.addEventListener("load", () => {
               // ROOM TRANSIT
               collisionObjectArr.push(new CollisionObject(220, myCanvas.height - 15, 680, 15, "roomtransit", 4, "Meadow", "down", false, false));
               // TO DUNGEON
-              collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 380, 0, 680, 15, "roomtransit", 6, "Cave", "up", false, false));
+              collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 380, 0, 680, 15, "roomtransit", 0, "Cave", "up", false, false));
               // GET DESTROYED
               collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, 0, 120, 50, "environment", -1, "", "", false, true));
             }, 1500)
@@ -1310,7 +1345,6 @@ window.addEventListener("load", () => {
       }
     }
 
-
     const game = new Game(myCanvas.width, myCanvas.height);
     myCanvas.style.backgroundColor = "white";
     myCanvas.style.border = "1px solid black";
@@ -1320,55 +1354,61 @@ window.addEventListener("load", () => {
     startGame(lastTime);
 
     function startGame(lastTime) {
+      game.backgrounds.push(new Background(0, 0, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
       game.player.initialize()
       checkLevelScreen(levelScreen);
       gameplayLoop(lastTime);
     }
 
     function checkLevelScreen(levelScreen) {
-      switch (levelScreen) {
-        case 0:
-          if (!worldInit) loadWorld();
-          if (!screen0init) loadScreen0();
-          break;
-        // Meadow Screens
-        case 1:
-          if (!worldInit) loadWorld();
-          if (!screen1init) loadScreen1();
-          break;
-        case 2:
-          if (!worldInit) loadWorld();
-          if (!screen2init) loadScreen2();
-          break;
-        case 3:
-          if (!worldInit) loadWorld();
-          if (!screen3init) loadScreen3();
-          break;
-        case 4:
-          if (!worldInit) loadWorld();
-          if (!screen4init) loadScreen4();
-          break;
-        case 5:
-          if (!worldInit) loadWorld();
-          if (!screen5init) loadScreen5();
-          break;
-        // Cave Screens
-        case 6:
-          if (!worldInit) loadWorld();
-          if (!screen6init) loadScreen6();
-          break;
-        case 7:
-          if (!worldInit) loadWorld();
-          if (!screen7init) loadScreen7();
-          break;
-        case 8:
-          if (!worldInit) loadWorld();
-          if (!screen8init) loadScreen8();
-          break;
-        case 9:
-          if (!worldInit) loadWorld();
-          if (!screen9init) loadScreen9();
-          break;
+      if (currentLevel === "Meadow") {
+        switch (levelScreen) {
+          case 0:
+            if (!worldInit) loadWorld();
+            if (!screen0init) loadScreen0();
+            break;
+          // Meadow Screens
+          case 1:
+            if (!worldInit) loadWorld();
+            if (!screen1init) loadScreen1();
+            break;
+          case 2:
+            if (!worldInit) loadWorld();
+            if (!screen2init) loadScreen2();
+            break;
+          case 3:
+            if (!worldInit) loadWorld();
+            if (!screen3init) loadScreen3();
+            break;
+          case 4:
+            if (!worldInit) loadWorld();
+            if (!screen4init) loadScreen4();
+            break;
+          case 5:
+            if (!worldInit) loadWorld();
+            if (!screen5init) loadScreen5();
+            break;
+        }
+      } else if (currentLevel === "Cave") {
+        switch(levelScreen) {
+          // Cave Screens
+          case 0:
+            if (!worldInit) loadWorld();
+            if (!screen6init) loadScreen6();
+            break;
+          case 1:
+            if (!worldInit) loadWorld();
+            if (!screen7init) loadScreen7();
+            break;
+          case 2:
+            if (!worldInit) loadWorld();
+            if (!screen8init) loadScreen8();
+            break;
+          case 3:
+            if (!worldInit) loadWorld();
+            if (!screen9init) loadScreen9();
+            break;
+        }
       }
     }
 
@@ -1397,28 +1437,42 @@ window.addEventListener("load", () => {
           roomTransit = false;
           saveBtn.click();
         } else {
+          // Find background to display
+          let nextBg;
+          for (let i = 0; i < game.backgrounds.length; i++) {
+            if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
+              nextBg = i;
+              break;
+            }
+          }
+
           // Reset for new drawing
           ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
           // Moving DOWN a screen
-          if (transitDir === "up" && game.backgrounds[levelScreen].y < 0) {
+          if (transitDir === "up" && game.backgrounds[nextBg].y < 0) {
             transitMoveElements(deltaTime);
           // Moving UP a screen
-          } else if (transitDir === "down" && game.backgrounds[levelScreen].y > 0) {
+          } else if (transitDir === "down" && game.backgrounds[nextBg].y > 0) {
             transitMoveElements(deltaTime);
           // Moving RIGHT a screen
-          } else if (transitDir === "right" && game.backgrounds[levelScreen].x > 0) {
+          } else if (transitDir === "right" && game.backgrounds[nextBg].x > 0) {
             transitMoveElements(deltaTime);
           // Moving LEFT a screen
-          } else if (transitDir === "left" && game.backgrounds[levelScreen].x < 0) {
+          } else if (transitDir === "left" && game.backgrounds[nextBg].x < 0) {
             transitMoveElements(deltaTime);
           // Resume Game
           } else {
+            for (let i = 0; i < game.backgrounds.length; i++) {
+              game.backgrounds[i].x = Math.round(game.backgrounds[i].x / 100) * 100;
+              game.backgrounds[i].y = Math.round(game.backgrounds[i].y / 100) * 100;
+              console.log(game.backgrounds[i]);
+            }
+/*             game.backgrounds[nextBg].x = Math.round(game.backgrounds[nextBg].x / 1000) * 1000;
+            game.backgrounds[nextBg].y = Math.round(game.backgrounds[nextBg].y / 1000) * 1000; */
             roomTransit = false;
             checkLevelScreen(levelScreen);
           }
-
         }
-        
       }
     }
 
@@ -1429,7 +1483,6 @@ window.addEventListener("load", () => {
         if (transitDir === "up") game.backgrounds[i].y += transitSpeed * deltaTime;
         if (transitDir === "right") game.backgrounds[i].x -= transitSpeed * deltaTime;
         if (transitDir === "left") game.backgrounds[i].x += transitSpeed * deltaTime;
-        ctx.drawImage(game.backgrounds[i].img, game.backgrounds[i].x, game.backgrounds[i].y, game.backgrounds[i].width, game.backgrounds[i].height);
       }
       // Shift enemies
       for (let i = 0; i < game.enemies.length; i++) {
@@ -1468,16 +1521,16 @@ window.addEventListener("load", () => {
       }
       if (enemySpawnInProgress) {
         enemySpawnInProgress = false;
-        if (levelScreen === 4) level4Spawn = false;
-        if (levelScreen === 8) level8Spawn = false;
+        if (levelScreen === 4 && currentLevel === "Meadow") level4Spawn = false;
+        if (levelScreen === 2 && currentLevel === "Cave") level8Spawn = false;
         initiateSpawn()
       }
       // 3D Level Models
-      if (levelScreen < 6) {
+      if (currentLevel === "Meadow") {
         document.getElementById("meadowMap").style.display = "block";
         document.getElementById("caveMap").style.display = "none";
       }
-      if (levelScreen > 5) {
+      if (currentLevel === "Cave") {
         document.getElementById("caveMap").style.display = "block";
         document.getElementById("meadowMap").style.display = "none";
       }
@@ -1554,16 +1607,16 @@ window.addEventListener("load", () => {
     // SCREENS AND LEVELS DEFINED HERE
     function loadWorld() {
       // Get Backgrounds
-      game.backgrounds.push(new Background(0, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow0.png`));
+/*       game.backgrounds.push(new Background(0, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow0.png`));
       game.backgrounds.push(new Background(myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow1.png`));
       game.backgrounds.push(new Background(myCanvas.width, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow2.png`));
       game.backgrounds.push(new Background(myCanvas.width, myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow3.png`));
       game.backgrounds.push(new Background(myCanvas.width * 2, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow4.png`));
       game.backgrounds.push(new Background(myCanvas.width * 2, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow5.png`));
-      game.backgrounds.push(new Background(myCanvas.width * 2, -myCanvas.height * 2, myCanvas.width, myCanvas.height, "../images/Dungeon/dungeon0.png"));
-      game.backgrounds.push(new Background(myCanvas.width * 2, -myCanvas.height * 3, myCanvas.width, myCanvas.height, "../images/Dungeon/dungeon1.png"));
-      game.backgrounds.push(new Background(myCanvas.width * 2, -myCanvas.height * 4, myCanvas.width, myCanvas.height, "../images/Dungeon/dungeon2.png"));
-      game.backgrounds.push(new Background(myCanvas.width * 2, -myCanvas.height * 5, myCanvas.width, myCanvas.height, "../images/Dungeon/dungeon3.png"));
+      game.backgrounds.push(new Background(myCanvas.width * 2, -myCanvas.height * 2, myCanvas.width, myCanvas.height, "../images/Cave/Backgrounds/cave0.png"));
+      game.backgrounds.push(new Background(myCanvas.width * 2, -myCanvas.height * 3, myCanvas.width, myCanvas.height, "../images/Cave/Backgrounds/cave1.png"));
+      game.backgrounds.push(new Background(myCanvas.width * 2, -myCanvas.height * 4, myCanvas.width, myCanvas.height, "../images/Cave/Backgrounds/cave2.png"));
+      game.backgrounds.push(new Background(myCanvas.width * 2, -myCanvas.height * 5, myCanvas.width, myCanvas.height, "../images/Cave/Backgrounds/cave3.png")); */
       worldInit = true;
     }
 
@@ -1794,8 +1847,8 @@ window.addEventListener("load", () => {
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 80, myCanvas.height / 2 + 50, 320, 70, "environment", -1, "", "", false, false));
       
       // ROOM TRANSITIONING TOP
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 110, 0, 150, 15, "roomtransit", 7, "Cave", "up", false, false)); // TOP
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 110, myCanvas.height - 15, 150, 15, "roomtransit", 5, "Cave", "down", false, false)); // BOTTOM
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 110, 0, 150, 15, "roomtransit", 1, "Cave", "up", false, false)); // TOP
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 110, myCanvas.height - 15, 150, 15, "roomtransit", 5, "Meadow", "down", false, false)); // BOTTOM
       screen6init = true;
     }
 
@@ -1814,8 +1867,8 @@ window.addEventListener("load", () => {
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 200, 180, 400, 90, "playerblock", -1, "", "", false, false));
       
       // Transitions
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, 0, 130, 15, "roomtransit", 8, "Cave", "up", false, false));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height-15, 130, 15, "roomtransit", 6, "Cave", "down", false, false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, 0, 130, 15, "roomtransit", 2, "Cave", "up", false, false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height-15, 130, 15, "roomtransit", 0, "Cave", "down", false, false));
       
       // ENEMIES
       game.enemies.push(new Enemy("bat", 100, 120, 52, 36, 5));
@@ -1859,8 +1912,8 @@ window.addEventListener("load", () => {
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, myCanvas.height / 2 + 110, 600, 240, "environment", -1, "", "", false, false));
 
       // Transitions
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, 0, 130, 15, "roomtransit", 9, "Cave", "up", false, false));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height-15, 130, 15, "roomtransit", 7, "Cave", "down", false, false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, 0, 130, 15, "roomtransit", 3, "Cave", "up", false, false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height-15, 130, 15, "roomtransit", 1, "Cave", "down", false, false));
 
       // Enemy Spawner
       collisionObjectArr.push(new CollisionObject(0, 0, myCanvas.width, 45, "environment", -1, "", "", false, true));
@@ -1881,7 +1934,7 @@ window.addEventListener("load", () => {
       
       // Transitions
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 20, 0, 130, 15, "roomtransit", -10, "", "", "up", false, false));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height - 15, 130, 15, "roomtransit", 8, "Cave", "down", false, false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, myCanvas.height - 15, 130, 15, "roomtransit", 2, "Cave", "down", false, false));
 
       // BOSS
       setTimeout(() => {
