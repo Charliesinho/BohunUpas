@@ -88,6 +88,7 @@
                 <label>Souls: <input class="buttonUnformat statsInGame" id="souls" style="display: block;" name="souls" type="number" value="<%=sessionRace2.character[0].souls%>" readonly></input></label>
                 <br>
                 <label>XP: <input class="buttonUnformat statsInGame" id="experience" style="display: block;" name="experience" type="number" value="<%=sessionRace2.character[0].experience%>" readonly></input></label> 
+                <input id="achievementContainer" name="achievements" style="display: none;" readonly/>
             </div> 
             <% } %></p>
             <button id="saveGameButton" type="submit" style="display: none;">Save</button>
@@ -95,6 +96,7 @@
         
         </div>
         
+        <!-- 3D Maps -->
         <div id="meadowMap">
             <h1 class="mapTitle">Meadow</h1>
             <iframe class="mapFrame" width="700" height="500" src="https://my.spline.design/untitled-9beec2002796a691af5bd25120f128c7/"></iframe>  

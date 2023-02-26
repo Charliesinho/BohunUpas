@@ -30,12 +30,12 @@ function ShowLegendary() {
 
 window.addEventListener("load", () => {
   setTimeout(() => {  
-    if ( document.getElementById("mediumPack")) {
+    if (document.getElementById("mediumPack")) {
     if (document.getElementById("mediumPack").style.display === "block") {
       document.getElementById("mediumPack").style.display = "none";
     }}
   
-    if ( document.getElementById("mediumPack")) {
+    if (document.getElementById("mediumPack")) {
     if (document.getElementById("legendaryPack").style.display === "block") {
       document.getElementById("legendaryPack").style.display = "none";
     }}
@@ -132,7 +132,10 @@ window.addEventListener("load", () => {
     } else {
       gArtefact = "";
     }
-  
+
+    // Add Achievements
+    //const achievementCtn = document.querySelector("#achievementContainer");
+
     // World
     let worldInit = false;
   
@@ -147,8 +150,8 @@ window.addEventListener("load", () => {
     let screen8init = false;
     let screen9init = false;
     
-    let level4Spawn = true;
-    let level8Spawn = true;
+    let level4MeadowSpawn = true;
+    let level2CaveSpawn = true;
   
     let currentLevel = "Meadow";
     let levelScreen = 0;
@@ -266,6 +269,10 @@ window.addEventListener("load", () => {
           this.projectiles[i].draw(context);
           this.projectiles[i].updateProjectiles(deltaTime);
         }
+        // Collisions DEBUG ONLY
+/*         for (let i = 0; i < collisionObjectArr.length; i++) {
+          if (collisionObjectArr[i].debug) collisionObjectArr[i].updateCollisionObjects();
+        } */
       }
     }
 
@@ -435,46 +442,13 @@ window.addEventListener("load", () => {
               } else if (arr[i].getType() === "enemy" || (arr[i].getType() === "projectile" && arr[i].firedBy === "enemy")) {
                 this.hit(arr[i].damage)
               } else if (arr[i].getType() === "roomtransit" && !roomTransit) {
-                console.log("IN HIT")
                 roomTransit = true;
                 levelScreen = arr[i].nextScreen;
                 currentLevel = arr[i].nextLevel;
                 transitDir = arr[i].transitDir;
-                let bgFound = false;
-                if (transitDir === "up") {
-                  for (let i = 0; i < game.backgrounds.length; i++) {
-                    if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
-                      bgFound = true;
-                      break;
-                    }
-                  }
-                  if (!bgFound) game.backgrounds.push(new Background(0, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
-                } else if (transitDir === "right") {
-                  for (let i = 0; i < game.backgrounds.length; i++) {
-                    if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
-                      bgFound = true;
-                      break;
-                    }
-                  }
-                  if (!bgFound) game.backgrounds.push(new Background(myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
-                } else if (transitDir === "down") {
-                  for (let i = 0; i < game.backgrounds.length; i++) {
-                    if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
-                      bgFound = true;
-                      break;
-                    }
-                  }
-                  if (!bgFound) game.backgrounds.push(new Background(0, myCanvas.height, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
-                } else if (transitDir === "left") {
-                  for (let i = 0; i < game.backgrounds.length; i++) {
-                    if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
-                      bgFound = true;
-                      break;
-                    }
-                  }
-                  if (!bgFound) game.backgrounds.push(new Background(-myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
-                }
-                console.log(game.backgrounds)
+                handleRoomTransit();
+              } else if (arr[i].getType() === "waypoint") {
+                handleWaypointTransit();
               }
             }
         }
@@ -927,6 +901,20 @@ window.addEventListener("load", () => {
         // ECROL
         if (this.name === "ecrol") {
           this.ecrolBossMovement(deltaTime);
+          if (!this.initialized) {
+            this.initialized = true;
+            setTimeout(() => {
+              // ROOM TRANSIT
+              collisionObjectArr.push(new CollisionObject(220, myCanvas.height - 15, 680, 15, "roomtransit", 1, "Cave", "down", false, false));
+              // TO DUNGEON
+              collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 380, 0, 680, 15, "roomtransit", -10, "Cave", "up", false, false));
+              // GET DESTROYED
+              collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 25, 0, 120, 50, "environment", -1, "", "", false, true));
+            }, 1500)
+            setTimeout(() => {
+              collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 50, myCanvas.width, 50, "environment", -1, "", "", false, true));
+            }, 5000)
+          }
         }
         
         // Collisions
@@ -1151,7 +1139,7 @@ window.addEventListener("load", () => {
       }
   
       destroy() { // GRANT SOULS AND XP
-        if (this.name === "slimeBoss") {
+        if (this.name === "slimeBoss" || this.name === "ecrol") {
           for (let i = collisionObjectArr.length - 1; i >= 0; i--) {
             if (collisionObjectArr[i].triggerDestroy) {
               collisionObjectArr[i].destroy();
@@ -1228,9 +1216,9 @@ window.addEventListener("load", () => {
         this.checkCollision(game.enemies, 0, 0, 0, 0);
         this.checkCollision(collisionObjectArr, 0, 0, 0, 0);
   
-        // Destory if lifeSpan reached
+        // Destory if lifeSpan reached or out of screen
         this.lifeSpan--;
-        if (this.lifeSpan <= 0) {
+        if (this.lifeSpan <= 0 || this.x < 0 || this.y < 0 || this.x > myCanvas.width + this.width || this.y > myCanvas.height + this.height) {
           this.destroy();
         }
       }
@@ -1364,28 +1352,22 @@ window.addEventListener("load", () => {
       if (currentLevel === "Meadow") {
         switch (levelScreen) {
           case 0:
-            if (!worldInit) loadWorld();
             if (!screen0init) loadScreen0();
             break;
           // Meadow Screens
           case 1:
-            if (!worldInit) loadWorld();
             if (!screen1init) loadScreen1();
             break;
           case 2:
-            if (!worldInit) loadWorld();
             if (!screen2init) loadScreen2();
             break;
           case 3:
-            if (!worldInit) loadWorld();
             if (!screen3init) loadScreen3();
             break;
           case 4:
-            if (!worldInit) loadWorld();
             if (!screen4init) loadScreen4();
             break;
           case 5:
-            if (!worldInit) loadWorld();
             if (!screen5init) loadScreen5();
             break;
         }
@@ -1393,19 +1375,15 @@ window.addEventListener("load", () => {
         switch(levelScreen) {
           // Cave Screens
           case 0:
-            if (!worldInit) loadWorld();
             if (!screen6init) loadScreen6();
             break;
           case 1:
-            if (!worldInit) loadWorld();
             if (!screen7init) loadScreen7();
             break;
           case 2:
-            if (!worldInit) loadWorld();
             if (!screen8init) loadScreen8();
             break;
           case 3:
-            if (!worldInit) loadWorld();
             if (!screen9init) loadScreen9();
             break;
         }
@@ -1465,10 +1443,7 @@ window.addEventListener("load", () => {
             for (let i = 0; i < game.backgrounds.length; i++) {
               game.backgrounds[i].x = Math.round(game.backgrounds[i].x / 100) * 100;
               game.backgrounds[i].y = Math.round(game.backgrounds[i].y / 100) * 100;
-              console.log(game.backgrounds[i]);
             }
-/*             game.backgrounds[nextBg].x = Math.round(game.backgrounds[nextBg].x / 1000) * 1000;
-            game.backgrounds[nextBg].y = Math.round(game.backgrounds[nextBg].y / 1000) * 1000; */
             roomTransit = false;
             checkLevelScreen(levelScreen);
           }
@@ -1509,20 +1484,92 @@ window.addEventListener("load", () => {
       if (transitDir === "left") game.player.x += (transitSpeed - 0.1) * deltaTime;
     }
 
+    function handleRoomTransit() {
+      let bgFound = false;
+      if (transitDir === "up") {
+        for (let i = 0; i < game.backgrounds.length; i++) {
+          if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
+            bgFound = true;
+            break;
+          }
+        }
+        if (!bgFound) game.backgrounds.push(new Background(0, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
+      } else if (transitDir === "right") {
+        for (let i = 0; i < game.backgrounds.length; i++) {
+          if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
+            bgFound = true;
+            break;
+          }
+        }
+        if (!bgFound) game.backgrounds.push(new Background(myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
+      } else if (transitDir === "down") {
+        for (let i = 0; i < game.backgrounds.length; i++) {
+          if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
+            bgFound = true;
+            break;
+          }
+        }
+        if (!bgFound) game.backgrounds.push(new Background(0, myCanvas.height, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
+      } else if (transitDir === "left") {
+        for (let i = 0; i < game.backgrounds.length; i++) {
+          if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
+            bgFound = true;
+            break;
+          }
+        }
+        if (!bgFound) game.backgrounds.push(new Background(-myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
+      }
+    }
+
+    function handleWaypointTransit() {
+      unloadAll();
+      if (currentLevel === "Meadow") {
+        currentLevel = "Cave";
+        game.backgrounds.push(new Background(0, 0, myCanvas.width, myCanvas.height, `../images/Cave/Backgrounds/cave0.png`))
+        game.player.x = myCanvas.width / 2 - 100;
+        game.player.y = myCanvas.height - 200;
+      }
+      checkLevelScreen(levelScreen);
+    }
+
+    function unloadAll() {
+      // Clear arrays
+      collisionObjectArr.splice(0, collisionObjectArr.length);
+      game.enemies.splice(0, game.enemies.length);
+      game.backgrounds.splice(0, game.backgrounds.length);
+      game.projectiles.splice(0, game.projectiles.length);
+      // Reset level states
+      screen0init = false;
+      screen1init = false;
+      screen2init = false;
+      screen3init = false;
+      screen4init = false;
+      screen5init = false;
+      screen6init = false;
+      screen7init = false;
+      screen8init = false;
+      screen9init = false;
+      level4MeadowSpawn = true;
+      level2CaveSpawn = true;
+    }
+
     function checkLevelEvents() {  
       // Level Dependent Enemy Spawns
+      let waypointImg = new Image();
+      waypointImg.src = "../images/Cave/Bat/bat.png";
+      if (levelScreen === 0 && currentLevel === "Meadow" && !roomTransit) ctx.drawImage(waypointImg, myCanvas.width / 2 + 110, 200, 25, 25)
       let spawnImg = new Image();
       spawnImg.src = "../images/Environment/spawnSlimeGel.png";
-      if (level4Spawn && levelScreen === 4 && !roomTransit) {
+      if (level4MeadowSpawn && levelScreen === 4 && !roomTransit) {
         ctx.drawImage(spawnImg, myCanvas.width / 2 - 72, myCanvas.height / 2  - 72, 72, 72)
       }
-      if (level8Spawn && levelScreen === 8 && !roomTransit) {
+      if (level2CaveSpawn && levelScreen === 2 && !roomTransit) {
         ctx.drawImage(spawnImg, myCanvas.width / 2 - 72, myCanvas.height / 2  - 72, 72, 72)
       }
       if (enemySpawnInProgress) {
         enemySpawnInProgress = false;
-        if (levelScreen === 4 && currentLevel === "Meadow") level4Spawn = false;
-        if (levelScreen === 2 && currentLevel === "Cave") level8Spawn = false;
+        if (levelScreen === 4 && currentLevel === "Meadow") level4MeadowSpawn = false;
+        if (levelScreen === 2 && currentLevel === "Cave") level2CaveSpawn = false;
         initiateSpawn()
       }
       // 3D Level Models
@@ -1553,7 +1600,7 @@ window.addEventListener("load", () => {
         collisionObjectArr[i].selfDestruct();
       }
       
-      if (levelScreen === 4) {
+      if (currentLevel = "Meadow" && levelScreen === 4) {
         // Spawn enemies
         game.enemies.push(new Enemy("slime", 200, 400, 90, 80, 5));
         game.enemies.push(new Enemy("slime", 250, 400, 90, 80, 5));
@@ -1569,7 +1616,7 @@ window.addEventListener("load", () => {
         game.enemies.push(new Enemy("slime", 850, 400, 90, 80, 5));
         game.enemies.push(new Enemy("slime", 900, 400, 90, 80, 5));
         game.enemies.push(new Enemy("slime", 950, 400, 90, 80, 5));
-      } else if (levelScreen === 8) {
+      } else if (currentLevel = "Meadow" && levelScreen === 2) {
         // Spawn enemies
         game.enemies.push(new Enemy("slime", 200, 400, 90, 80, 5));
         game.enemies.push(new Enemy("slime", 250, 400, 90, 80, 5));
@@ -1605,21 +1652,6 @@ window.addEventListener("load", () => {
 
 
     // SCREENS AND LEVELS DEFINED HERE
-    function loadWorld() {
-      // Get Backgrounds
-/*       game.backgrounds.push(new Background(0, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow0.png`));
-      game.backgrounds.push(new Background(myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow1.png`));
-      game.backgrounds.push(new Background(myCanvas.width, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow2.png`));
-      game.backgrounds.push(new Background(myCanvas.width, myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow3.png`));
-      game.backgrounds.push(new Background(myCanvas.width * 2, 0, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow4.png`));
-      game.backgrounds.push(new Background(myCanvas.width * 2, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/Meadow/Backgrounds/meadow5.png`));
-      game.backgrounds.push(new Background(myCanvas.width * 2, -myCanvas.height * 2, myCanvas.width, myCanvas.height, "../images/Cave/Backgrounds/cave0.png"));
-      game.backgrounds.push(new Background(myCanvas.width * 2, -myCanvas.height * 3, myCanvas.width, myCanvas.height, "../images/Cave/Backgrounds/cave1.png"));
-      game.backgrounds.push(new Background(myCanvas.width * 2, -myCanvas.height * 4, myCanvas.width, myCanvas.height, "../images/Cave/Backgrounds/cave2.png"));
-      game.backgrounds.push(new Background(myCanvas.width * 2, -myCanvas.height * 5, myCanvas.width, myCanvas.height, "../images/Cave/Backgrounds/cave3.png")); */
-      worldInit = true;
-    }
-
     function loadScreen0() {
       // COLLISIONS
       collisionObjectArr.push(new CollisionObject(0, 0, 400, myCanvas.height, "environment", -1, "", "", false, false));
@@ -1627,6 +1659,8 @@ window.addEventListener("load", () => {
       collisionObjectArr.push(new CollisionObject(0, myCanvas.height-130, myCanvas.width, 130, "environment", -1, "", "", false, false));
       // ROOM TRANSITIONING RIGHT
       collisionObjectArr.push(new CollisionObject(myCanvas.width - 15, 130, 15, 440, "roomtransit", 1, "Meadow", "right", false, false));
+      // WAYPOINT
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 110, 200, 5, 5, "waypoint", -10, "", "", "down", true, false));
       
       // SAVE
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 110, myCanvas.height / 2 - 40, 5, 5, "roomtransit", -10, "", "", "down", false, false));
@@ -1909,7 +1943,8 @@ window.addEventListener("load", () => {
       collisionObjectArr.push(new CollisionObject(0, 0, 475, 70, "environment", -1, "", "", false, false));
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, 0, 600, 70, "environment", -1, "", "", false, false));
       collisionObjectArr.push(new CollisionObject(0, myCanvas.height - 90, 485, 90, "environment", -1, "", "", false, false));
-      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, myCanvas.height / 2 + 110, 600, 240, "environment", -1, "", "", false, false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, myCanvas.height / 2 + 110, 480, 100, "playerblock", -1, "", "", true, false));
+      collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 + 40, myCanvas.height - 100, 600, 100, "environment", -1, "", "", true, false));
 
       // Transitions
       collisionObjectArr.push(new CollisionObject(myCanvas.width / 2 - 100, 0, 130, 15, "roomtransit", 3, "Cave", "up", false, false));
@@ -1946,4 +1981,5 @@ window.addEventListener("load", () => {
       screen9init = true;
     }
   }
-})
+  
+});
