@@ -136,9 +136,7 @@ window.addEventListener("load", () => {
     // Add Achievements
     //const achievementCtn = document.querySelector("#achievementContainer");
 
-    // World
-    let worldInit = false;
-  
+    // World  
     let screen0init = false;
     let screen1init = false;
     let screen2init = false;
@@ -155,7 +153,6 @@ window.addEventListener("load", () => {
   
     let currentLevel = "Meadow";
     let levelScreen = 0;
-
   
     let roomTransit = false;
     let transitSpeed = 0.5;
@@ -1600,7 +1597,7 @@ window.addEventListener("load", () => {
         collisionObjectArr[i].selfDestruct();
       }
       
-      if (currentLevel = "Meadow" && levelScreen === 4) {
+      if (currentLevel === "Meadow" && levelScreen === 4) {
         // Spawn enemies
         game.enemies.push(new Enemy("slime", 200, 400, 90, 80, 5));
         game.enemies.push(new Enemy("slime", 250, 400, 90, 80, 5));
@@ -1616,7 +1613,7 @@ window.addEventListener("load", () => {
         game.enemies.push(new Enemy("slime", 850, 400, 90, 80, 5));
         game.enemies.push(new Enemy("slime", 900, 400, 90, 80, 5));
         game.enemies.push(new Enemy("slime", 950, 400, 90, 80, 5));
-      } else if (currentLevel = "Meadow" && levelScreen === 2) {
+      } else if (currentLevel === "Meadow" && levelScreen === 2) {
         // Spawn enemies
         game.enemies.push(new Enemy("slime", 200, 400, 90, 80, 5));
         game.enemies.push(new Enemy("slime", 250, 400, 90, 80, 5));
