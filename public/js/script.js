@@ -1557,10 +1557,10 @@ window.addEventListener("load", () => {
       if (levelScreen === 0 && currentLevel === "Meadow" && !roomTransit) ctx.drawImage(waypointImg, myCanvas.width / 2 + 110, 200, 25, 25)
       let spawnImg = new Image();
       spawnImg.src = "../images/Environment/spawnSlimeGel.png";
-      if (level4MeadowSpawn && levelScreen === 4 && !roomTransit) {
+      if (level4MeadowSpawn && levelScreen === 4 && currentLevel === "Meadow" && !roomTransit) {
         ctx.drawImage(spawnImg, myCanvas.width / 2 - 72, myCanvas.height / 2  - 72, 72, 72)
       }
-      if (level2CaveSpawn && levelScreen === 2 && !roomTransit) {
+      if (level2CaveSpawn && levelScreen === 2 && currentLevel === "Cave" && !roomTransit) {
         ctx.drawImage(spawnImg, myCanvas.width / 2 - 72, myCanvas.height / 2  - 72, 72, 72)
       }
       if (enemySpawnInProgress) {
@@ -1613,7 +1613,7 @@ window.addEventListener("load", () => {
         game.enemies.push(new Enemy("slime", 850, 400, 90, 80, 5));
         game.enemies.push(new Enemy("slime", 900, 400, 90, 80, 5));
         game.enemies.push(new Enemy("slime", 950, 400, 90, 80, 5));
-      } else if (currentLevel === "Meadow" && levelScreen === 2) {
+      } else if (currentLevel === "Cave" && levelScreen === 2) {
         // Spawn enemies
         game.enemies.push(new Enemy("slime", 200, 400, 90, 80, 5));
         game.enemies.push(new Enemy("slime", 250, 400, 90, 80, 5));
