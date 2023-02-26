@@ -1342,7 +1342,7 @@ window.addEventListener("load", () => {
     startGame(lastTime);
 
     function startGame(lastTime) {
-      game.backgrounds.push(new Background(0, 0, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
+      game.backgrounds.push(new Background(0, 0, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toLowerCase() + currentLevel.slice(1)}${levelScreen}.png`));
       game.player.initialize()
       checkLevelScreen(levelScreen);
       gameplayLoop(lastTime);
@@ -1418,7 +1418,7 @@ window.addEventListener("load", () => {
           // Find background to display
           let nextBg;
           for (let i = 0; i < game.backgrounds.length; i++) {
-            if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
+            if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toLowerCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
               nextBg = i;
               break;
             }
@@ -1488,36 +1488,36 @@ window.addEventListener("load", () => {
       let bgFound = false;
       if (transitDir === "up") {
         for (let i = 0; i < game.backgrounds.length; i++) {
-          if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
+          if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toLowerCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
             bgFound = true;
             break;
           }
         }
-        if (!bgFound) game.backgrounds.push(new Background(0, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
+        if (!bgFound) game.backgrounds.push(new Background(0, -myCanvas.height, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toLowerCase() + currentLevel.slice(1)}${levelScreen}.png`));
       } else if (transitDir === "right") {
         for (let i = 0; i < game.backgrounds.length; i++) {
-          if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
+          if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toLowerCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
             bgFound = true;
             break;
           }
         }
-        if (!bgFound) game.backgrounds.push(new Background(myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
+        if (!bgFound) game.backgrounds.push(new Background(myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toLowerCase() + currentLevel.slice(1)}${levelScreen}.png`));
       } else if (transitDir === "down") {
         for (let i = 0; i < game.backgrounds.length; i++) {
-          if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
+          if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toLowerCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
             bgFound = true;
             break;
           }
         }
-        if (!bgFound) game.backgrounds.push(new Background(0, myCanvas.height, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
+        if (!bgFound) game.backgrounds.push(new Background(0, myCanvas.height, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toLowerCase() + currentLevel.slice(1)}${levelScreen}.png`));
       } else if (transitDir === "left") {
         for (let i = 0; i < game.backgrounds.length; i++) {
-          if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
+          if (JSON.stringify(game.backgrounds[i].source) === `"../images/${currentLevel}/Backgrounds/${currentLevel[0].toLowerCase() + currentLevel.slice(1)}${levelScreen}.png"`) {
             bgFound = true;
             break;
           }
         }
-        if (!bgFound) game.backgrounds.push(new Background(-myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toUpperCase() + currentLevel.slice(1)}${levelScreen}.png`));
+        if (!bgFound) game.backgrounds.push(new Background(-myCanvas.width, 0, myCanvas.width, myCanvas.height, `../images/${currentLevel}/Backgrounds/${currentLevel[0].toLowerCase() + currentLevel.slice(1)}${levelScreen}.png`));
       }
     }
 
